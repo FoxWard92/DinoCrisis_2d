@@ -7,52 +7,25 @@
     <link rel="stylesheet" href="css/index.css" type="text/css">
     <link rel="stylesheet" href="css/oggetti.css" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline+One&display=swap" rel="stylesheet">
-    <script src="js/index.js" type="text/javascript" defer></script>
+    <script type="module" src="js/index.js" defer></script>
     <title>Dino Crisis 2D</title>
 </head>
 
 <body>
     <section>
         <header>
-            <div class="brush-top">
-                <div class="brush"></div>
-                <div class="brush-center">
-                    <div class="brush-left"><div class="brush randomdelay"></div></div>
-                    <div class="brush-right"><div class="brush randomdelay"></div></div>
-                </div>
-            </div>
-            <div class="brush-top">
-                <div class="brush"></div>
-                <div class="brush-center">
-                    <div class="brush-left"><div class="brush randomdelay"></div></div>
-                    <div class="brush-right"><div class="brush randomdelay"></div></div>
-                </div>
-            </div>
-            <div class="brush-top">
-                <div class="brush"></div>
-                <div class="brush-center">
-                    <div class="brush-left"><div class="brush randomdelay"></div></div>
-                    <div class="brush-right"><div class="brush randomdelay"></div></div>
-                </div>
-            </div>
-            <div class="brush-top">
-                <div class="brush"></div>
-                <div class="brush-center">
-                    <div class="brush-left"><div class="brush randomdelay"></div></div>
-                    <div class="brush-right"><div class="brush randomdelay"></div></div>
-                </div>
-            </div>
-            <div class="brush-top">
-                <div class="brush"></div>
-                <div class="brush-center">
-                    <div class="brush-left"><div class="brush randomdelay"></div></div>
-                    <div class="brush-right"><div class="brush randomdelay"></div></div>
-                </div>
-            </div>
         </header>
         <article>
-            <div><h1>Dino Crisis 2D</h1></div>
+            <div>
+                <h1>Dino Crisis 2D</h1>
+            </div>
+            <div id="scheda">
+                <div class="sch"><div class="playgame"><button onclick="viewchange(1)">Play Game</button></div></div>
+                <div class="sch"><div class="login "><button>Login</button><button class="change" onclick="viewchange(2)">Register</button></div></div>
+                <div class="sch"><div class="register"><button>Register</button><button class="change" onclick="viewchange(1)">Login</button></div></div>
+            </div>
         </article>
+        <footer>
         </footer>
     </section>
 </body>
