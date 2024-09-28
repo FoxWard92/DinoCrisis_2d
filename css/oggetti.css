@@ -1,0 +1,27 @@
+/* ogetti di scena */
+
+.brush{
+    height: 100%;
+    width: 100%;
+    position: relative;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* brush */
+
+.brush{
+    animation: brush 8s ease-in-out forwards infinite ;
+    animation-iteration-count: infinite;
+    background-image: url('../img/comune/brand/brush.jpg');
+}
+
+
+@keyframes brush {
+    0%{rotate: 0deg;transform: scale(2);}
+    25%{rotate: 10deg;transform: scale(2.1);}
+    50%{rotate: -10deg;transform: scale(2.2);}
+    75%{rotate: 10deg;transform: scale(2.1);}
+    100%{rotate: 0deg;transform: scale(2);}
+}

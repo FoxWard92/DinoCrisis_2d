@@ -1,6 +1,7 @@
 body{
     margin: 0%;
-    background-image: url(../img/brand/index.jpg);
+    font-family: 'AlumniSansInlineOne', sans-serif;
+    background-image: url(../img/index/backgroud.jpg);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -8,7 +9,7 @@ body{
 
 h1{
     color: white;
-    font-size: 5vw;
+    font-size: 8vw;
     text-shadow: 0.2vw 0.2vw 0.2vw black;
 }
 
@@ -18,19 +19,18 @@ section{
 }
 
 header{
-    height: 10%;
+    
+    overflow: hidden;
+    height: 25%;
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
 }
 
 header>div{
-    height: 100%;
-    width: 30%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 50%;
+    width: 20%;
 }
 
 article{
@@ -38,7 +38,7 @@ article{
     width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -48,6 +48,56 @@ article>div{
     display: flex;
     justify-content: center;
     align-items: center;
-    border: solid white 0.5vw;
+    backdrop-filter: blur(0.1vw);
     border-radius: 2vw;
+}
+
+footer{
+    height: 25%;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    overflow: hidden;
+}
+
+footer>div{
+    height: 100%;
+    width: 30%;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+@font-face {
+    font-family: 'AlumniSansInlineOne';
+    src: url('../font/BAD\ GRUNGE.ttf');
+}
+
+.brush-top{
+    transform: rotate(180deg);
+}
+
+.brush-center{
+    height: 100%;
+    width: 100%;
+    position: relative;
+    top: -50%;
+}
+
+.brush-right{
+    height: 100%;
+    width: 100%;
+    position: relative;
+    top: -100%;
+    left: -20%;
+    transform: rotate(-45deg);
+}
+
+.brush-left{
+    height: 100%;
+    width: 100%;
+    position: relative;
+    left: 20%;
+    transform: rotate(45deg);
 }
