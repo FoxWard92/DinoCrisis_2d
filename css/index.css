@@ -4,7 +4,28 @@ body{
 }
 
 h1{
+    font-size: 8vw;
+    color: rgb(17, 17, 17);
+    text-transform: uppercase;
     font-family: 'BAD_GRUNGE';
+}
+
+b{
+    color: rgb(95, 0, 0);
+}
+
+input{
+    height: 20%;
+    width: 100%;
+    color: white;
+    border-radius: 0.2vw;
+    background-color: unset;
+}
+
+button{
+    width: 40%;
+    color: white;
+    background-color: unset;
 }
 
 section{
@@ -13,6 +34,7 @@ section{
     display: flex;
     justify-content: center;
     align-items: center;
+    background-size: 10%;
     background-image: url(../img/index/backgroud-selection.jpg);
     
 }
@@ -20,15 +42,62 @@ section{
 article{
     height: 100%;
     width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     background-image: url(../img/index/backgroud-article.jpg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+    border-left: solid gray 0.2vw;
+    border-right: solid gray 0.2vw;
 }
 
-.contenitore-titolo{}
+.contenitore-titolo{
+    height: 10%;
+    padding: 1%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(0.1vw);
+}
+
+.contenitore-scheda{
+    height: 20%;
+    width: 30%;
+    margin-top: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    border-radius: 1vw;
+    backdrop-filter: blur(0.2vw);
+    background: linear-gradient(45deg,transparent  0% ,rgb(20,20,20) 70%);
+}
+
+.contenitore-bottoni{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.scheda{
+    height: 100%;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    transition: transform 2s ease-in-out;
+    margin-left: 10%;
+}
+
+.scheda:hover{
+    transform: translateX(100%);
+}
 
 @font-face {
     font-family: 'BAD_GRUNGE';
-    src: url(../font/BAD\ GRUNGE.ttf);
+    src: url(../font/BAD_GRUNGE.ttf);
 }
