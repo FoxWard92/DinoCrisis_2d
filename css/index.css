@@ -25,6 +25,7 @@ input{
 button{
     width: 40%;
     color: white;
+    border-color: gray;
     background-color: unset;
 }
 
@@ -105,6 +106,11 @@ article{
     margin-left: 5%;
 }
 
+.wrong{
+    animation: worng 0.8s;
+    animation-fill-mode: forwards;
+}
+
 #conferma{
     display: none;
 }
@@ -112,4 +118,14 @@ article{
 @font-face {
     font-family: 'BAD_GRUNGE';
     src: url(../font/BAD_GRUNGE.ttf);
+}
+
+@keyframes worng {
+
+    0%{border-color: gray;transform: translateX(0%);}
+    25%{border-color: red;transform: translateX(2%);}
+    50%{border-color: red;transform: translateX(-2%);}
+    75%{border-color: red;transform: translateX(2%);}
+    100%{border-color: gray;transform: translateX(0%);}
+    
 }

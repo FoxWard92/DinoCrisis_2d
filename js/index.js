@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
+import { getDatabase, ref, get, set, push } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCHz94SZ-y1riPeFsh5RgoABVrDWqHNxC0",
@@ -16,6 +17,8 @@ const firebaseConfig = {
   const app = initializeApp(firebaseConfig);
 
   const analytics = getAnalytics(app);
+
+  const database = getDatabase(app);
   
   let z = 1;
 
@@ -34,8 +37,60 @@ window.viewchange = function(){
     z = z ? 0:1;
 }
 
+window.utenti = async function(){
+
+    const utente = document.getElementById('nome');
+    const password = document.getElementById('password');
+
+    password.classList.remove('wrong');
+    utente.classList.remove('wrong');
+
+    if(z){
+       if((await getDataForNode(utente.value)) == 1){
+        const data = JSON.parse(localStorage.getItem(utente.value));
+        console.log(data.dati.password)
+        if(data.dati.password == password.value){
+            localStorage.setItem('utente',utente.value);
+            //esegui apri game
+        }else{
+            password.classList.add('wrong');
+        }    
+       }else{
+        utente.classList.add('wrong');
+       }
+    }else{
+        const confermapassworld =  document.getElementById('conferma');
+
+        confermapassworld.classList.remove('wrong');
+        
+        if((await getDataForNode(utente.value)) == null){
+            if((password.value != '')){
+                if(password.value == confermapassworld.value){
+                    const utenteogggeto = {
+                        dati: {
+                            password: password.value
+                        },
+                        saves: {
+                            inventario: "",
+                            scena: "",
+                        }
+                };
+                await addElementToNode(`utenti/${utente.value}`,utenteogggeto);
+                viewchange();
+                }else{
+                    confermapassworld.classList.add('wrong');
+                }
+            }else{
+                password.classList.add('wrong');
+            }
+        }else{
+            utente.classList.add('wrong');
+        }
+    }
+}
+
 window.getDataForNode = async function (nodeId) {
-    const dbRef = ref(database, `/${nodeId}`);
+    const dbRef = ref(database, `utenti/${nodeId}`);
     try {
         const snapshot = await get(dbRef);
         if (snapshot.exists()) {
@@ -53,12 +108,11 @@ window.getDataForNode = async function (nodeId) {
 };
 
 window.addElementToNode = async function (nodeId, elementData) {
-    const dbRef = ref(database, `/${nodeId}`); // Ottieni il riferimento alla sotto-cartella
+    const dbRef = ref(database, `/${nodeId}`); // Riferimento alla sotto-cartella con nome dell'utente
 
     try {
-        // Usa push() per aggiungere un nuovo elemento senza sovrascrivere
-        const newElementRef = push(dbRef); // Crea un riferimento per un nuovo elemento
-        await set(newElementRef, elementData); // Imposta i dati dell'elemento
+        // Usa set() per sovrascrivere o creare dati in una chiave specifica
+        await set(dbRef, elementData); // Imposta i dati dell'elemento senza generare una nuova chiave
     } catch (error) {
         console.error("Errore durante l'aggiunta dell'elemento:", error);
     }
