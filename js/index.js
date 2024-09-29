@@ -25,6 +25,10 @@ const firebaseConfig = {
 window.viewchange = function(){
         const elemento1 = document.getElementsByClassName('contenitore-scheda');
     const elemento2 = document.getElementsByClassName('scheda');
+    const loadbar = document.getElementById('loadbar');
+
+    loadbar.style.left = `${(-50)*z}%`;
+
     elemento2[0].style.transform = `translateX(${100*z}%)`;
     for (let i = 0; i < 45 ;i++) {
         setTimeout(function() {
@@ -41,13 +45,14 @@ window.utenti = async function(){
 
     const utente = document.getElementById('nome');
     const password = document.getElementById('password');
+    const loadbar = document.getElementById('loadbar');
 
     password.classList.remove('wrong');
     utente.classList.remove('wrong');
 
+    loadbar.classList.add('atload');
+    
     if(z){
-       let loadbar = document.getElementById('loadbar');
-       loadbar.classList.add('atload');
        if((await getDataForNode(utente.value)) == 1){
         const data = JSON.parse(localStorage.getItem(utente.value));
         if(data.dati.password == password.value){
@@ -59,7 +64,6 @@ window.utenti = async function(){
        }else{
         utente.classList.add('wrong');
        }
-       loadbar.classList.remove('atload');
     }else{
         const confermapassworld =  document.getElementById('conferma');
 
@@ -89,6 +93,7 @@ window.utenti = async function(){
             utente.classList.add('wrong');
         }
     }
+    loadbar.classList.remove('atload');
 }
 
 window.getDataForNode = async function (nodeId) {
