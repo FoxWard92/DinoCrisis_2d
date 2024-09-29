@@ -48,7 +48,6 @@ window.utenti = async function(){
     if(z){
        if((await getDataForNode(utente.value)) == 1){
         const data = JSON.parse(localStorage.getItem(utente.value));
-        console.log(data.dati.password)
         if(data.dati.password == password.value){
             localStorage.setItem('utente',utente.value);
             //esegui apri game
