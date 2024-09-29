@@ -15,7 +15,7 @@ b{
 }
 
 input{
-    height: 20%;
+    height: 15%;
     width: 100%;
     color: white;
     border-radius: 0.2vw;
@@ -106,14 +106,36 @@ article{
     margin-left: 5%;
 }
 
+#loadbar{
+    height: 50%;
+    width: 50%;
+    opacity: 0;
+    background-image: url('../img/index/brand/loadbar.jpg');
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.atload{
+    animation: atloadd 0.8s;
+    animation-fill-mode: forwards;
+}
+
 .wrong{
     animation: worng 0.8s;
     animation-fill-mode: forwards;
 }
 
+
+
+#send{
+    font-size: 1vw;
+}
+
 #conferma{
     display: none;
 }
+
 
 @font-face {
     font-family: 'BAD_GRUNGE';
@@ -127,5 +149,15 @@ article{
     50%{border-color: red;transform: translateX(-2%);}
     75%{border-color: red;transform: translateX(2%);}
     100%{border-color: gray;transform: translateX(0%);}
+    
+}
+
+@keyframes atloadd {
+
+    0%{opacity: 0;transform: rotate(0deg);}
+    25%{opacity: 1;transform: rotate(90deg);}
+    50%{opacity: 1;transform: rotate(180deg);}
+    75%{opacity: 1;transform: rotate(270deg);}
+    100%{opacity: 0;transform: rotate(0deg);}
     
 }

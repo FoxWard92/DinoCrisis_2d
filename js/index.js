@@ -32,7 +32,7 @@ window.viewchange = function(){
         }, i * 20);
     }
     document.getElementById('changepage').innerText = z ? "<- Accedi":" Registarti ->";
-    document.getElementById('send').innerText = z ? "Registarti":" Accedi";
+    document.getElementById('send').innerText = z ? "Registrati":" Gioca";
     document.getElementById('conferma').style.display = z ? 'block' : 'none'
     z = z ? 0:1;
 }
@@ -46,17 +46,20 @@ window.utenti = async function(){
     utente.classList.remove('wrong');
 
     if(z){
+       let loadbar = document.getElementById('loadbar');
+       loadbar.classList.add('atload');
        if((await getDataForNode(utente.value)) == 1){
         const data = JSON.parse(localStorage.getItem(utente.value));
         if(data.dati.password == password.value){
             localStorage.setItem('utente',utente.value);
-            //esegui apri game
+            window.location.href = '../html/tool/interfaccia.html'
         }else{
             password.classList.add('wrong');
         }    
        }else{
         utente.classList.add('wrong');
        }
+       loadbar.classList.remove('atload');
     }else{
         const confermapassworld =  document.getElementById('conferma');
 
