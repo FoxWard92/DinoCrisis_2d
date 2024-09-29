@@ -17,27 +17,21 @@ const firebaseConfig = {
 
   const analytics = getAnalytics(app);
   
-  let z = 0
-  let deg = 0
-  
-window.onload = function(){
-    viewchange(0)
-}
+  let z = 1;
 
-window.viewchange = function(n){
-    const arr = document.getElementsByClassName('sch');
-    const step = [45,125,45];
-    const elemento = document.getElementById('scheda');
-    console.log(n)
-    arr[z].style.display = 'none'
-    arr[n].style.display = 'block '
-    for (let i = deg; i < step[n]; i++) {
+window.viewchange = function(){
+        const elemento1 = document.getElementsByClassName('contenitore-scheda');
+    const elemento2 = document.getElementsByClassName('scheda');
+    elemento2[0].style.transform = `translateX(${100*z}%)`;
+    for (let i = 0; i < 45 ;i++) {
         setTimeout(function() {
-            elemento.style.background = `linear-gradient(${i}deg, rgba(35, 35, 35, 0.900) 0% 20%, transparent 20% 80%, rgba(20, 20, 20, 0.900) 80% 100%)`;
-        }, i * 5);
+            elemento1[0].style.background = `linear-gradient(${i*(z ? 1:-1)}deg,transparent  0% ,rgb(20,20,20) 70%)`;
+        }, i * 20);
     }
-    deg = step[n];
-    z = n;
+    document.getElementById('changepage').innerText = z ? "<- Accedi":" Registarti ->";
+    document.getElementById('send').innerText = z ? "Registarti":" Accedi";
+    document.getElementById('conferma').style.display = z ? 'block' : 'none'
+    z = z ? 0:1;
 }
 
 window.getDataForNode = async function (nodeId) {
