@@ -18,11 +18,20 @@
                 </div>
                 <div class="contenitore-scheda">
                     <div class="scheda schedaLoaded">
-                        <input type="text" id="nome" placeholder="Nome">
-                        <input type="password" id="password" name="" placeholder="Password">
+                        <input type="text" class="nome" placeholder="Nome">
+                        <input type="password" class="password" name="" placeholder="Password">
                         <div class="contenitore-bottoni">
-                            <button id="send" onclick="utenti()">Gioca</button>
-                            <button id="changepage" onclick="viewchange()">Registrati -></button>
+                            <button id="send" onclick="utenti(1)">Gioca</button>
+                            <button id="changepage" onclick="viewchange(1)">Registrati -></button>
+                        </div>
+                    </div>
+                    <div class="scheda">
+                        <input type="text" class="nome" placeholder="Nome">
+                        <input type="password" class="password" name="" placeholder="Password">
+                        <input type="password" class="conferma" name="" placeholder="Conferma password">
+                        <div class="contenitore-bottoni">
+                            <button id="send" onclick="utenti(0)">Registrati</button>
+                            <button id="changepage" onclick="viewchange(0)"><- Accedi</button>
                         </div>
                     </div>
                     <div class="scheda">
@@ -30,16 +39,7 @@
                         <input type="password" id="password" name="" placeholder="Password">
                         <input type="password" id="conferma" name="" placeholder="Conferma password">
                         <div class="contenitore-bottoni">
-                            <button id="send" onclick="utenti()">Gioca</button>
-                            <button id="changepage" onclick="viewchange()">Registrati -></button>
-                        </div>
-                    </div>
-                    <div class="scheda">
-                        <input type="text" id="nome" placeholder="Nome">
-                        <input type="password" id="password" name="" placeholder="Password">
-                        <input type="password" id="conferma" name="" placeholder="Conferma password">
-                        <div class="contenitore-bottoni">
-                            <button id="send" onclick="utenti()">Gioca</button>
+                            <button id="send" onclick="utenti(1)">Gioca</button>
                             <button id="changepage" onclick="viewchange()">Registrati -></button>
                         </div>
                     </div>

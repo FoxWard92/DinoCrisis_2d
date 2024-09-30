@@ -19,60 +19,68 @@ const firebaseConfig = {
   const analytics = getAnalytics(app);
 
   const database = getDatabase(app);
-  
-  let statoslides = 1;
 
-  
-window.viewchange = function(){
-    
-    const elemento1 = document.getElementsByClassName('contenitore-scheda');
-    const schede = document.getElementsByClassName('scheda');
-    const loadbar = document.getElementById('loadbar');
+  let isRunningAnimation = false; 
 
-    for( var i = 0; i < schede.length;i++){
-        if(i == 0){
-            schede[i].classList.add('schedaLoaded');
-
+window.viewchange = async function(n){
+    let statoslides = n%2 != 0 ? 1:0;
+    if(isRunningAnimation) return 0;
+        const elemento1 = document.getElementsByClassName('contenitore-scheda');
+        const schede = document.getElementsByClassName('scheda');
+        const loadbar = document.getElementById('loadbar');
+        for( let i = 0; i < schede.length;i++){
+           if(i == n){
+             setTimeout(function() {
+                schede[i].style.display = 'flex';
+            },800);
             schede[i].style.transform = `translateX(${(110)*statoslides}%)`
         }else{
-            schede[i].classList.remove('schedaLoaded');
+            schede[i].style.transform = `translateX(${(110)*statoslides}%)`
+            setTimeout(function(){
+                schede[i].style.display = 'none';
+            },800)
         }
-
     }
+    loadbar.style.transform = `translateX(${(-100)*statoslides}%)`;
     changelineareg(elemento1[0],(statoslides ? 125:225),(statoslides ? 225:125))
-    loadbar.style.transform = `translateX(${(-120)*statoslides}%)`;
-    statoslides = statoslides ? 0:1;
+    return 1
 }
 
-window.changelineareg = function(background,degstart,degend){
+window.changelineareg = async function(background,degstart,degend){
+    isRunningAnimation = true;
     let degdiff = degstart - degend;
     const step = Math.abs(degdiff);
     const angle = degdiff < 0 ? 1:-1;
-    for(let i = 0; i < step;i++){
-        console.log(degstart+(i*angle))
+    for(let i = 0; i <= step;i++){
         setTimeout(function() {
             background.style.background = `linear-gradient(${degstart+(i*angle)}deg,transparent  0% ,rgb(20,20,20) 70%)`;
+            if(i === step){
+                setTimeout(function() {
+                    isRunningAnimation = false;
+                }, 100);
+            }
         }, i * 5);
     }
 }
 
-window.utenti = async function(){
+window.utenti = async function(types){
+    let schedeConDisplayFlex = Array.from(document.querySelectorAll('.scheda'))
+    .filter(scheda => getComputedStyle(scheda).display === 'flex');
 
-    const utente = document.getElementById('nome');
-    const password = document.getElementById('password');
+    const utente = schedeConDisplayFlex[0].querySelector('.nome');
+    const password = schedeConDisplayFlex[0].querySelector('.password');
+
     const loadbar = document.getElementById('loadbar');
-
     password.classList.remove('wrong');
     utente.classList.remove('wrong');
-
     loadbar.classList.add('atload');
-    
-    if(z){
-       if((await getDataForNode(utente.value)) == 1){
+    let percorso = 'utenti';
+    if(types){
+       if((await getDataForNode(percorso,utente.value)) == 1){
         const data = JSON.parse(localStorage.getItem(utente.value));
         if(data.dati.password == password.value){
             localStorage.setItem('utente',utente.value);
-            window.location.href = '../html/tool/interfaccia.html'
+            viewchange(2)
         }else{
             password.classList.add('wrong');
         }    
@@ -84,7 +92,7 @@ window.utenti = async function(){
 
         confermapassworld.classList.remove('wrong');
         
-        if((await getDataForNode(utente.value)) == null){
+        if((await getDataForNode(percorso,utente.value)) == null){
             if((password.value != '')){
                 if(password.value == confermapassworld.value){
                     const utenteogggeto = {
@@ -111,8 +119,8 @@ window.utenti = async function(){
     loadbar.classList.remove('atload');
 }
 
-window.getDataForNode = async function (nodeId) {
-    const dbRef = ref(database, `utenti/${nodeId}`);
+window.getDataForNode = async function (noneIdpadre,nodeId) {
+    const dbRef = ref(database, `${noneIdpadre}/${nodeId}`);
     try {
         const snapshot = await get(dbRef);
         if (snapshot.exists()) {
