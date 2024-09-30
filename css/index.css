@@ -78,14 +78,14 @@ article{
 }
 
 .contenitore-scheda{
+    overflow:hidden;
     height: 50%;
     width: 80%;
     display: flex;
     align-items: center;
-    justify-content: start;
+    justify-content: c;
     border-radius: 1vw;
     backdrop-filter: blur(0.2vw);
-    background: linear-gradient(45deg,transparent  0% ,rgb(20,20,20) 70%);
 }
 
 .contenitore-bottoni{
@@ -93,28 +93,6 @@ article{
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-
-.scheda{
-    height: 100%;
-    width: 45%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    transition: transform 0.8s ease-in-out;
-    margin-left: 5%;
-}
-
-#loadbar{
-    height: 50%;
-    width: 50%;
-    opacity: 0;
-    background-image: url('../img/index/brand/loadbar.jpg');
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    position: relative;
 }
 
 .atload{
@@ -127,14 +105,48 @@ article{
     animation-fill-mode: forwards;
 }
 
+.scheda{
+    height: 100%;
+    width: 50%;
+    padding: 5%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    transition: transform 0.8s ease-in-out;
+}
+
+#loadbar{
+    height: 70%;
+    width: 70%;
+    opacity: 1;
+    background-image: url('../img/index/brand/loadbar.jpg');
+    transition: transform 0.8s ease-in-out;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    transform: translateX(10%);
+}
+
+#panellonero{
+    height: 80vh;
+    width: 50vh;
+    background: linear-gradient(-90deg, rgba(10, 10, 10, 0.900) 70%, transparent 100%);
+    transition: all 0.8s ease-in-out;
+    position: absolute;
+    top: -80%;
+    rotate: 45deg;
+    z-index: -1;
+    left: 0%;
+}
 
 
 #send{
     font-size: 1vw;
 }
 
-#conferma{
-    display: none;
+.schedaLoaded{
+    display: flex;
 }
 
 
