@@ -21,7 +21,10 @@ const firebaseConfig = {
   const database = getDatabase(app);
 
   let isRunningAnimation = false;
+
 window.viewchange = async function(n){
+    const audio = document.querySelector('audio');
+    audio.play()
     let statoslides = n%2;
     if(isRunningAnimation) return 0;
         const elemento1 = document.getElementsByClassName('contenitore-scheda');

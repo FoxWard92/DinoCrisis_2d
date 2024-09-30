@@ -3,6 +3,11 @@ body{
     background-image: url();
 }
 
+audio{
+    display: none;
+    src: url('../soudtruck/lobby.mp4');
+}
+
 h1{
     font-size: 8vw;
     color: rgb(17, 17, 17);
