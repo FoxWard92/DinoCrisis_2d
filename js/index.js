@@ -41,8 +41,8 @@ window.viewchange = async function(n){
             },800)
         }
     }
-    loadbar.style.transform = `translateX(${(-100)*statoslides}%)`;
-    changelineareg(elemento1[0],(statoslides ? 125:225),(statoslides ? 225:125))
+    loadbar.style.left = `${(statoslides*-50)}%`;
+    changelineareg(elemento1[0],(statoslides ? 125:225),(statoslides ? 225:125));
     return 1
 }
 
@@ -63,12 +63,20 @@ window.changelineareg = async function(background,degstart,degend){
     }
 }
 
+window.addDiv = function(container){
+    const newDiv = document.createElement('div');
+    newDiv.appendChild(document.createElement('h3'));
+    container.appendChild(newDiv); 
+}
+
+
 window.utenti = async function(types){
     let schedeConDisplayFlex = Array.from(document.querySelectorAll('.scheda'))
     .filter(scheda => getComputedStyle(scheda).display === 'flex');
 
     const utente = schedeConDisplayFlex[0].querySelector('.nome');
     const password = schedeConDisplayFlex[0].querySelector('.password');
+    const confermapassworld =  schedeConDisplayFlex[0].querySelector('.conferma');
 
     const loadbar = document.getElementById('loadbar');
     password.classList.remove('wrong');
@@ -76,10 +84,16 @@ window.utenti = async function(types){
     loadbar.classList.add('atload');
     let percorso = 'utenti';
     if(types){
-       if((await getDataForNode(percorso,utente.value)) == 1){
+       if(utente.value != '' && (await getDataForNode(percorso,utente.value)) == 1){
         const data = JSON.parse(localStorage.getItem(utente.value));
         if(data.dati.password == password.value){
             localStorage.setItem('utente',utente.value);
+            const container = document.getElementById('saves');
+            for(var i = 0; i < Object.keys(data.saves).length;i++){
+                addDiv(container);
+                container.lastElementChild.querySelector('h3').innerText = data.saves['100' + i].nome
+            }
+
             viewchange(2)
         }else{
             password.classList.add('wrong');
@@ -88,7 +102,6 @@ window.utenti = async function(types){
         utente.classList.add('wrong');
        }
     }else{
-        const confermapassworld =  document.getElementById('conferma');
 
         confermapassworld.classList.remove('wrong');
         
@@ -100,12 +113,13 @@ window.utenti = async function(types){
                             password: password.value
                         },
                         saves: {
+                            
                             inventario: "",
                             scena: "",
                         }
                 };
                 await addElementToNode(`utenti/${utente.value}`,utenteogggeto);
-                viewchange();
+                viewchange(0);
                 }else{
                     confermapassworld.classList.add('wrong');
                 }

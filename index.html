@@ -17,7 +17,7 @@
                     <h1>D<b>i</b>no <b>c</b>ri<b>s</b>is 2D</h1>
                 </div>
                 <div class="contenitore-scheda">
-                    <div class="scheda schedaLoaded">
+                    <div class="scheda schedaLoaded" id="Accedi">
                         <input type="text" class="nome" placeholder="Nome">
                         <input type="password" class="password" name="" placeholder="Password">
                         <div class="contenitore-bottoni">
@@ -25,7 +25,7 @@
                             <button id="changepage" onclick="viewchange(1)">Registrati -></button>
                         </div>
                     </div>
-                    <div class="scheda">
+                    <div class="scheda" id="Registrati">
                         <input type="text" class="nome" placeholder="Nome">
                         <input type="password" class="password" name="" placeholder="Password">
                         <input type="password" class="conferma" name="" placeholder="Conferma password">
@@ -34,13 +34,22 @@
                             <button id="changepage" onclick="viewchange(0)"><- Accedi</button>
                         </div>
                     </div>
-                    <div class="scheda">
-                        <input type="text" id="nome" placeholder="Nome">
-                        <input type="password" id="password" name="" placeholder="Password">
-                        <input type="password" id="conferma" name="" placeholder="Conferma password">
+                    <div class="scheda" id="Salvataggi">
+                        <h2>Salvataggi</h2>
+                        <div id="saves">
+
+                        </div>
+                        <div class="contenitore-bottoni">
+                            
+                            <button id="send" onclick="utenti(1)">Nuova Parita</button>
+                            <button id="changepage" onclick="viewchange(3)">Impostazioni -></button>
+                        </div>
+                    </div>
+                    <div class="scheda" id="Impostazioni">
+                        <h2>Impostazioni</h2>
                         <div class="contenitore-bottoni">
                             <button id="send" onclick="utenti(1)">Gioca</button>
-                            <button id="changepage" onclick="viewchange()">Registrati -></button>
+                            <button id="changepage" onclick="viewchange(2)">Salvataggi -></button>
                         </div>
                     </div>
                     <div id="loadbar"></div>
