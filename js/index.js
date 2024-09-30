@@ -20,10 +20,9 @@ const firebaseConfig = {
 
   const database = getDatabase(app);
 
-  let isRunningAnimation = false; 
-
+  let isRunningAnimation = false;
 window.viewchange = async function(n){
-    let statoslides = n%2 != 0 ? 1:0;
+    let statoslides = n%2;
     if(isRunningAnimation) return 0;
         const elemento1 = document.getElementsByClassName('contenitore-scheda');
         const schede = document.getElementsByClassName('scheda');
