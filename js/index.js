@@ -20,25 +20,40 @@ const firebaseConfig = {
 
   const database = getDatabase(app);
   
-  let z = 1;
+  let statoslides = 1;
 
+  
 window.viewchange = function(){
-        const elemento1 = document.getElementsByClassName('contenitore-scheda');
-    const elemento2 = document.getElementsByClassName('scheda');
+    
+    const elemento1 = document.getElementsByClassName('contenitore-scheda');
+    const schede = document.getElementsByClassName('scheda');
     const loadbar = document.getElementById('loadbar');
 
-    loadbar.style.left = `${(-50)*z}%`;
+    for( var i = 0; i < schede.length;i++){
+        if(i == 0){
+            schede[i].classList.add('schedaLoaded');
 
-    elemento2[0].style.transform = `translateX(${100*z}%)`;
-    for (let i = 0; i < 45 ;i++) {
-        setTimeout(function() {
-            elemento1[0].style.background = `linear-gradient(${i*(z ? 1:-1)}deg,transparent  0% ,rgb(20,20,20) 70%)`;
-        }, i * 20);
+            schede[i].style.transform = `translateX(${(110)*statoslides}%)`
+        }else{
+            schede[i].classList.remove('schedaLoaded');
+        }
+
     }
-    document.getElementById('changepage').innerText = z ? "<- Accedi":" Registarti ->";
-    document.getElementById('send').innerText = z ? "Registrati":" Gioca";
-    document.getElementById('conferma').style.display = z ? 'block' : 'none'
-    z = z ? 0:1;
+    changelineareg(elemento1[0],(statoslides ? 125:225),(statoslides ? 225:125))
+    loadbar.style.transform = `translateX(${(-120)*statoslides}%)`;
+    statoslides = statoslides ? 0:1;
+}
+
+window.changelineareg = function(background,degstart,degend){
+    let degdiff = degstart - degend;
+    const step = Math.abs(degdiff);
+    const angle = degdiff < 0 ? 1:-1;
+    for(let i = 0; i < step;i++){
+        console.log(degstart+(i*angle))
+        setTimeout(function() {
+            background.style.background = `linear-gradient(${degstart+(i*angle)}deg,transparent  0% ,rgb(20,20,20) 70%)`;
+        }, i * 5);
+    }
 }
 
 window.utenti = async function(){

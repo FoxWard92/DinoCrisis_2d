@@ -78,14 +78,15 @@ article{
 }
 
 .contenitore-scheda{
-    overflow:hidden;
+    overflow: hidden;
     height: 50%;
     width: 80%;
     display: flex;
     align-items: center;
-    justify-content: c;
+    justify-content: center;
     border-radius: 1vw;
     backdrop-filter: blur(0.2vw);
+    background: linear-gradient(125deg,transparent  0% ,rgb(20,20,20) 70%);
 }
 
 .contenitore-bottoni{
@@ -126,18 +127,6 @@ article{
     background-size: contain;
     background-repeat: no-repeat;
     transform: translateX(10%);
-}
-
-#panellonero{
-    height: 80vh;
-    width: 50vh;
-    background: linear-gradient(-90deg, rgba(10, 10, 10, 0.900) 70%, transparent 100%);
-    transition: all 0.8s ease-in-out;
-    position: absolute;
-    top: -80%;
-    rotate: 45deg;
-    z-index: -1;
-    left: 0%;
 }
 
 
