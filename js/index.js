@@ -63,9 +63,12 @@ window.changelineareg = async function(background,degstart,degend){
     }
 }
 
-window.addDiv = function(container){
+window.addDivSaves = function(container){
     const newDiv = document.createElement('div');
     newDiv.appendChild(document.createElement('h3'));
+    newDiv.appendChild(document.createElement('div'));
+    newDiv.querySelector('div').appendChild(document.createElement('button'));
+    newDiv.querySelector('div').appendChild(document.createElement('button'));
     container.appendChild(newDiv); 
 }
 
@@ -90,7 +93,7 @@ window.utenti = async function(types){
             localStorage.setItem('utente',utente.value);
             const container = document.getElementById('saves');
             for(var i = 0; i < Object.keys(data.saves).length;i++){
-                addDiv(container);
+                addDivSaves(container);
                 container.lastElementChild.querySelector('h3').innerText = data.saves['100' + i].nome
             }
 

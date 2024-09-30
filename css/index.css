@@ -11,7 +11,12 @@ h1{
 }
 
 h2{
+    margin: 1%;
     color: rgb(95, 0, 0);;
+}
+
+h3{
+    color: white;
 }
 
 b{
@@ -27,13 +32,13 @@ input{
 }
 
 button{
-    height: 100%;
     width: 40%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
     color: white;
     border-color: gray;
     background-color: unset;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
 }
 
 button:hover{
@@ -138,14 +143,37 @@ article{
 }
 
 #saves{
-    height: 70%;
+    height: 50%;
     width: 100%;
+    overflow: scroll;
+
+}
+
+#saves>div{
+    height: 50%;
+    width: 100%;
+    margin-top: 10%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 1vw;
+    background: linear-gradient(-90deg,transparent  0% ,rgb(44, 0, 0) 70%);
+
+}
+
+#saves>div>div{
+    height: 100%;
+    width: 20%;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    overflow: scroll;
 
+}
+
+#saves>div>div>button{
+    height: 40%;
+    width: 100%;
 }
 
 
