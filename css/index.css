@@ -11,6 +11,7 @@ audio{
 h1{
     font-size: 8vw;
     color: rgb(17, 17, 17);
+    filter:blur(0.03vw);
     text-transform: uppercase;
     font-family: 'BAD_GRUNGE';
 }
@@ -91,7 +92,6 @@ article{
     justify-content: center;
     align-items: center;
     border-radius: 2vw;
-    backdrop-filter: blur(0.05vw);
 }
 
 .contenitore-scheda{
@@ -103,6 +103,7 @@ article{
     justify-content: center;
     border-radius: 1vw;
     backdrop-filter: blur(0.2vw);
+    box-shadow: 0vw 0vw 1vw 1vw rgb(20,20,20);
     background: linear-gradient(125deg,transparent  0% ,rgb(20,20,20) 70%);
 }
 
