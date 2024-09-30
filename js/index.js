@@ -20,28 +20,25 @@ const firebaseConfig = {
 
   const database = getDatabase(app);
   
-  let statoslides = 1;
+  let z = 1;
 
 window.viewchange = function(){
-    console.log('ciao')
-    const step = [[0,110],[0,-100],[45,125],[0,-10]];
-    const schede = document.getElementsByClassName('scheda');
+        const elemento1 = document.getElementsByClassName('contenitore-scheda');
+    const elemento2 = document.getElementsByClassName('scheda');
+    const loadbar = document.getElementById('loadbar');
 
-    for( var i = 0; i < schede.length;i++){
-        if(i == n){
-            schede[i].classList.add('schedaLoaded');
+    loadbar.style.left = `${(-50)*z}%`;
 
-            schede[i].style.transform = `translateX(${step[0][statoslides]}%)`
-        }else{
-            schede[i].classList.remove('schedaLoaded');
-        }
-
+    elemento2[0].style.transform = `translateX(${100*z}%)`;
+    for (let i = 0; i < 45 ;i++) {
+        setTimeout(function() {
+            elemento1[0].style.background = `linear-gradient(${i*(z ? 1:-1)}deg,transparent  0% ,rgb(20,20,20) 70%)`;
+        }, i * 20);
     }
-
-    document.getElementById('loadbar') .style.transform = `translateX(${step[1][statoslides]}%)`
-    document.getElementById('panellonero').style.left = `${step[3][statoslides]}%`;
-    document.getElementById('panellonero').style.rotate = `${step[2][statoslides]}deg`;
-    statoslides = statoslides? 0:1;
+    document.getElementById('changepage').innerText = z ? "<- Accedi":" Registarti ->";
+    document.getElementById('send').innerText = z ? "Registrati":" Gioca";
+    document.getElementById('conferma').style.display = z ? 'block' : 'none'
+    z = z ? 0:1;
 }
 
 window.utenti = async function(){
