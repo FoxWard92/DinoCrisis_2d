@@ -26,6 +26,7 @@ h3{
     color: white;
     white-space: nowrap;
     text-overflow: ellipsis;
+    padding: 5%;
 }
 
 h4{

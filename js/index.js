@@ -20,18 +20,20 @@ const firebaseConfig = {
 
   const database = getDatabase(app);
 
+  const loadbar = document.getElementById('loadbar');
+  
+  const schede = document.getElementsByClassName('scheda');
+
   let isRunningAnimation = false;
 
   let statoslidespreviwew = false;
 
-window.viewchange = async function(numero,statoslides){
-    if(isRunningAnimation) return 0;
+window.viewchange = async function(numero,statoslides,forzastato){
+    if(isRunningAnimation && forzastato) return 0;
         const elemento1 = document.getElementsByClassName('contenitore-scheda');
-        const schede = document.getElementsByClassName('scheda');
         const loadbar = document.getElementById('loadbar');
         for( let i = 0; i < schede.length;i++){
            if(i == numero){
-            console.log(`translateX(${(110)*statoslides}%)`)
                 schede[i].style.transform = `translateX(${(80)*statoslides}%)`
                 setTimeout(function() {
                    schede[i].classList.add('schedaLoaded');
@@ -113,22 +115,22 @@ window.WrongPasswordConferma = function (nome,password,confermapassworld){
 
 }
 
-window.AccesoVerificato = function (nome,password,confermapassworld){
+window.AccesoVerificato = async function (nome,password,confermapassworld){
     const container = document.getElementById('saves');
         const data = JSON.parse(localStorage.getItem(nome.value));
         localStorage.setItem('utente',nome.value);
         const numerosalvataggi = data.saves.mondi;
-        
         if(numerosalvataggi){
             for(var i = 0; i < numerosalvataggi;i++){
                 addSavesSlot(container);
                 container.lastElementChild.querySelector('h3').innerText = data.saves['100' + i].nome
             }
         }else{
-            console.log(numerosalvataggi)
-            document.getElementById('DivNuovaPartita').querySelector('h4').innerText = 'Dati Non Trovati';
+            document.getElementById('DivNuovaPartita').querySelector('h3').innerText = 'Dati Non Trovati';
         }
-    viewchange(2,false);
+    viewchange(2,false,false);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return 1
 }
 
 window.RegistroVerificato = async function (nome,password,confermapassworld){
@@ -148,30 +150,33 @@ window.RegistroVerificato = async function (nome,password,confermapassworld){
         }
     };
     await addElementToNode(`utenti/${nome.value}`,utenteogggeto);
-    viewchange(0,false);
+    viewchange(0,false,false);
+    await new Promise(resolve => setTimeout(resolve, 1000));
     return 2
 }
 
 let arrayDiFunzioni = [WrongNome, WrongPassword, AccesoVerificato,WrongPasswordConferma,RegistroVerificato];
 
 window.Login = async function () {
-    const loadbar = document.getElementById('loadbar');
+    isRunningAnimation = true;
     loadbar.classList.add('atload');
-    const scheda = document.getElementsByClassName('schedaLoaded')[0];
-    const nome = scheda.querySelector('.nome');
-    const password =  scheda.querySelector('.password');
+    const schedaload = document.getElementsByClassName('schedaLoaded')[0];
+    const nome = schedaload.querySelector('.nome');
+    const password =  schedaload.querySelector('.password');
     await arrayDiFunzioni[(await getDataForNodeByLogin('utenti',nome.value,password.value))](nome,password,0);
+    isRunningAnimation = false;
     loadbar.classList.remove('atload');
 }
 
 window.Register = async function () {
-    const loadbar = document.getElementById('loadbar');
+    isRunningAnimation = true;
     loadbar.classList.add('atload');
-    const scheda = document.getElementsByClassName('schedaLoaded')[0];
-    const nome = scheda.querySelector('.nome');
-    const password =  scheda.querySelector('.password');
-    const confermapassworld = scheda.querySelector('.conferma')
+    const schedaload = document.getElementsByClassName('schedaLoaded')[0];
+    const nome = schedaload.querySelector('.nome');
+    const password =  schedaload.querySelector('.password');
+    const confermapassworld = schedaload.querySelector('.conferma')
     await arrayDiFunzioni[(await getDataForNodeByRegister('utenti',nome.value))](nome,password,confermapassworld);
+    isRunningAnimation = false;
     loadbar.classList.remove('atload');
 }
 
