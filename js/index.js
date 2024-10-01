@@ -87,31 +87,31 @@ window.addSavesSlot = function(container){
 
 window.WrongNome = function (nome,password,confermapassworld){
     
-    nome.classList.remove('wrong');
+    nome.classList.add('wrong');
 
     setTimeout(function(){
-        nome.classList.add('wrong');
-    },100);
+        nome.classList.remove('wrong');
+    },1000);
 
 }
 
 window.WrongPassword = function (nome,password,confermapassworld){
-    
-    password.classList.remove('wrong');
+
+    password.classList.add('wrong');
 
     setTimeout(function(){
-        password.classList.add('wrong');
-    },100);
+        password.classList.remove('wrong');
+    },1000);
 
 }
 
 window.WrongPasswordConferma = function (nome,password,confermapassworld){
-    
-    confermapassworld.classList.remove('wrong');
+
+    confermapassworld.classList.add('wrong');
 
     setTimeout(function(){
-        confermapassworld.classList.add('wrong');
-    },100);
+        confermapassworld.classList.remove('wrong');
+    },1000);
 
 }
 
