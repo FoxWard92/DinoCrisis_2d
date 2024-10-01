@@ -32,12 +32,12 @@ window.viewchange = async function(numero,statoslides){
         for( let i = 0; i < schede.length;i++){
            if(i == numero){
             console.log(`translateX(${(110)*statoslides}%)`)
-                schede[i].style.transform = `translateX(${(110)*statoslides}%)`
+                schede[i].style.transform = `translateX(${(80)*statoslides}%)`
                 setTimeout(function() {
                    schede[i].classList.add('schedaLoaded');
                 },800);
         }else{
-            schede[i].style.transform = `translateX(${(110)*statoslides}%)`
+            schede[i].style.transform = `translateX(${(80)*statoslides}%)`
             setTimeout(function(){
                 schede[i].classList.remove('schedaLoaded');
             },800);
@@ -75,9 +75,9 @@ window.addSavesSlot = function(container){
     const newSlotButton = newSlot.querySelector('div');
     newSlotButton.classList.add('space-coloum');
     
-    for(var buttons = 0; buttons < 2;i++){
+    for(var buttons = 0; buttons < 2;buttons++){
         newSlotButton.appendChild(document.createElement('button'));
-        newSlotButton.lastElementChild.querySelector('button').classList.add(buttons ? 'cancella-mondo':'carica-mondo');
+        newSlotButton.lastElementChild.classList.add(buttons ? 'cancella-mondo':'carica-mondo');
     }
     
     container.appendChild(newSlot); 
@@ -117,9 +117,16 @@ window.AccesoVerificato = function (nome,password,confermapassworld){
     const container = document.getElementById('saves');
         const data = JSON.parse(localStorage.getItem(nome.value));
         localStorage.setItem('utente',nome.value);
-        for(var i = 0; i < Object.keys(data.saves).length;i++){
-            addSavesSlot(container);
-            container.lastElementChild.querySelector('h3').innerText = data.saves['100' + i].nome
+        const numerosalvataggi = data.saves.mondi;
+        
+        if(numerosalvataggi){
+            for(var i = 0; i < numerosalvataggi;i++){
+                addSavesSlot(container);
+                container.lastElementChild.querySelector('h3').innerText = data.saves['100' + i].nome
+            }
+        }else{
+            console.log(numerosalvataggi)
+            document.getElementById('DivNuovaPartita').querySelector('h4').innerText = 'Dati Non Trovati';
         }
     viewchange(2,false);
 }
@@ -137,9 +144,7 @@ window.RegistroVerificato = async function (nome,password,confermapassworld){
             password: password.value
         },
         saves: {
-            
-            inventario: "",
-            scena: "",
+            mondi: 0,
         }
     };
     await addElementToNode(`utenti/${nome.value}`,utenteogggeto);
@@ -155,7 +160,7 @@ window.Login = async function () {
     const scheda = document.getElementsByClassName('schedaLoaded')[0];
     const nome = scheda.querySelector('.nome');
     const password =  scheda.querySelector('.password');
-    arrayDiFunzioni[(await getDataForNodeByLogin('utenti',nome.value,password.value))](nome,password,0);
+    await arrayDiFunzioni[(await getDataForNodeByLogin('utenti',nome.value,password.value))](nome,password,0);
     loadbar.classList.remove('atload');
 }
 
@@ -166,7 +171,7 @@ window.Register = async function () {
     const nome = scheda.querySelector('.nome');
     const password =  scheda.querySelector('.password');
     const confermapassworld = scheda.querySelector('.conferma')
-    arrayDiFunzioni[(await getDataForNodeByRegister('utenti',nome.value))](nome,password,confermapassworld);
+    await arrayDiFunzioni[(await getDataForNodeByRegister('utenti',nome.value))](nome,password,confermapassworld);
     loadbar.classList.remove('atload');
 }
 

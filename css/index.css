@@ -22,7 +22,17 @@ h2{
 }
 
 h3{
+    overflow: hidden;
     color: white;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+h4{
+    overflow: hidden;
+    color: white;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 b{
@@ -128,7 +138,7 @@ article{
 
 .scheda{
     height: 100%;
-    width: 50%;
+    width: 70%;
     padding: 5%;
     display: none;
     transition: all 0.8s ease-in-out;
