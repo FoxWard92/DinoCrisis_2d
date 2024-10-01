@@ -22,11 +22,12 @@ h2{
 }
 
 h3{
+    font-size: small;
+    width: 50%;
     overflow: hidden;
     color: white;
     white-space: nowrap;
     text-overflow: ellipsis;
-    padding: 5%;
 }
 
 h4{
@@ -51,11 +52,11 @@ input{
 button{
     width: 40%;
     color: white;
-    border-color: gray;
     background-color: unset;
     overflow: hidden;
     white-space: nowrap;
     text-overflow:ellipsis;
+    border-radius: 2px;
 }
 
 button:hover{
@@ -149,6 +150,8 @@ article{
     display: flex;
 }
 
+
+
 #loadbar{
     height: 70%;
     width: 70%;
@@ -179,7 +182,7 @@ article{
     justify-content: space-around;
     align-items: center;
     border-radius: 1vw;
-    background: linear-gradient(-90deg,transparent  0% ,rgb(44, 0, 0) 70%);
+    background: linear-gradient(90deg,transparent  0% ,rgb(44, 0, 0) 70%);
 }
 
 #saves>div>div{
@@ -190,6 +193,11 @@ article{
 #saves>div>div>button{
     height: 40%;
     width: 100%;
+}
+
+#CreaPartita{
+    height: 80%;
+    width: 30%;
 }
 
 @font-face {

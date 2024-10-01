@@ -149,8 +149,8 @@ window.RegistroVerificato = async function (nome,password,confermapassworld){
             mondi: 0,
         }
     };
-    await addElementToNode(`utenti/${nome.value}`,utenteogggeto);
     viewchange(0,false,false);
+    await addElementToNode(`utenti/${nome.value}`,utenteogggeto);
     await new Promise(resolve => setTimeout(resolve, 1000));
     return 2
 }
