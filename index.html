@@ -9,47 +9,47 @@
     <title>Document</title>
 </head>
 <body>
-    <section>
+    <section class="space-row">
         <article>
-            <div class="contenitore-generale">
+            <div class="contenitore-generale space-coloum">
                 
-                <div class="contenitore-titolo">
+                <div class="contenitore-titolo space-row">
                     <h1>D<b>i</b>no <b>c</b>ri<b>s</b>is 2D</h1>
                 </div>
-                <div class="contenitore-scheda">
-                    <div class="scheda schedaLoaded" id="Accedi">
+                <div class="contenitore-scheda space-row">
+                    <div class="scheda schedaLoaded space-coloum" id="Accedi">
                         <input type="text" class="nome" placeholder="Nome">
                         <input type="password" class="password" name="" placeholder="Password">
                         <div class="contenitore-bottoni">
-                            <button id="send" onclick="utenti(1)">Gioca</button>
-                            <button id="changepage" onclick="viewchange(1)">Registrati -></button>
+                            <button class="send" onclick="Login(1)">Gioca</button>
+                            <button class="changepage" onclick="viewchange(1,true)">Registrati -></button>
                         </div>
                     </div>
-                    <div class="scheda" id="Registrati">
+                    <div class="scheda space-coloum" id="Registrati">
                         <input type="text" class="nome" placeholder="Nome">
                         <input type="password" class="password" name="" placeholder="Password">
                         <input type="password" class="conferma" name="" placeholder="Conferma password">
                         <div class="contenitore-bottoni">
-                            <button id="send" onclick="utenti(0)">Registrati</button>
-                            <button id="changepage" onclick="viewchange(0)"><- Accedi</button>
+                            <button class="send" onclick="Register()">Registrati</button>
+                            <button class="changepage" onclick="viewchange(0,false)"><- Accedi</button>
                         </div>
                     </div>
-                    <div class="scheda" id="Salvataggi">
+                    <div class="scheda space-coloum" id="Salvataggi">
                         <h2>Salvataggi</h2>
                         <div id="saves">
 
                         </div>
                         <div class="contenitore-bottoni">
                             
-                            <button id="send" onclick="utenti(1)">Nuova Parita</button>
-                            <button id="changepage" onclick="viewchange(3)">Impostazioni -></button>
+                            <button class="send" onclick="utenti(1)">Nuova Parita</button>
+                            <button class="changepage" onclick="viewchange(3,true)">Impostazioni -></button>
                         </div>
                     </div>
-                    <div class="scheda" id="Impostazioni">
+                    <div class="scheda space-coloum" id="Impostazioni">
                         <h2>Impostazioni</h2>
                         <div class="contenitore-bottoni">
-                            <button id="send" onclick="utenti(1)">Salva</button>
-                            <button id="changepage" onclick="viewchange(2)"><- Salvataggi</button>
+                            <button class="send" onclick="utenti(1)">Salva</button>
+                            <button class="changepage" onclick="viewchange(2,false)"><- Salvataggi</button>
                         </div>
                     </div>
                     <div id="loadbar"></div>

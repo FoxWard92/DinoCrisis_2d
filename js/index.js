@@ -22,33 +22,36 @@ const firebaseConfig = {
 
   let isRunningAnimation = false;
 
-window.viewchange = async function(n){
-    const audio = document.querySelector('audio');
-    audio.play()
-    let statoslides = n%2;
+  let statoslidespreviwew = false;
+
+window.viewchange = async function(numero,statoslides){
     if(isRunningAnimation) return 0;
         const elemento1 = document.getElementsByClassName('contenitore-scheda');
         const schede = document.getElementsByClassName('scheda');
         const loadbar = document.getElementById('loadbar');
         for( let i = 0; i < schede.length;i++){
-           if(i == n){
-             setTimeout(function() {
-                schede[i].style.display = 'flex';
-            },800);
-            schede[i].style.transform = `translateX(${(110)*statoslides}%)`
+           if(i == numero){
+            console.log(`translateX(${(110)*statoslides}%)`)
+                schede[i].style.transform = `translateX(${(110)*statoslides}%)`
+                setTimeout(function() {
+                   schede[i].classList.add('schedaLoaded');
+                },800);
         }else{
             schede[i].style.transform = `translateX(${(110)*statoslides}%)`
             setTimeout(function(){
-                schede[i].style.display = 'none';
-            },800)
+                schede[i].classList.remove('schedaLoaded');
+            },800);
         }
     }
     loadbar.style.left = `${(statoslides*-50)}%`;
-    changelineareg(elemento1[0],(statoslides ? 125:225),(statoslides ? 225:125));
+    if(statoslides != statoslidespreviwew){
+        statoslidespreviwew = statoslides;
+        ChangeLinearGradient(elemento1[0],(statoslides ? 125:225),(statoslides ? 225:125));
+    }
     return 1
 }
 
-window.changelineareg = async function(background,degstart,degend){
+window.ChangeLinearGradient = function(background,degstart,degend){
     isRunningAnimation = true;
     let degdiff = degstart - degend;
     const step = Math.abs(degdiff);
@@ -65,90 +68,138 @@ window.changelineareg = async function(background,degstart,degend){
     }
 }
 
-window.addDivSaves = function(container){
-    const newDiv = document.createElement('div');
-    newDiv.appendChild(document.createElement('h3'));
-    newDiv.appendChild(document.createElement('div'));
-    newDiv.querySelector('div').appendChild(document.createElement('button'));
-    newDiv.querySelector('div').appendChild(document.createElement('button'));
-    container.appendChild(newDiv); 
+window.addSavesSlot = function(container){
+    const newSlot = document.createElement('div');
+    newSlot.appendChild(document.createElement('h3'));
+    newSlot.appendChild(document.createElement('div'));
+    const newSlotButton = newSlot.querySelector('div');
+    newSlotButton.classList.add('space-coloum');
+    
+    for(var buttons = 0; buttons < 2;i++){
+        newSlotButton.appendChild(document.createElement('button'));
+        newSlotButton.lastElementChild.querySelector('button').classList.add(buttons ? 'cancella-mondo':'carica-mondo');
+    }
+    
+    container.appendChild(newSlot); 
 }
 
+window.WrongNome = function (nome,password,confermapassworld){
+    
+    nome.classList.remove('wrong');
 
-window.utenti = async function(types){
-    let schedeConDisplayFlex = Array.from(document.querySelectorAll('.scheda'))
-    .filter(scheda => getComputedStyle(scheda).display === 'flex');
+    setTimeout(function(){
+        nome.classList.add('wrong');
+    },100);
 
-    const utente = schedeConDisplayFlex[0].querySelector('.nome');
-    const password = schedeConDisplayFlex[0].querySelector('.password');
-    const confermapassworld =  schedeConDisplayFlex[0].querySelector('.conferma');
+}
 
-    const loadbar = document.getElementById('loadbar');
+window.WrongPassword = function (nome,password,confermapassworld){
+    
     password.classList.remove('wrong');
-    utente.classList.remove('wrong');
-    loadbar.classList.add('atload');
-    let percorso = 'utenti';
-    if(types){
-       if(utente.value != '' && (await getDataForNode(percorso,utente.value)) == 1){
-        const data = JSON.parse(localStorage.getItem(utente.value));
-        if(data.dati.password == password.value){
-            localStorage.setItem('utente',utente.value);
-            const container = document.getElementById('saves');
-            for(var i = 0; i < Object.keys(data.saves).length;i++){
-                addDivSaves(container);
-                container.lastElementChild.querySelector('h3').innerText = data.saves['100' + i].nome
-            }
 
-            viewchange(2)
-        }else{
-            password.classList.add('wrong');
-        }    
-       }else{
-        utente.classList.add('wrong');
-       }
-    }else{
+    setTimeout(function(){
+        password.classList.add('wrong');
+    },100);
 
-        confermapassworld.classList.remove('wrong');
-        
-        if((await getDataForNode(percorso,utente.value)) == null){
-            if((password.value != '')){
-                if(password.value == confermapassworld.value){
-                    const utenteogggeto = {
-                        dati: {
-                            password: password.value
-                        },
-                        saves: {
-                            
-                            inventario: "",
-                            scena: "",
-                        }
-                };
-                await addElementToNode(`utenti/${utente.value}`,utenteogggeto);
-                viewchange(0);
-                }else{
-                    confermapassworld.classList.add('wrong');
-                }
-            }else{
-                password.classList.add('wrong');
-            }
-        }else{
-            utente.classList.add('wrong');
+}
+
+window.WrongPasswordConferma = function (nome,password,confermapassworld){
+    
+    confermapassworld.classList.remove('wrong');
+
+    setTimeout(function(){
+        confermapassworld.classList.add('wrong');
+    },100);
+
+}
+
+window.AccesoVerificato = function (nome,password,confermapassworld){
+    const container = document.getElementById('saves');
+        const data = JSON.parse(localStorage.getItem(nome.value));
+        localStorage.setItem('utente',nome.value);
+        for(var i = 0; i < Object.keys(data.saves).length;i++){
+            addSavesSlot(container);
+            container.lastElementChild.querySelector('h3').innerText = data.saves['100' + i].nome
         }
+    viewchange(2,false);
+}
+
+window.RegistroVerificato = async function (nome,password,confermapassworld){
+    if(password.value == ''){
+        arrayDiFunzioni[1](nome,password,confermapassworld);
+        return 0
+    }else if(password.value != confermapassworld.value){
+        arrayDiFunzioni[3](nome,password,confermapassworld);
+        return 1
     }
+    const utenteogggeto = {
+        dati: {
+            password: password.value
+        },
+        saves: {
+            
+            inventario: "",
+            scena: "",
+        }
+    };
+    await addElementToNode(`utenti/${nome.value}`,utenteogggeto);
+    viewchange(0,false);
+    return 2
+}
+
+let arrayDiFunzioni = [WrongNome, WrongPassword, AccesoVerificato,WrongPasswordConferma,RegistroVerificato];
+
+window.Login = async function () {
+    const loadbar = document.getElementById('loadbar');
+    loadbar.classList.add('atload');
+    const scheda = document.getElementsByClassName('schedaLoaded')[0];
+    const nome = scheda.querySelector('.nome');
+    const password =  scheda.querySelector('.password');
+    arrayDiFunzioni[(await getDataForNodeByLogin('utenti',nome.value,password.value))](nome,password,0);
     loadbar.classList.remove('atload');
 }
 
-window.getDataForNode = async function (noneIdpadre,nodeId) {
-    const dbRef = ref(database, `${noneIdpadre}/${nodeId}`);
+window.Register = async function () {
+    const loadbar = document.getElementById('loadbar');
+    loadbar.classList.add('atload');
+    const scheda = document.getElementsByClassName('schedaLoaded')[0];
+    const nome = scheda.querySelector('.nome');
+    const password =  scheda.querySelector('.password');
+    const confermapassworld = scheda.querySelector('.conferma')
+    arrayDiFunzioni[(await getDataForNodeByRegister('utenti',nome.value))](nome,password,confermapassworld);
+    loadbar.classList.remove('atload');
+}
+
+window.getDataForNodeByLogin = async function (NodeId,KeyId,ValueId) {
+    const dbRef = ref(database, `${NodeId}/${KeyId}`);
     try {
         const snapshot = await get(dbRef);
         if (snapshot.exists()) {
-            const data = snapshot.val();
-            localStorage.setItem(nodeId,JSON.stringify(data));
+            if(ValueId == snapshot.val().dati.password){
+                const data = snapshot.val();
+                localStorage.setItem(KeyId,JSON.stringify(data));
+                return 2
+            }
             return 1
         } else {
-            console.log(`No data found for node ${nodeId}`);
-            return null;
+            console.log(`No data found for node ${KeyId}`);
+            return 0;
+        }
+    } catch (error) {
+        console.error("Error getting data:", error);
+        return null
+    }
+};
+
+window.getDataForNodeByRegister = async function (NodeId,KeyId) {
+    const dbRef = ref(database, `${NodeId}/${KeyId}`);
+    try {
+        const snapshot = await get(dbRef);
+        if (snapshot.exists()) {
+            return 0
+        } else {
+            console.log(`No data found for node ${KeyId}`);
+            return 4;
         }
     } catch (error) {
         console.error("Error getting data:", error);
@@ -157,11 +208,9 @@ window.getDataForNode = async function (noneIdpadre,nodeId) {
 };
 
 window.addElementToNode = async function (nodeId, elementData) {
-    const dbRef = ref(database, `/${nodeId}`); // Riferimento alla sotto-cartella con nome dell'utente
-
+    const dbRef = ref(database, `/${nodeId}`);
     try {
-        // Usa set() per sovrascrivere o creare dati in una chiave specifica
-        await set(dbRef, elementData); // Imposta i dati dell'elemento senza generare una nuova chiave
+        await set(dbRef, elementData);
     } catch (error) {
         console.error("Errore durante l'aggiunta dell'elemento:", error);
     }
