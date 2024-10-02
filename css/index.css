@@ -194,11 +194,6 @@ article{
     width: 100%;
 }
 
-#CreaPartita{
-    height: 80%;
-    width: 30%;
-}
-
 @font-face {
     font-family: 'BAD_GRUNGE';
     src: url(../font/BAD_GRUNGE.ttf);

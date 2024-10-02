@@ -28,10 +28,18 @@ const firebaseConfig = {
 
   let statoslidespreviwew = false;
 
+window.onload = async function(){
+    if(localStorage.getItem('utente') != null){
+       await viewchange(2,false,true); 
+    }else{
+        await viewchange(0,false,true); 
+    }
+    loadbar.classList.remove('atload');
+}
+
 window.viewchange = async function(numero,statoslides,forzastato){
     if(isRunningAnimation && forzastato) return 0;
         const elemento1 = document.getElementsByClassName('contenitore-scheda');
-        const loadbar = document.getElementById('loadbar');
         for( let i = 0; i < schede.length;i++){
            if(i == numero){
                 schede[i].style.transform = `translateX(${(80)*statoslides}%)`
@@ -50,6 +58,7 @@ window.viewchange = async function(numero,statoslides,forzastato){
         statoslidespreviwew = statoslides;
         ChangeLinearGradient(elemento1[0],(statoslides ? 125:225),(statoslides ? 225:125));
     }
+    await new Promise(resolve => setTimeout(resolve, 1000));
     return 1
 }
 
@@ -121,14 +130,13 @@ window.AccesoVerificato = async function (nome,password,confermapassworld){
         localStorage.setItem('utente',nome.value);
         const numerosalvataggi = data.saves.mondi;
         if(numerosalvataggi){
+            container.querySelector('h3').style.display = 'none'
             for(var i = 0; i < numerosalvataggi;i++){
                 addSavesSlot(container);
                 container.lastElementChild.querySelector('h3').innerText = data.saves['100' + i].nome
             }
-        }else{
-            document.getElementById('DivNuovaPartita').querySelector('h3').innerText = 'Dati Non Trovati';
         }
-    viewchange(2,false,false);
+    await viewchange(2,false,false);
     await new Promise(resolve => setTimeout(resolve, 1000));
     return 1
 }
@@ -149,7 +157,7 @@ window.RegistroVerificato = async function (nome,password,confermapassworld){
             mondi: 0,
         }
     };
-    viewchange(0,false,false);
+    await viewchange(0,false,false);
     await addElementToNode(`utenti/${nome.value}`,utenteogggeto);
     await new Promise(resolve => setTimeout(resolve, 1000));
     return 2
