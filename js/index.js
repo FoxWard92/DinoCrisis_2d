@@ -113,35 +113,26 @@ window.addSavesSlot = function(container){
     container.appendChild(newSlot); 
 }
 
-window.WrongNome = async function (nome,password,confermapassworld){
-    
+window.WrongClassList = function(nome){
+    isRunningAnimation = true;
     nome.classList.add('wrong');
 
     setTimeout(function(){
         nome.classList.remove('wrong');
+        isRunningAnimation = false;
     },1000);
-    
-    await new Promise(resolve => setTimeout(resolve, 10000));
-    return 1
+}
+
+window.WrongNome = function (nome,password,confermapassworld){
+    if(!isRunningAnimation){WrongClassList(nome);}
 }
 
 window.WrongPassword = function (nome,password,confermapassworld){
-
-    password.classList.add('wrong');
-
-    setTimeout(function(){
-        password.classList.remove('wrong');
-    },1000);
-
+    if(!isRunningAnimation){WrongClassList(password);}
 }
 
 window.WrongPasswordConferma = function (nome,password,confermapassworld){
-
-    confermapassworld.classList.add('wrong');
-
-    setTimeout(function(){
-        confermapassworld.classList.remove('wrong');
-    },1000);
+    WrongClassList(confermapassworld);
 
 }
 
@@ -207,7 +198,9 @@ window.NewGame = async function(){
     if(salvataggi){
         for(let i = 0; i < salvataggi;i++){
             if(data.saves['100'+ i].nome == nome.value){
-                await WrongNome(nome,0,0);
+                if(!isRunningAnimation){
+                    WrongNome(nome,0,0);
+                }
                 return 0
             }
         }
