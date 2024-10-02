@@ -26,7 +26,9 @@ const firebaseConfig = {
 
   let ScenaDefaultGame = {};
 
-  let isRunningAnimation = false;
+  let isRunninglinearAnimation = false;
+
+  let isRunnigWrongAnimation = false;
 
   let statoslidespreviwew = false;
   
@@ -43,7 +45,7 @@ window.onload = async function(){
 }
 
 window.viewchange = async function(numero,statoslides,forzastato){
-    if(isRunningAnimation && forzastato) return 0;
+    if(isRunninglinearAnimation && forzastato) return 0;
         const elemento1 = document.getElementsByClassName('contenitore-scheda');
         for( let i = 0; i < schede.length;i++){
            if(i == numero){
@@ -68,7 +70,7 @@ window.viewchange = async function(numero,statoslides,forzastato){
 }
 
 window.ChangeLinearGradient = function(background,degstart,degend){
-    isRunningAnimation = true;
+    isRunninglinearAnimation = true;
     let degdiff = degstart - degend;
     const step = Math.abs(degdiff);
     const angle = degdiff < 0 ? 1:-1;
@@ -77,7 +79,7 @@ window.ChangeLinearGradient = function(background,degstart,degend){
             background.style.background = `linear-gradient(${degstart+(i*angle)}deg,transparent  0% ,rgb(20,20,20) 70%)`;
             if(i === step){
                 setTimeout(function() {
-                    isRunningAnimation = false;
+                    isRunninglinearAnimation = false;
                 }, 100);
             }
         }, i * 5);
@@ -113,26 +115,27 @@ window.addSavesSlot = function(container){
     container.appendChild(newSlot); 
 }
 
-window.WrongClassList = function(nome){
-    isRunningAnimation = true;
-    nome.classList.add('wrong');
+window.WrongClassList = function(wrong){
+    isRunnigWrongAnimation = true;
+    wrong.classList.add('wrong');
 
     setTimeout(function(){
-        nome.classList.remove('wrong');
-        isRunningAnimation = false;
+        wrong.classList.remove('wrong');
+        isRunnigWrongAnimation = false;
     },1000);
 }
 
 window.WrongNome = function (nome,password,confermapassworld){
-    if(!isRunningAnimation){WrongClassList(nome);}
+    console.log(isRunnigWrongAnimation)
+    if(!isRunnigWrongAnimation){WrongClassList(nome);}
 }
 
 window.WrongPassword = function (nome,password,confermapassworld){
-    if(!isRunningAnimation){WrongClassList(password);}
+    if(!isRunnigWrongAnimation){WrongClassList(password);}
 }
 
 window.WrongPasswordConferma = function (nome,password,confermapassworld){
-    WrongClassList(confermapassworld);
+    if(!isRunnigWrongAnimation){WrongClassList(confermapassworld);}
 
 }
 
@@ -167,25 +170,25 @@ window.RegistroVerificato = async function (nome,password,confermapassworld){
 let arrayDiFunzioni = [WrongNome, WrongPassword, AccesoVerificato,WrongPasswordConferma,RegistroVerificato];
 
 window.Login = async function () {
-    isRunningAnimation = true;
+    isRunninglinearAnimation = true;
     loadbar.classList.add('atload');
     const schedaload = document.getElementsByClassName('schedaLoaded')[0];
     const nome = schedaload.querySelector('.nome');
     const password =  schedaload.querySelector('.password');
     await arrayDiFunzioni[(await getDataForNodeByLogin(`utenti/${nome.value}`,password.value))](nome,password,0);
-    isRunningAnimation = false;
+    isRunninglinearAnimation = false;
     loadbar.classList.remove('atload');
 }
 
 window.Register = async function () {
-    isRunningAnimation = true;
+    isRunninglinearAnimation = true;
     loadbar.classList.add('atload');
     const schedaload = document.getElementsByClassName('schedaLoaded')[0];
     const nome = schedaload.querySelector('.nome');
     const password =  schedaload.querySelector('.password');
     const confermapassworld = schedaload.querySelector('.conferma')
     await arrayDiFunzioni[(await getDataForNodeByRegister(`utenti/${nome.value}`))](nome,password,confermapassworld);
-    isRunningAnimation = false;
+    isRunninglinearAnimation = false;
     loadbar.classList.remove('atload');
 }
 
@@ -198,9 +201,7 @@ window.NewGame = async function(){
     if(salvataggi){
         for(let i = 0; i < salvataggi;i++){
             if(data.saves['100'+ i].nome == nome.value){
-                if(!isRunningAnimation){
                     WrongNome(nome,0,0);
-                }
                 return 0
             }
         }
