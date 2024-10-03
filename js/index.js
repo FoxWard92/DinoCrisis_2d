@@ -85,10 +85,15 @@ window.ReloadSalvataggi = async function(){
         const numerosalvataggi = Object.keys(data.saves).length;
         
             const container = document.getElementById('saves');
-            container.querySelector('h3').style.display = 'none'
+            console.log(container)
+            if(numerosalvataggi > 0){container.querySelector('h3').style.display = 'none'}
+            for (var i = container.childElementCount - 1; i > 0; i--) {
+                container.lastElementChild.remove();
+            }
             for(var i = 0; i < numerosalvataggi;i++){
                 addSavesSlot(container);
                 container.lastElementChild.querySelector('h3').innerText = data.saves['100' + i].nome
+                container .lastElementChild.querySelector('button').setAttribute('onclick',`delgame(${i})`);
             }
         
     return 1
@@ -99,14 +104,8 @@ window.addSavesSlot = function(container){
     newSlot.appendChild(document.createElement('h3'));
     newSlot.appendChild(document.createElement('div'));
     const newSlotButton = newSlot.querySelector('div');
-    newSlotButton.classList.add('space-coloum');
-    
-    for(var buttons = 0; buttons < 2;buttons++){
-        newSlotButton.appendChild(document.createElement('button'));
-        newSlotButton.lastElementChild.classList.add(buttons ? 'cancella-mondo':'carica-mondo');
-        newSlotButton.lastElementChild.appendChild(document.createElement('div'));
-        newSlotButton.lastElementChild.appendChild(document.createElement('div'));
-    }
+    newSlotButton.classList.add('content-gioca');
+    newSlotButton.appendChild(document.createElement('button'));
     
     container.appendChild(newSlot); 
 }
@@ -122,7 +121,6 @@ window.WrongClassList = function(wrong){
 }
 
 window.WrongNome = function (nome,password,confermapassworld){
-    console.log(isRunnigWrongAnimation)
     if(!isRunnigWrongAnimation){WrongClassList(nome);}
 }
 
@@ -192,9 +190,10 @@ window.NewGame = async function(){
     
     loadbar.classList.add('atload');
     const nome = document.getElementById('NomePartitaNuova');
+    if(nome.value === ''){WrongNome(nome,0,0);loadbar.classList.remove('atload'); return 0}
     const data = JSON.parse(localStorage.getItem('utente'));
     const salvataggi = Object.keys(data.saves).length;
-    if(nome.value === ''){WrongNome(nome,0,0); return 0}
+    const difficolta =  document.querySelector('input[name="difficoltà"]:checked');
     if(salvataggi){
         for(let i = 0; i < salvataggi;i++){
             if(data.saves['100'+ i].nome == nome.value){
@@ -213,16 +212,41 @@ window.NewGame = async function(){
     if (!data.saves[idmondo]) {
         data.saves[idmondo] = {};
     }
-
+    
+    data.saves[idmondo].difficolta = difficolta.value;
     data.saves[idmondo].nome = nome.value;
     data.saves[idmondo].scene = await getDataForNode('gamedata/scene');
     data.saves[idmondo].inventario = await getDataForNode('gamedata/inventario');
     await addElementToNode(`utenti/${data.dati.nome}/saves`,data.saves);
     await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
+    await ReloadSalvataggi();
+    viewchange(2,false);
     loadbar.classList.remove('atload');
     
     return 1
 
+}
+
+window.RemoveGame = async function () {
+    loadbar.classList.add('atload');
+    const nome = document.getElementById('NomePartitaCancella');
+    const data = JSON.parse(localStorage.getItem('utente'));
+    const salvataggi = Object.keys(data.saves).length;
+    for(let i = 0; i < salvataggi;i++){
+        if(data.saves['100'+ i].nome == nome.value){
+            delete data.saves['100'+ i]
+            await addElementToNode(`utenti/${data.dati.nome}/saves`,data.saves);
+            await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
+            await ReloadSalvataggi();
+            viewchange(2,false);
+            loadbar.classList.remove('atload');
+            return 1
+        }
+    }
+
+    WrongNome(nome,0,0);
+    loadbar.classList.remove('atload');
+    return 0
 }
 
 window.getDataForNode = async function (NodeId) {

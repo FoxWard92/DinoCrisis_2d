@@ -9,29 +9,29 @@
     <title>Document</title>
 </head>
 <body>
-    <section class="space-row">
+    <section class="center-row">
         <article>
             <div class="contenitore-generale space-coloum">
                 
-                <div class="contenitore-titolo space-row">
+                <div class="contenitore-titolo center-row">
                     <h1>D<b>i</b>no <b>c</b>ri<b>s</b>is 2D</h1>
                 </div>
-                <div class="contenitore-scheda space-row">
+                <div class="contenitore-scheda center-row">
                     <div class="scheda space-coloum" id="Accedi">
-                        <input type="text" class="nome" placeholder="Nome">
-                        <input type="password" class="password" name="" placeholder="Password">
+                        <input type="text" class="nome input-log" placeholder="Nome">
+                        <input type="password" class="password input-log" name="" placeholder="Password">
                         <div class="contenitore-bottoni">
-                            <button class="send" onclick="Login(1)">Gioca</button>
-                            <button class="changepage" onclick="viewchange(1,true,true)">Registrati</button>
+                            <button class="button-send" onclick="Login(1)">Gioca</button>
+                            <button class="button-change" onclick="viewchange(1,true,true)">Registrati</button>
                         </div>
                     </div>
                     <div class="scheda space-coloum" id="Registrati">
-                        <input type="text" class="nome" placeholder="Nome">
-                        <input type="password" class="password" name="" placeholder="Password">
-                        <input type="password" class="conferma" name="" placeholder="Conferma password">
+                        <input type="text" class="nome input-log" placeholder="Nome">
+                        <input type="password" class="password input-log" name="" placeholder="Password">
+                        <input type="password" class="conferma input-log" name="" placeholder="Conferma password">
                         <div class="contenitore-bottoni">
-                            <button class="send" onclick="Register()">Registrati</button>
-                            <button class="changepage" onclick="viewchange(0,false,true)">Accedi</button>
+                            <button class="button-send" onclick="Register()">Registrati</button>
+                            <button class="button-change" onclick="viewchange(0,false,true)">Accedi</button>
                         </div>
                     </div>
                     <div class="scheda space-coloum" id="Salvataggi">
@@ -40,32 +40,39 @@
                             <h3>Nessun Salvatagio Trovato</h3>
                         </div>
                         <div class="contenitore-bottoni">
-                            <button class="send" onclick="viewchange(4,true,false)">Nuova Partita</button>
-                            <button class="changepage" onclick="viewchange(3,true,true)">Impostazioni</button>
+                            <button class="button-send" onclick="viewchange(4,true,false)">Nuova Partita</button>
+                            <button class="button-change" onclick="viewchange(3,true,true)">Impostazioni</button>
                         </div>
                     </div>
                     <div class="scheda space-coloum" id="Impostazioni">
                         <h2>Impostazioni</h2>
-                        <div class="table">
-                            <div><h4>Cambia Account : </h4></div>
-                            <button onclick="viewchange(0,false,false)">LogOut</button>
-                            <input type="text" id="NomePartitaCancella" placeholder="Nome Partita Da Eliminare">
-                            <button class="send" onclick="DelGame()">Cancella</button>
+                        <div class="cont-scheda">
+                            <div class="space-row minsize">
+                                <input type="text" id="NomePartitaCancella" class="input-set" placeholder="Nome Partita Da Eliminare">
+                                <button class="button-set" onclick="RemoveGame()">Cancella</button>
+                            </div>
                         </div>
                         <div class="contenitore-bottoni">
-                            <button class="send" onclick="utenti(1)">Salva</button>
-                            <button class="changepage" onclick="viewchange(2,false,true)">Salvataggi</button>
+                            <button class="button-send" onclick="viewchange(0,false,false)">LogOut</button>
+                            <button class="button-change" onclick="viewchange(2,false,true)">Salvataggi</button>
                         </div>
                     </div>
                     <div class="scheda space-coloum" id="NuovaPartita">
                         <h2>Crea Partita</h2>
-                        <div class="table">
-
-                            <input type="text" id="NomePartitaNuova" placeholder="Nome">
+                        <div class="cont-scheda">
+                            <div class="space-coloum fullsize">
+                                <input type="text" id="NomePartitaNuova" class="input-set" placeholder="Nome">
+                                <h4 class="subtitle">Selaziona Una Difficoltà : </h4>
+                                <div class="space-row fullsize">
+                                    <label for="livel1">Facile<input type="radio" id="livel1" name="difficoltà" value="1"></label>
+                                    <label for="livel2">Difficile<input type="radio" id="livel2" name="difficoltà" value="2"></label>
+                                    <label for="livel3">Estrema<input type="radio" id="livel3" name="difficoltà" value="3" checked></label>
+                                </div>
+                            </div>
                         </div>
                         <div class="contenitore-bottoni">
-                            <button class="send" onclick="NewGame()">Crea</button>
-                            <button class="changepage" onclick="viewchange(2,false,true)">Salvataggi</button>
+                            <button class="button-send" onclick="NewGame()">Crea</button>
+                            <button class="button-change" onclick="viewchange(2,false,true)">Salvataggi</button>
                         </div>
                     </div>
 
