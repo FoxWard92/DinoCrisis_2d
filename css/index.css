@@ -30,6 +30,7 @@ h3{
 }
 
 h4{
+    margin: 0%;
     overflow: hidden;
     color: white;
     white-space: nowrap;
@@ -167,10 +168,24 @@ article{
     height: 50%;
     width: 100%;
     display: grid;
-    grid-template-columns: 75% 20%;
-    grid-template-rows: repeat(5,15%);
-    row-gap: 5%;
-    column-gap: 5%;
+    grid-template-columns: 50% 40%;
+    grid-template-rows: repeat(3,25%);
+    row-gap: 10%;
+    column-gap: 10%;
+}
+
+.table>input{
+    height: 90%;
+}
+.table>button{
+    width: 100%;
+}
+.table>div{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #loadbar{

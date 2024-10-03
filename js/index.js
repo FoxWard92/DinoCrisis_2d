@@ -70,18 +70,12 @@ window.viewchange = async function(numero,statoslides,forzastato){
 }
 
 window.ChangeLinearGradient = function(background,degstart,degend){
-    isRunninglinearAnimation = true;
     let degdiff = degstart - degend;
     const step = Math.abs(degdiff);
     const angle = degdiff < 0 ? 1:-1;
     for(let i = 0; i <= step;i++){
         setTimeout(function() {
             background.style.background = `linear-gradient(${degstart+(i*angle)}deg,transparent  0% ,rgb(20,20,20) 70%)`;
-            if(i === step){
-                setTimeout(function() {
-                    isRunninglinearAnimation = false;
-                }, 100);
-            }
         }, i * 5);
     }
 }
