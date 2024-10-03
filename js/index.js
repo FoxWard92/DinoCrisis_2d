@@ -110,6 +110,8 @@ window.addSavesSlot = function(container){
     for(var buttons = 0; buttons < 2;buttons++){
         newSlotButton.appendChild(document.createElement('button'));
         newSlotButton.lastElementChild.classList.add(buttons ? 'cancella-mondo':'carica-mondo');
+        newSlotButton.lastElementChild.appendChild(document.createElement('div'));
+        newSlotButton.lastElementChild.appendChild(document.createElement('div'));
     }
     
     container.appendChild(newSlot); 
@@ -198,6 +200,7 @@ window.NewGame = async function(){
     const nome = document.getElementById('NomePartitaNuova');
     const data = JSON.parse(localStorage.getItem('utente'));
     const salvataggi = Object.keys(data.saves).length;
+    if(nome.value === ''){WrongNome(nome,0,0); return 0}
     if(salvataggi){
         for(let i = 0; i < salvataggi;i++){
             if(data.saves['100'+ i].nome == nome.value){

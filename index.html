@@ -39,23 +39,35 @@
                         <div id="saves">
                             <h3>Nessun Salvatagio Trovato</h3>
                         </div>
-                        <div id="addgamediv">
-                            <input type="text" id="NomePartitaNuova" placeholder="Nome Nuova Partita">
-                            <button id="BottoneNuovaPatita" onclick="NewGame()">+</button>
-                        </div>
                         <div class="contenitore-bottoni">
-                            <button class="send" onclick="">Bho</button>
+                            <button class="send" onclick="viewchange(4,true,false)">Nuova Partita</button>
                             <button class="changepage" onclick="viewchange(3,true,true)">Impostazioni</button>
                         </div>
                     </div>
                     <div class="scheda space-coloum" id="Impostazioni">
                         <h2>Impostazioni</h2>
-                        <button onclick="viewchange(0,false,false)">LogOut</button>
+                        <div class="table">
+                            <h3>Camib</h3>
+                            <button onclick="viewchange(0,false,false)">LogOut</button>
+                            <input type="text" id="NomePartitaCancella" placeholder="Nome Partita Da Eliminare">
+                            <button class="send" onclick="DelGame()">Cncella</button>
+                        </div>
                         <div class="contenitore-bottoni">
                             <button class="send" onclick="utenti(1)">Salva</button>
                             <button class="changepage" onclick="viewchange(2,false,true)">Salvataggi</button>
                         </div>
                     </div>
+                    <div class="scheda space-coloum" id="NuovaPartita">
+                        <h2>Crea Partita</h2>
+                        <div class="table">
+                            <input type="text" id="NomePartitaNuova" placeholder="Nome">
+                        </div>
+                        <div class="contenitore-bottoni">
+                            <button class="send" onclick="NewGame()">Crea</button>
+                            <button class="changepage" onclick="viewchange(2,false,true)">Salvataggi</button>
+                        </div>
+                    </div>
+
                     <div id="loadbar" class="atload"></div>
                 </div>
             </div>

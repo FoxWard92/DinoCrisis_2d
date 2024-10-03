@@ -22,11 +22,10 @@ h2{
 }
 
 h3{
-    font-size: small;
+    font-size: x-large;
     width: 50%;
     overflow: hidden;
     color: white;
-    white-space: nowrap;
     text-overflow: ellipsis;
 }
 
@@ -98,7 +97,7 @@ article{
 
 .contenitore-scheda{
     overflow: hidden;
-    height: 30%;
+    height: 40%;
     width: 80%;
     border-radius: 1vw;
     backdrop-filter: blur(0.2vw);
@@ -145,8 +144,33 @@ article{
     transition: all 0.8s ease-in-out;
 }
 
+.carica-mondo>div:nth-child(odd){
+    height: 30%;
+    width: 50%;
+    background-size: cover;
+    background-position: center;
+    background-image: url(../img/index/brand/cestino-coperchio.jpg);
+}
+.carica-mondo>div:nth-child(even){
+    height: 30%;
+    width: 50%;
+    background-size: cover;
+    background-position: center;
+    background-image: url(../img/index/brand/cestino-cesto.jpg);
+}
+
 .schedaLoaded{
     display: flex;
+}
+
+.table{
+    height: 50%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 75% 20%;
+    grid-template-rows: repeat(5,15%);
+    row-gap: 5%;
+    column-gap: 5%;
 }
 
 #loadbar{
@@ -165,21 +189,18 @@ article{
     height: 50%;
     width: 100%;
     overflow: scroll;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
 }
 
 #saves>div{
-    height: 50%;
+    height: 70%;
     width: 80%;
+    margin-left: 10%;
     margin-top: 10%;
     display: flex;
     justify-content: space-around;
     align-items: center;
     border-radius: 1vw;
-    background: linear-gradient(90deg,transparent  0% ,rgb(44, 0, 0) 70%);
+    background: linear-gradient(-45deg,transparent  0% ,rgb(44, 0, 0) 70%);
 }
 
 #saves>div>div{
