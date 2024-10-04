@@ -82,19 +82,22 @@ window.ChangeLinearGradient = function(background,degstart,degend){
 
 window.ReloadSalvataggi = async function(){
         const data = JSON.parse(localStorage.getItem('utente'));
-        const numerosalvataggi = Object.keys(data.saves).length;
+        if(data.saves){
+            const numerosalvataggi = Object.keys(data.saves).length;
         
             const container = document.getElementById('saves');
-            console.log(container)
+            
             if(numerosalvataggi > 0){container.querySelector('h3').style.display = 'none'}
             for (var i = container.childElementCount - 1; i > 0; i--) {
                 container.lastElementChild.remove();
             }
             for(var i = 0; i < numerosalvataggi;i++){
                 addSavesSlot(container);
-                container.lastElementChild.querySelector('h3').innerText = data.saves['100' + i].nome
-                container .lastElementChild.querySelector('button').setAttribute('onclick',`delgame(${i})`);
-            }
+                let idmondo = '100' + i;
+                container.lastElementChild.querySelector('h3').innerText = data.saves[idmondo].nome
+                container .lastElementChild.querySelector('button').setAttribute('onclick',`LoadGame(${idmondo})`);
+            } 
+        }
         
     return 1
 }
@@ -191,31 +194,33 @@ window.NewGame = async function(){
     loadbar.classList.add('atload');
     const nome = document.getElementById('NomePartitaNuova');
     if(nome.value === ''){WrongNome(nome,0,0);loadbar.classList.remove('atload'); return 0}
-    const data = JSON.parse(localStorage.getItem('utente'));
-    const salvataggi = Object.keys(data.saves).length;
     const difficolta =  document.querySelector('input[name="difficoltà"]:checked');
-    if(salvataggi){
+    const data = JSON.parse(localStorage.getItem('utente'));
+    let salvataggi = 0;
+    if(data.saves){
+        salvataggi = Object.keys(data.saves).length;
         for(let i = 0; i < salvataggi;i++){
             if(data.saves['100'+ i].nome == nome.value){
                     WrongNome(nome,0,0);
                 return 0
             }
         }
-    }
-
-    const idmondo = '100' + salvataggi;
-    
-    if (!data.saves) {
+    }else{
         data.saves = {};
     }
 
-    if (!data.saves[idmondo]) {
-        data.saves[idmondo] = {};
-    }
+    const idmondo = '100' + salvataggi;
+
+    data.saves[idmondo] = {};
+    data.saves[idmondo].scene = {};
     
     data.saves[idmondo].difficolta = difficolta.value;
     data.saves[idmondo].nome = nome.value;
-    data.saves[idmondo].scene = await getDataForNode('gamedata/scene');
+    const gamedata = (await getDataForNode('gamedata/scene'));
+    for (let key in gamedata) {
+        const { npcs, oggetti } = gamedata[key];
+        data.saves[idmondo].scene[key] = { npcs, oggetti };
+    }
     data.saves[idmondo].inventario = await getDataForNode('gamedata/inventario');
     await addElementToNode(`utenti/${data.dati.nome}/saves`,data.saves);
     await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
@@ -247,6 +252,11 @@ window.RemoveGame = async function () {
     WrongNome(nome,0,0);
     loadbar.classList.remove('atload');
     return 0
+}
+
+window.LoadGame = async function (idmondo) {
+    
+    
 }
 
 window.getDataForNode = async function (NodeId) {
