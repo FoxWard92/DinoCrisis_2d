@@ -268,44 +268,32 @@ window.LoadGame = async function (idmondo) {
             s: 0
         }
     }
-    function aggiornaOggettiNpcs(dataObj, gamedataObj) {
-        const oggettiAggiornati = { ...dataObj }; 
     
-        // Aggiungi gli oggetti di gamedata che non sono presenti in dataObj
+    function aggiornaOggettiNpcs(dataObj, gamedataObj) {
+        const oggettiAggiornati = {};
+
         for (let key in gamedataObj) {
-            if (!(key in dataObj)) {
-                oggettiAggiornati[key] = gamedataObj[key];
+            if (dataObj[key]) {
+                oggettiAggiornati[key] = dataObj[key];
             }
         }
-    
-        return oggettiAggiornati; // Restituisce l'oggetto aggiornato
-    }
-    
 
-    function aggiornaChiavi(sceneData, sceneGamedata) {
-        // Se la chiave di gamedata è presente e non è vuota, aggiorna gli oggetti
-        if (sceneGamedata) {
-            return aggiornaOggettiNpcs(sceneData, sceneGamedata);
-        }
-        // Ritorna la chiave di scena se è presente, altrimenti un oggetto vuoto
-        return sceneData || {};
+        return oggettiAggiornati; 
     }
-    
+
     for (let scenaKey in gamedata) {
-        const scenaGamedata = gamedata[scenaKey]; // Ottieni i dati della scena da gamedata
-        const scenaData = data.scene[scenaKey] || {}; // Ottieni i dati della scena da data o un oggetto vuoto
-    
-        // Inizializza la scena locale con le porte
+        const scenaGamedata = gamedata[scenaKey];
+        const scenaData = data.scene[scenaKey] || {}; 
+
         localdata.scene[scenaKey] = {
             centerdoor: scenaGamedata.centerdoor,
             leftdoor: scenaGamedata.leftdoor,
-            rightdoor: scenaGamedata.rightdoor
+            rightdoor: scenaGamedata.rightdoor,
+            oggetti: aggiornaOggettiNpcs(scenaData.oggetti, scenaGamedata.oggetti),
+            npcs: aggiornaOggettiNpcs(scenaData.npcs, scenaGamedata.npcs)
         };
-     
-        // Aggiorna oggetti e NPC nella scena locale
-        localdata.scene[scenaKey].oggetti = aggiornaChiavi(scenaData.oggetti, scenaGamedata.oggetti);
-        localdata.scene[scenaKey].npcs = aggiornaChiavi(scenaData.npcs, scenaGamedata.npcs);
     }
+    
     console.log(localdata);
     
 }
