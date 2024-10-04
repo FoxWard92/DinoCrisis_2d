@@ -239,7 +239,10 @@ window.RemoveGame = async function () {
     const salvataggi = Object.keys(data.saves).length;
     for(let i = 0; i < salvataggi;i++){
         if(data.saves['100'+ i].nome == nome.value){
-            delete data.saves['100'+ i]
+            for(let x = i;x < salvataggi-1;x++){
+                data.saves['100'+ x] = data.saves['100'+ (x+1)];
+            }
+            delete data.saves['100' + (salvataggi-1)];
             await addElementToNode(`utenti/${data.dati.nome}/saves`,data.saves);
             await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
             await ReloadSalvataggi();
@@ -255,7 +258,55 @@ window.RemoveGame = async function () {
 }
 
 window.LoadGame = async function (idmondo) {
+    const gamedata = (await getDataForNode('gamedata/scene'));
+    const data = (JSON.parse(localStorage.getItem('utente'))).saves[idmondo];
+    const localdata = {
+        difficolta : data.difficolta,
+        inventario : data.inventario,
+        nome : data.nome,
+        scene :{
+            s: 0
+        }
+    }
+    function aggiornaOggettiNpcs(dataObj, gamedataObj) {
+        const oggettiAggiornati = { ...dataObj }; 
     
+        // Aggiungi gli oggetti di gamedata che non sono presenti in dataObj
+        for (let key in gamedataObj) {
+            if (!(key in dataObj)) {
+                oggettiAggiornati[key] = gamedataObj[key];
+            }
+        }
+    
+        return oggettiAggiornati; // Restituisce l'oggetto aggiornato
+    }
+    
+
+    function aggiornaChiavi(sceneData, sceneGamedata) {
+        // Se la chiave di gamedata è presente e non è vuota, aggiorna gli oggetti
+        if (sceneGamedata) {
+            return aggiornaOggettiNpcs(sceneData, sceneGamedata);
+        }
+        // Ritorna la chiave di scena se è presente, altrimenti un oggetto vuoto
+        return sceneData || {};
+    }
+    
+    for (let scenaKey in gamedata) {
+        const scenaGamedata = gamedata[scenaKey]; // Ottieni i dati della scena da gamedata
+        const scenaData = data.scene[scenaKey] || {}; // Ottieni i dati della scena da data o un oggetto vuoto
+    
+        // Inizializza la scena locale con le porte
+        localdata.scene[scenaKey] = {
+            centerdoor: scenaGamedata.centerdoor,
+            leftdoor: scenaGamedata.leftdoor,
+            rightdoor: scenaGamedata.rightdoor
+        };
+     
+        // Aggiorna oggetti e NPC nella scena locale
+        localdata.scene[scenaKey].oggetti = aggiornaChiavi(scenaData.oggetti, scenaGamedata.oggetti);
+        localdata.scene[scenaKey].npcs = aggiornaChiavi(scenaData.npcs, scenaGamedata.npcs);
+    }
+    console.log(localdata);
     
 }
 
