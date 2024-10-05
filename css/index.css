@@ -10,10 +10,13 @@ audio{
 
 h1{
     font-size: 8vw;
-    color: rgb(17, 17, 17);
-    filter:blur(0.03vw);
-    text-transform: uppercase;
     font-family: 'BAD_GRUNGE';
+    text-transform: uppercase;
+    filter: blur(0.03vw);
+    background: linear-gradient(90deg, rgb(17, 17, 17) 10%, rgb(95, 0, 0) 40%,rgb(10, 10, 10) 50%,rgb(95,0,0) 80% ,rgb(17,17,17) 80%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 h2{
@@ -29,18 +32,8 @@ h3,h4,input,label,button{
     background-color: unset;
 }
 
-h3{
-    font-size: x-large;
-    width: 50%;
-    margin-left: 10%;
-}
-
 h4{
     margin: 0%;
-}
-
-b{
-    color: rgb(95, 0, 0);
 }
 
 input{
@@ -50,6 +43,10 @@ input{
 button{
     width: 40%;
     border-radius: 2px;
+}
+
+button:hover{
+    cursor: pointer;
 }
 
 button:hover{
@@ -235,40 +232,22 @@ article{
 }
 
 #saves>div{
-    overflow: hidden;
     height: 70%;
     width: 80%;
     margin-left: 10%;
     margin-top: 10%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     border-radius: 1vw;
-    background: linear-gradient(-45deg,rgb(44, 0, 0) 20%,transparent  30% ,rgb(44, 0, 0) 70%);
-}
-
-#saves>div:hover>div>button{
-    background-size: 70%;
-    background-position: 50% 45%;
-}
-
-#saves>div>div{
-    height: 100%;
-    width: 30%;
+    overflow: hidden;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
-
+    align-items: center;
+    background: linear-gradient(-45deg,transparent  30% ,rgb(44, 0, 0) 70%);
+    transition: transform 0.2s ease-in-out;
 }
 
-#saves>div>div>button{
-    transition: all 0.2s ease-in-out;
-    background-image: url(../img/index/brand/loadgame.jpg);
-    background-position: center;
-    background-size: 50%;
-    background-repeat: no-repeat;
-    height: 40%;
-    width: 80%;
+#saves>div:hover{
+    transform: scale(1.2);
 }
 
 #BottoneNuovaPatita{

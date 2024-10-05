@@ -105,11 +105,7 @@ window.ReloadSalvataggi = async function(){
 window.addSavesSlot = function(container){
     const newSlot = document.createElement('div');
     newSlot.appendChild(document.createElement('h3'));
-    newSlot.appendChild(document.createElement('div'));
-    const newSlotButton = newSlot.querySelector('div');
-    newSlotButton.classList.add('content-gioca');
-    newSlotButton.appendChild(document.createElement('button'));
-    
+    newSlot.appendChild(Object.assign(document.createElement('button'), { innerText: 'Gioca' }));
     container.appendChild(newSlot); 
 }
 
@@ -265,7 +261,6 @@ window.LoadGame = async function (idmondo) {
         inventario : data.inventario,
         nome : data.nome,
         scene :{
-            s: 0
         }
     }
     
