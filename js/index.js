@@ -254,6 +254,7 @@ window.RemoveGame = async function () {
 }
 
 window.LoadGame = async function (idmondo) {
+    loadbar.classList.add('atload');
     const gamedata = (await getDataForNode('gamedata/scene'));
     const data = (JSON.parse(localStorage.getItem('utente'))).saves[idmondo];
     const localdata = {
@@ -288,8 +289,10 @@ window.LoadGame = async function (idmondo) {
             npcs: aggiornaOggettiNpcs(scenaData.npcs, scenaGamedata.npcs)
         };
     }
-    
-    console.log(localdata);
+
+    localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
+    history.replaceState(null, '','html/game.html');
+    loadbar.classList.remove('atload');
     
 }
 
