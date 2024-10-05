@@ -1,0 +1,30 @@
+body{
+    margin: 0%;
+    height: 100vh;
+    background-image: url(../img/game/backgroud-body.jpg);
+    background-size: 10%;
+    display: flex;
+    justify-content: center;
+}
+
+section{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+header{
+    flex: 0.1;
+    background-color: white;
+}
+
+article{
+    flex: 0.80;
+    background-color: wheat;
+}
+
+footer{
+    flex: 0.1;
+    background-color: beige;
+}
