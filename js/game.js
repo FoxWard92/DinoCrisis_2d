@@ -50,10 +50,8 @@ window.loadscena = async function(scena){
         props[i].remove();
     }
 
-    document.getElementById('back-game').style.backgroundImage = `url(${localdata.texture.scene[scena]})`;
+    document.getElementById('back-game').style.backgroundImage = `url(../img/props/scene/${[scena]}.jpg)`;
     
-    const oggetti = Object.keys(localdata.scene[scena].oggetti)
-    const npcs = localdata.scene[scena].npcs
     
     const doors = ['leftdoor','centerdoor','rightdoor']
 
@@ -62,25 +60,13 @@ window.loadscena = async function(scena){
         while(door.firstChild){door.removeChild(door.firstChild)};
         const doorload = localdata.scene[scena][doors[chiave]];
         if(doorload.type){
-            door.appendChild(Object.assign(document.createElement('div'), { className: `door`,style : `background-image: url(${localdata.texture.doors[doorload.type]})`}));
+            door.appendChild(Object.assign(document.createElement('div'), { className: `door`,style : `background-image: url(../img/props/doors/${[doorload.type]}.jpg)`}));
             if(doorload.large){
-                door.appendChild(Object.assign(document.createElement('div'), { className: `door`,style : `background-image: url(${localdata.texture.doors[doorload.type]})`}));
+                door.appendChild(Object.assign(document.createElement('div'), { className: `door`,style : `background-image: url(../img/props/doors/${[doorload.type]}.jpg)`}));
                 door.style.background = `linear-gradient(90deg,transparent 0%,black 5% 95%,transparent 100%)`;
             }else{
                 door.style.background = `linear-gradient(90deg,transparent 0% 20%,black 30% 70%,transparent 80% 100%)`;
             }
-        }
-    }
-
-    for(const chiave in oggetti){
-        if(oggetti[chiave].islive){
-            Object.assign(document.createElement('div'), { className: `${chiave} props`,style : `background-image: url(${localdata.texture.oggetti[chiave]})`});
-        }
-    }
-
-    for(const chiave in npcs){
-        if(npcs[chiave].islive){
-            Object.assign(document.createElement('div'), { className: `${chiave} props`,style : `background-image: url(${localdata.texture.npcs[chiave].walk[0]})`});
         }
     }
 

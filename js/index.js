@@ -210,8 +210,8 @@ window.NewGame = async function(){
     data.saves[idmondo] = {};
     data.saves[idmondo].scene = {};
     
-    data.saves[idmondo].scena = 1; 
-    data.saves[idmondo].posplayer = {
+    data.saves[idmondo].startscena = 1; 
+    data.saves[idmondo].startposplayer = {
         posx : 0,
         posy : 0
     };
@@ -219,8 +219,8 @@ window.NewGame = async function(){
     data.saves[idmondo].nome = nome.value;
     const gamedata = (await getDataForNode('gamedata/scene'));
     for (let key in gamedata) {
-        const { npcs, oggetti } = gamedata[key];
-        data.saves[idmondo].scene[key] = { npcs, oggetti };
+        const { leggenda } = gamedata[key];
+        data.saves[idmondo].scene[key] = { leggenda };
     }
     data.saves[idmondo].inventario = await getDataForNode('gamedata/inventario');
     await addElementToNode(`utenti/${data.dati.nome}/saves`,data.saves);
@@ -263,11 +263,10 @@ window.LoadGame = async function (idmondo) {
     const gamedata = (await getDataForNode('gamedata/scene'));
     const data = (JSON.parse(localStorage.getItem('utente'))).saves[idmondo];
     const localdata = {
-        startscena: data.scena,
-        startposplayer: data.posplayer,
+        startscena: data.startscena,
+        startposplayer: data.startposplayer,
         difficolta : data.difficolta,
         inventario : data.inventario,
-        texture : (await getDataForNode('texture')),
         nome : data.nome,
         scene :{
         }
