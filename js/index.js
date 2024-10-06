@@ -292,8 +292,7 @@ window.LoadGame = async function (idmondo) {
             centerdoor: scenaGamedata.centerdoor,
             leftdoor: scenaGamedata.leftdoor,
             rightdoor: scenaGamedata.rightdoor,
-            oggetti: aggiornaOggettiNpcs(scenaData.oggetti, scenaGamedata.oggetti),
-            npcs: aggiornaOggettiNpcs(scenaData.npcs, scenaGamedata.npcs)
+            leggenda: aggiornaOggettiNpcs(scenaData.leggenda, scenaGamedata.leggenda),
         };
     }
     await localStorage.removeItem('loadgame');

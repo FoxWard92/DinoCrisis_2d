@@ -1,0 +1,28 @@
+.personaggio{
+    height: 20%;
+    width: 10%;
+    max-width: 150px;
+    max-height: 250px;
+    background-image: url(../img/game/backgroud-body.jpg);
+    position: absolute;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.props{
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+}
+
+.velociraptor{
+    height: 30%;
+    width: 20%;
+}
+
+.kitmedico{
+    height: 4%;
+    width: 5%;
+}

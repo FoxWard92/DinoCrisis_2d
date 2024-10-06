@@ -24,6 +24,9 @@ header,footer{
 
 article{
     flex: 0.80;
+    display: flex;
+    justify-content: space-around;
+    align-items: start;
     background-color: wheat;
 }
 
@@ -34,31 +37,12 @@ footer{
 #centerdoor,#leftdoor,#rightdoor{
     height: 25%;
     width: 20%;
-    max-height: 530px;
-    max-width: 400px;
     display: flex;
     justify-content: center;
     align-items: center;
-    top: 25%;
 }
 
-#centerdoor{
-    left: 40%;
-}
-
-#leftdoor{
-    left: 5%;
-}
-
-#rightdoor{
-    left: 75%;
-}
-
-.door{
+#centerdoor>div,#leftdoor>div,#rightdoor>div{
     height: 100%;
     width: 45%;
-}
-
-.pos-asolute{
-    position: absolute;
 }
