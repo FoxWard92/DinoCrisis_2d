@@ -210,6 +210,11 @@ window.NewGame = async function(){
     data.saves[idmondo] = {};
     data.saves[idmondo].scene = {};
     
+    data.saves[idmondo].scena = 1; 
+    data.saves[idmondo].posplayer = {
+        posx : 0,
+        posy : 0
+    };
     data.saves[idmondo].difficolta = difficolta.value;
     data.saves[idmondo].nome = nome.value;
     const gamedata = (await getDataForNode('gamedata/scene'));
@@ -258,8 +263,11 @@ window.LoadGame = async function (idmondo) {
     const gamedata = (await getDataForNode('gamedata/scene'));
     const data = (JSON.parse(localStorage.getItem('utente'))).saves[idmondo];
     const localdata = {
+        startscena: data.scena,
+        startposplayer: data.posplayer,
         difficolta : data.difficolta,
         inventario : data.inventario,
+        texture : (await getDataForNode('texture')),
         nome : data.nome,
         scene :{
         }
@@ -289,9 +297,10 @@ window.LoadGame = async function (idmondo) {
             npcs: aggiornaOggettiNpcs(scenaData.npcs, scenaGamedata.npcs)
         };
     }
-
-    localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
+    await localStorage.removeItem('loadgame');
+    await localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
     history.replaceState(null, '','html/game.html');
+    location.reload();
     loadbar.classList.remove('atload');
     
 }

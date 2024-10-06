@@ -20,6 +20,75 @@ const firebaseConfig = {
 
   const database = getDatabase(app);
 
+  let localdata = null;
+
+  let isChangeScena = false; 
+  
+window.onload = async function(){
+    
+    localdata = JSON.parse(localStorage.getItem('gamelocaldata'));
+    if(localdata != null){
+        console.log(localdata)
+        loadscena(localdata.startscena);
+        if(!localStorage.getItem('loadgame')){
+            loadscena(localdata.startscena);
+            localStorage.setItem('loadgame',true);
+            return 1
+        }
+        return 2
+    }
+
+    history.replaceState(null, '','../index.html');
+    location.reload()        
+    return 0;
+}
+
+window.loadscena = async function(scena){
+    isChangeScena = true;
+    const props = document.getElementsByClassName('props');
+    for(var i = props.length; i > 0 ;i--){
+        props[i].remove();
+    }
+
+    document.getElementById('back-game').style.backgroundImage = `url(${localdata.texture.scene[scena]})`;
+    
+    const oggetti = Object.keys(localdata.scene[scena].oggetti)
+    const npcs = localdata.scene[scena].npcs
+    
+    const doors = ['leftdoor','centerdoor','rightdoor']
+
+    for(const chiave in doors){
+        const door = document.getElementById(doors[chiave]);
+        while(door.firstChild){door.removeChild(door.firstChild)};
+        const doorload = localdata.scene[scena][doors[chiave]];
+        if(doorload.type){
+            door.appendChild(Object.assign(document.createElement('div'), { className: `door`,style : `background-image: url(${localdata.texture.doors[doorload.type]})`}));
+            if(doorload.large){
+                door.appendChild(Object.assign(document.createElement('div'), { className: `door`,style : `background-image: url(${localdata.texture.doors[doorload.type]})`}));
+                door.style.background = `linear-gradient(90deg,transparent 0%,black 5% 95%,transparent 100%)`;
+            }else{
+                door.style.background = `linear-gradient(90deg,transparent 0% 20%,black 30% 70%,transparent 80% 100%)`;
+            }
+        }
+    }
+
+    for(const chiave in oggetti){
+        if(oggetti[chiave].islive){
+            Object.assign(document.createElement('div'), { className: `${chiave} props`,style : `background-image: url(${localdata.texture.oggetti[chiave]})`});
+        }
+    }
+
+    for(const chiave in npcs){
+        if(npcs[chiave].islive){
+            Object.assign(document.createElement('div'), { className: `${chiave} props`,style : `background-image: url(${localdata.texture.npcs[chiave].walk[0]})`});
+        }
+    }
+
+    isChangeScena = false;
+}
+
+
+
 window.getDataForNode = async function (NodeId) {
     const dbRef = ref(database, `${NodeId}`);
     try {

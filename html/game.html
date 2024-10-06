@@ -5,16 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dino Crisis 2D</title>
     <link rel="stylesheet" href="../css/game.css" type="text/css">
+    <script type="module" src="../js/game.js" defer></script>
 </head>
 <body>
-    <section>
+    <section id="back-game">
         <header>
             <div>Notifiche</div>
             <div>Impostazioni</div>
         </header>
         <article>
-            <div id="Player"></div>
-                    
+            <div id="Player" class="pos-asolute"></div>
+            <div id="leftdoor" class="pos-asolute"></div>
+            <div id="rightdoor" class="pos-asolute"></div>
+            <div id="centerdoor" class="pos-asolute"></div>
         </article>
         <footer>
             <div>Dialogo</div>
