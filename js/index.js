@@ -212,8 +212,8 @@ window.NewGame = async function(){
     
     data.saves[idmondo].startscena = 1; 
     data.saves[idmondo].startposplayer = {
-        posx : 0,
-        posy : 0
+        posx : 50,
+        posy : 50
     };
     data.saves[idmondo].difficolta = difficolta.value;
     data.saves[idmondo].nome = nome.value;
@@ -307,6 +307,7 @@ window.LoadGame = async function (idmondo) {
 }
     await localStorage.removeItem('loadgame');
     await localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
+    await localStorage.setItem('idmondo',idmondo);
     history.replaceState(null, '','html/game.html');
     location.reload();
     loadbar.classList.remove('atload');

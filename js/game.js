@@ -24,9 +24,13 @@ const firebaseConfig = {
 
   let isChangeScena = false;
 
+  let isRunningWrongAnimation = false;
+
   let playercommand = ['w','s','a','d','e',' ','i','escape'];
 
   let memscena = 0;
+
+  const loadbar = document.getElementById('loadbar')
 
   const leggenda = document.getElementById('leggenda');
 
@@ -67,22 +71,42 @@ window.GetPorpsPos = function(element) {
 
 window.openMenu = function(type){
     const menu = document.getElementsByClassName('gamemenu');
-    Array.from(menu).forEach(menu => menu.style.display = 'none');
-    if(type != 'none'){
+    if(menu[type].style.display == 'none'  || menu[type].style.display ==  ''){
+        Array.from(menu).forEach(menu => menu.style.display = 'none');
         isChangeScena = true;
         menu[type].style.display = 'flex'
         return 1
     }
-
+    menu[type].style.display = 'none'
     isChangeScena = false;
 
     return 0
 }
 
-window.exitgame = function(){
-    localStorage.removeItem('localgame')
-    history.replaceState(null, '','../index.html');
-    location.reload()
+window.wrong = function(wrong){
+    if(!isRunningWrongAnimation){
+        isRunningWrongAnimation = true
+        wrong.classList.add('wrong');
+        setTimeout(function(){
+           wrong.classList.remove('wrong');
+           isRunningWrongAnimation = false;
+        },500)
+    }
+}
+
+window.exitgame = async function(){
+    loadbar.classList.add('atload');
+    const data =  JSON.parse(localStorage.getItem('utente'));
+    if(data.dati.password == await getDataForNode(`utenti/${data.dati.nome}/dati/password`)){
+        await addElementToNode(`utenti/${data.dati.nome}/saves/${localStorage.getItem('idmondo')}/`,localdata)
+        localStorage.removeItem('localgame')
+        history.replaceState(null, '','../index.html');
+        location.reload()
+        return 1
+    }
+    loadbar.classList.remove('atload');
+    wrong(document.getElementById('savebutton'));
+    return 0
 }
 
 window.loadscena = async function(scena){
@@ -127,6 +151,15 @@ window.loadscena = async function(scena){
     localdata.startscena = scena;
     isChangeScena = false;
 }
+
+window.addElementToNode = async function (nodeId, elementData) {
+    const dbRef = ref(database, `/${nodeId}`);
+    try {
+        await set(dbRef, elementData);
+    } catch (error) {
+        console.error("Errore durante l'aggiunta dell'elemento:", error);
+    }
+};
 
 window.getDataForNode = async function (NodeId) {
     const dbRef = ref(database, `${NodeId}`);
@@ -255,22 +288,31 @@ window.PlayerInventory = function(){
     openMenu(1)
 }
 
-window.PlayerExitGame = function(){
-    localStorage.removeItem('localgame')
-    history.replaceState(null, '','../index.html');
-    location.reload()  
+window.PlayerMenuGame = function(){
+    openMenu(0)
 }
 
-const playeraction = [ObjectivesMoveUp,ObjectivesMoveDown,ObjectivesMoveLeft,ObjectivesMoveRight,PlayerInteraction,PlayerShoot,PlayerInventory,PlayerExitGame]
+const playeraction = [PlayerInteraction,PlayerShoot,PlayerInventory,PlayerMenuGame]
+
+const objectMove = [ObjectivesMoveUp,ObjectivesMoveDown,ObjectivesMoveLeft,ObjectivesMoveRight]
 
 document.addEventListener('keydown', function(event) {
+    const key = event.key.toLowerCase();
+    let chiave = 0;
     if(!isChangeScena){
-        const key = event.key.toLowerCase();
-        for(const chiave in playercommand){
+        for(chiave = 0; chiave < 4 ;chiave++){
            if(key === playercommand[chiave]){
-            playeraction[chiave](player,localdata.startposplayer);
-            break;
+            objectMove[chiave](player,localdata.startposplayer);
+            return 0;
         }
         }
     }
+    for(chiave = 4 ;chiave < 8 ;chiave++){
+        if(key === playercommand[chiave]){
+        playeraction[chiave-4](player,localdata.startposplayer);
+        return 1;
+        }
+    }
+
+    return 2
 });

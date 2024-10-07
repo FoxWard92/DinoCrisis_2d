@@ -12,7 +12,8 @@
     <section id="back-game">
         <header>
             <div>Notifiche</div>
-            <div><button id="buttonimpostazioni" onclick="openMenu(0)">Impostazioni</button></div>
+            <div id="loadbar"></div>
+            <div>Messaggi</div>
         </header>
         <article id="leggenda">
             <div id="Player" class="personaggio"><div></div></div>
@@ -21,34 +22,28 @@
             <div id="rightdoor" class="pos-asolute"><div class="door-container"></div></div>
         </article>
         <nav id="impostazioni" class="gamemenu">
-            <div>
+            <div class="space-around-coloum">
                 <h1>Impostazioni</h1>
-                <div>
+                <div class="space-around-row">
                     <div><h2>Audio</h2></div>
                 </div>
-                <div>
+                <div class="space-around-row">
                     <div><h2>Comandi</h2></div>
                 </div>
-                <div>
-                    <div><button onclick="exitgame()" >Torna Al Gioco</button></div>
+                <div class="space-around-row">
+                    <div><button onclick="exitgame()" id="savebutton" >Torna Al Gioco</button></div>
                     <div><button onclick="openMenu('none')">Torna Al Gioco</button></div>
                 </div>
             </div>
         </nav>
         
         <nav id="inventario" class="gamemenu">
-            <div>
+            <div class="space-around-coloum">
                 <h1>Inventario</h1>
-                <div>
-                    <div>
-                        <div class="container-lista"><h2>Oggetti</h2><div id="container-items"></div></div>
-                    </div>
-                    <div>
-                        <div class="container-lista"><h2>Chiavi</h2><div id="container-keys"></div></div>
-                    </div>
-                    <div>
-                        <div class="container-lista"><h2>Guns</h2><div id="container-guns"></div></div>
-                    </div>
+                <div class="space-around-row container-liste" >
+                        <div class="space-around-coloum container-lista"><h2>Oggetti</h2><div id="container-items"></div></div>
+                        <div class="space-around-coloum container-lista"><h2>Chiavi</h2><div id="container-keys"></div></div>
+                        <div class="space-around-coloum container-lista"><h2>Guns</h2><div id="container-guns"></div></div>
                 </div>
             </div>
         </nav>
