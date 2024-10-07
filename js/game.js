@@ -24,6 +24,8 @@ const firebaseConfig = {
 
   let isChangeScena = false;
 
+  let isChangePause = false
+
   let isRunningWrongAnimation = false;
 
   let playercommand = ['w','s','a','d','e',' ','i','escape'];
@@ -73,12 +75,12 @@ window.openMenu = function(type){
     const menu = document.getElementsByClassName('gamemenu');
     if(menu[type].style.display == 'none'  || menu[type].style.display ==  ''){
         Array.from(menu).forEach(menu => menu.style.display = 'none');
-        isChangeScena = true;
+        isChangePause = true;
         menu[type].style.display = 'flex'
         return 1
     }
     menu[type].style.display = 'none'
-    isChangeScena = false;
+    isChangePause = false;
 
     return 0
 }
@@ -299,7 +301,7 @@ const objectMove = [ObjectivesMoveUp,ObjectivesMoveDown,ObjectivesMoveLeft,Objec
 document.addEventListener('keydown', function(event) {
     const key = event.key.toLowerCase();
     let chiave = 0;
-    if(!isChangeScena){
+    if(!isChangeScena && !isChangePause){
         for(chiave = 0; chiave < 4 ;chiave++){
            if(key === playercommand[chiave]){
             objectMove[chiave](player,localdata.startposplayer);
@@ -307,10 +309,12 @@ document.addEventListener('keydown', function(event) {
         }
         }
     }
-    for(chiave = 4 ;chiave < 8 ;chiave++){
-        if(key === playercommand[chiave]){
-        playeraction[chiave-4](player,localdata.startposplayer);
-        return 1;
+    if(!isChangeScena){
+        for(chiave = 4 ;chiave < 8 ;chiave++){
+            if(key === playercommand[chiave]){
+            playeraction[chiave-4](player,localdata.startposplayer);
+            return 1;
+            }
         }
     }
 
