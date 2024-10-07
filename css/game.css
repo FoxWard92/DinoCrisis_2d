@@ -7,6 +7,17 @@ body{
     justify-content: center;
 }
 
+h1{
+    color: white;
+    font-size: 4vw;
+    font-family: 'BAD_GRUNGE';
+    margin: 0%;
+}
+
+h2{
+    color: white;
+}
+
 section{
     flex: 1;
     display: flex;
@@ -19,7 +30,17 @@ header,footer{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: white;
+}
+
+header>div,footer>div{
+    flex: 0.2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header>button{
+    
 }
 
 article{
@@ -30,13 +51,54 @@ article{
     background-color: wheat;
 }
 
-footer{
-    background-color: beige;
+footer>div{
+    flex: 0.3;
 }
 
+nav{
+    height: 100%;
+    width: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    z-index: 10;
+    backdrop-filter: blur(1vw);
+}
+
+nav>div{
+    height: 70%;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 1vw;
+    box-shadow:  0vw 0vw 1vw 1vw rgb(20, 20, 20);
+    background-color: gray;
+}
+
+nav>div>div{
+    flex: 0.25;
+    width: 80%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 1vw;
+    box-shadow:  0vw 0vw 1vw 1vw rgb(20, 20, 20);
+    backdrop-filter: blur(1vw);
+}
+
+.container-lista{
+    background-color: aqua;
+}
+
+
+
 #centerdoor,#leftdoor,#rightdoor{
+    overflow: hidden;
     height: 27%;
-    width: 20%;
+    width: 25%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -47,4 +109,9 @@ footer{
     width: 45%;
     transition: all 1s ease-in-out;
     z-index: 1;
+}
+
+@font-face {
+    font-family: 'BAD_GRUNGE';
+    src: url(../font/BAD_GRUNGE.ttf);
 }

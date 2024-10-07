@@ -12,14 +12,49 @@
     <section id="back-game">
         <header>
             <div>Notifiche</div>
-            <div>Impostazioni</div>
+            <div><button id="buttonimpostazioni" onclick="openMenu(0)">Impostazioni</button></div>
         </header>
         <article id="leggenda">
-            <div id="Player" class="personaggio"></div>
-            <div id="leftdoor" class="pos-asolute"></div>
-            <div id="centerdoor" class="pos-asolute"></div>
-            <div id="rightdoor" class="pos-asolute"></div>
+            <div id="Player" class="personaggio"><div></div></div>
+            <div id="leftdoor" class="pos-asolute"><div class="door-container"></div></div>
+            <div id="centerdoor" class="pos-asolute"><div class="door-container"></div></div>
+            <div id="rightdoor" class="pos-asolute"><div class="door-container"></div></div>
         </article>
+        <nav id="impostazioni" class="gamemenu">
+            <div>
+                <h1>Impostazioni</h1>
+                <div>
+                    <div><h2>Audio</h2></div>
+                </div>
+                <div>
+                    <div><h2>Comandi</h2></div>
+                </div>
+                <div>
+                    <div><button onclick="exitgame()" >Torna Al Gioco</button></div>
+                    <div><button onclick="openMenu('none')">Torna Al Gioco</button></div>
+                </div>
+            </div>
+        </nav>
+        
+        <nav id="inventario" class="gamemenu">
+            <div>
+                <h1>Inventario</h1>
+                <div>
+                    <div>
+                        <div class="container-lista"><h2>Oggetti</h2><div id="container-items"></div></div>
+                    </div>
+                    <div>
+                        <div class="container-lista"><h2>Chiavi</h2><div id="container-keys"></div></div>
+                    </div>
+                    <div>
+                        <div class="container-lista"><h2>Guns</h2><div id="container-guns"></div></div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <nav id="Console" class="gamemenu">
+            <div></div>
+        </nav>
         <footer>
             <div>Dialogo</div>
             <div>vita</div>

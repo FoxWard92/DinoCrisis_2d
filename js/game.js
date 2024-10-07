@@ -65,6 +65,26 @@ window.GetPorpsPos = function(element) {
     };
 }
 
+window.openMenu = function(type){
+    const menu = document.getElementsByClassName('gamemenu');
+    Array.from(menu).forEach(menu => menu.style.display = 'none');
+    if(type != 'none'){
+        isChangeScena = true;
+        menu[type].style.display = 'flex'
+        return 1
+    }
+
+    isChangeScena = false;
+
+    return 0
+}
+
+window.exitgame = function(){
+    localStorage.removeItem('localgame')
+    history.replaceState(null, '','../index.html');
+    location.reload()
+}
+
 window.loadscena = async function(scena){
     isChangeScena = true;
     const props = document.getElementsByClassName('props');
@@ -179,7 +199,7 @@ window.PlayerInteraction = async function(objectives,pos){
         const doorCenterY = (door.offsetTop + (door.offsetHeight/3)) / leggendaheight * 100;
         const distX = Math.abs(doorCenterX - objCenterX);
         const distY = Math.abs(doorCenterY - objCenterY);
-        if ((distX + distY) < 3) {
+        if ((distX + distY) < 4) {
             const data = localdata.scene[localdata.startscena][doors[chiave]];
             if(data.scena){
                 isChangeScena = true;
@@ -194,12 +214,18 @@ window.PlayerInteraction = async function(objectives,pos){
                     await new Promise(resolve => setTimeout(resolve, 500));
                     for(var i = 0; i < addmotiondoor.length;i++){
                         addmotiondoor[i].style.transform = `translateX(${0}%) translateY(${0}%)`;
-                    }                
-                    setTimeout( async function(){
-                        await loadscena(data.scena);
-                        objectives.style.opacity = 1;
-                        isChangeScena = false;
-                    },500)
+                    }       
+                    addmotiondoor[0].addEventListener('transitionend', async function() {
+                        objectives.style.opacity = 0;
+                        for(var i = 0; i < addmotiondoor.length;i++){
+                            addmotiondoor[i].style.transform = `translateX(${0}%) translateY(${0}%)`;
+                        }
+                        setTimeout( async function(){
+                            await loadscena(data.scena);
+                            objectives.style.opacity = 1;
+                            isChangeScena = false;
+                        },100)
+                    }, { once: true });         
                 }, { once: true });
             }
             return 1
@@ -226,7 +252,7 @@ window.PlayerShoot = function(){
 }
 
 window.PlayerInventory = function(){
-    player.style.top = `${parseInt(player.style.top) + movepx}px`
+    openMenu(1)
 }
 
 window.PlayerExitGame = function(){
