@@ -67,9 +67,9 @@ window.GetPorpsPos = function(element) {
 
 window.loadscena = async function(scena){
     isChangeScena = true;
-    memscena = scena;
     const props = document.getElementsByClassName('props');
-    for(var i = props.length; i > 0 ;i--){
+    for(var i = props.length-1; i >= 0 ;i--){
+        console.log(i)
         props[i].remove();
     }
 
@@ -104,7 +104,7 @@ window.loadscena = async function(scena){
         div.style.position = 'absolute';
         leggenda.appendChild(div);
     }
-    
+    localdata.startscena = scena;
     isChangeScena = false;
 }
 
@@ -123,12 +123,15 @@ window.getDataForNode = async function (NodeId) {
     }
 };
 
+window.addEventListener('beforeunload', function(event) {
+    localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
+});
+
 window.ObjectivesMoveUp = function(objectives,pos){
     const cordinates = pos.posy - movepx;
     if(cordinates > leggenda.offsetTop / window.innerHeight * 100){
         pos.posy = cordinates;
         objectives.style.top = `${cordinates}%`
-        localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
     }
 }
 
@@ -137,7 +140,6 @@ window.ObjectivesMoveDown = function(objectives,pos){
     if(cordinates < (leggenda.offsetHeight - leggenda.offsetTop) / window.innerHeight * 100){
         pos.posy = cordinates; 
         objectives.style.top = `${cordinates}%`
-        localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
     }
 }
 
@@ -146,7 +148,6 @@ window.ObjectivesMoveLeft = function(objectives,pos){
     if(cordinates >= 0){  
         pos.posx = cordinates;
         objectives.style.left = `${cordinates}%`
-        localStorage.setItem('gamelocaldata',JSON.stringify(localdata))
     }
 }
 
@@ -155,12 +156,12 @@ window.ObjectivesMoveRight = function(objectives,pos){
     if(cordinates < 100 - (objectives.offsetWidth / leggenda.offsetWidth * 100)){  
         pos.posx = cordinates;
         objectives.style.left = `${cordinates}%`;
-        localStorage.setItem('gamelocaldata',JSON.stringify(localdata))
     }
 }
 
-window.PlayerInteraction = function(objectives,pos){
-    const props = localdata.scene[memscena].leggenda;
+window.PlayerInteraction = async function(objectives,pos){
+    if(isChangeScena){return 0}
+    const props = localdata.scene[localdata.startscena].leggenda;
     
     const doors = ['leftdoor','centerdoor','rightdoor'];
     
@@ -175,11 +176,32 @@ window.PlayerInteraction = function(objectives,pos){
         
         const door = document.getElementById(doors[chiave]);
         const doorCenterX = door.offsetLeft / leggendawidth * 100 + (door.offsetWidth >> 1) / leggendawidth  * 100;
-        const doorCenterY = door.offsetTop / leggendaheight * 100 + (door.offsetHeight >> 1) / leggendaheight * 100;
+        const doorCenterY = (door.offsetTop + (door.offsetHeight/3)) / leggendaheight * 100;
         const distX = Math.abs(doorCenterX - objCenterX);
         const distY = Math.abs(doorCenterY - objCenterY);
-        if ((distX + distY) < 10) {
-            console.log(doors[chiave]);
+        if ((distX + distY) < 3) {
+            const data = localdata.scene[localdata.startscena][doors[chiave]];
+            if(data.scena){
+                isChangeScena = true;
+                const scroll = [-1,1];
+                const addmotiondoor = door.children;
+                for(var i = 0; i < addmotiondoor.length;i++){
+                    addmotiondoor[i].style.transform = `translateX(${data.scroll.left * 100 * scroll[i]}%) translateY(${data.scroll.top * 100 * scroll[i]}%)`;
+                }
+                
+                addmotiondoor[0].addEventListener('transitionend', async function() {
+                    objectives.style.opacity = 0;
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    for(var i = 0; i < addmotiondoor.length;i++){
+                        addmotiondoor[i].style.transform = `translateX(${0}%) translateY(${0}%)`;
+                    }                
+                    setTimeout( async function(){
+                        await loadscena(data.scena);
+                        objectives.style.opacity = 1;
+                        isChangeScena = false;
+                    },500)
+                }, { once: true });
+            }
             return 1
         }
     }
@@ -195,6 +217,8 @@ window.PlayerInteraction = function(objectives,pos){
             
         }
     }
+
+    return 0
 }
 
 window.PlayerShoot = function(){
@@ -214,11 +238,13 @@ window.PlayerExitGame = function(){
 const playeraction = [ObjectivesMoveUp,ObjectivesMoveDown,ObjectivesMoveLeft,ObjectivesMoveRight,PlayerInteraction,PlayerShoot,PlayerInventory,PlayerExitGame]
 
 document.addEventListener('keydown', function(event) {
-    const key = event.key.toLowerCase();
-    for(const chiave in playercommand){
-        if(key === playercommand[chiave]){
+    if(!isChangeScena){
+        const key = event.key.toLowerCase();
+        for(const chiave in playercommand){
+           if(key === playercommand[chiave]){
             playeraction[chiave](player,localdata.startposplayer);
             break;
+        }
         }
     }
 });

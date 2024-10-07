@@ -285,16 +285,26 @@ window.LoadGame = async function (idmondo) {
     }
 
     for (let scenaKey in gamedata) {
-        const scenaGamedata = gamedata[scenaKey];
-        const scenaData = data.scene[scenaKey] || {}; 
-
+    const scenaGamedata = gamedata[scenaKey];
+    data.scene[scenaKey] ||= {}; 
+    const scenaData = data.scene[scenaKey]; 
+    if (scenaData && scenaData.leggenda) {
         localdata.scene[scenaKey] = {
             centerdoor: scenaGamedata.centerdoor,
             leftdoor: scenaGamedata.leftdoor,
             rightdoor: scenaGamedata.rightdoor,
             leggenda: aggiornaOggettiNpcs(scenaData.leggenda, scenaGamedata.leggenda),
         };
+    } else {
+        console.warn(`La scena ${scenaKey} non contiene leggenda.`, scenaData);
+        localdata.scene[scenaKey] = {
+            centerdoor: scenaGamedata.centerdoor,
+            leftdoor: scenaGamedata.leftdoor,
+            rightdoor: scenaGamedata.rightdoor,
+            leggenda: [],
+        };
     }
+}
     await localStorage.removeItem('loadgame');
     await localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
     history.replaceState(null, '','html/game.html');

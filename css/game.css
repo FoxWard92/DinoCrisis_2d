@@ -35,7 +35,7 @@ footer{
 }
 
 #centerdoor,#leftdoor,#rightdoor{
-    height: 25%;
+    height: 27%;
     width: 20%;
     display: flex;
     justify-content: center;
@@ -45,4 +45,6 @@ footer{
 #centerdoor>div,#leftdoor>div,#rightdoor>div{
     height: 100%;
     width: 45%;
+    transition: all 1s ease-in-out;
+    z-index: 1;
 }

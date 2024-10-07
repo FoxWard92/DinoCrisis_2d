@@ -5,9 +5,11 @@
     max-height: 250px;
     background-image: url(../img/game/backgroud-body.jpg);
     position: absolute;
+    z-index: 3;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    transition: opacity ease-in-out 1s;
 }
 
 .props{
