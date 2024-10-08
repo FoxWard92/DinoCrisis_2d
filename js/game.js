@@ -167,7 +167,7 @@ window.loadscena = async function(scena){
 
 window.InventarioEquipitemInkitmedico = function(button){
     if (localdata.statsplayer.health < 100) {
-        localdata.statsplayer.health = Math.min(localdata.statsplayer.health + 30, 100);
+        localdata.statsplayer.health = Math.min(localdata.statsplayer.health + (50 - 10*localdata.difficolta), 100);
         SetLifebar(localdata.statsplayer.health);
         localdata.inventario.item.kitmedico.quantity -= 1;
         if (localdata.inventario.item.kitmedico.quantity <= 0) {
