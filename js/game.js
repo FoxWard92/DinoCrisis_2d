@@ -44,7 +44,6 @@ const firebaseConfig = {
 
   
 window.onload = async function(){
-    
     localdata = JSON.parse(localStorage.getItem('gamelocaldata'));
     if(localdata != null){
         console.log(localdata)
@@ -69,7 +68,6 @@ window.onload = async function(){
 window.SetLifebar = function(value){
     document.getElementById('healthbar').style.background = `linear-gradient(90deg,darkred 0% ${value}%,transparent ${value}% 100%)`
 }
-
 window.openMenu = function(type){
     const menu = document.getElementsByClassName('gamemenu');
     if(menu[type].style.display == 'none'  || menu[type].style.display ==  ''){
@@ -170,14 +168,16 @@ window.loadscena = async function(scena){
 window.InventarioEquipitemInkitmedico = function(button){
     if(localdata.statsplayer.health < 100){
         localdata.statsplayer.health = localdata.statsplayer.health += 30 > 100 ? 100:localdata.statsplayer.health
-     if(localdata.inventario.item.kitmedico.quantity > 0){
+        SetLifebar(localdata.statsplayer.health)
         localdata.inventario.item.kitmedico.quantity -= 1;
+     if(localdata.inventario.item.kitmedico.quantity > 0){
      }else{
        delete localdata.inventario.item.kitmedico
      }
     }else{
         wrong(button.parentElement)
     }
+    ReloadInventario()
 }
 
 window.ReloadInventario = function(){
