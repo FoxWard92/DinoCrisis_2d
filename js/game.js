@@ -28,6 +28,8 @@ const firebaseConfig = {
 
   let isRunningWrongAnimation = false;
 
+  let isRunningScribeAnimation = false;
+
   let playercommand = ['w','s','a','d','e',' ','i','escape'];
 
   let memscena = 0;
@@ -63,15 +65,6 @@ window.onload = async function(){
     return 0;
 }
 
-window.GetPorpsPos = function(element) {
-    const parentRect = element.parentElement.getBoundingClientRect();
-    const elementRect = element.getBoundingClientRect();
-    return {
-      top: elementRect.top - parentRect.top,
-      left: elementRect.left - parentRect.left
-    };
-}
-
 window.openMenu = function(type){
     const menu = document.getElementsByClassName('gamemenu');
     if(menu[type].style.display == 'none'  || menu[type].style.display ==  ''){
@@ -84,6 +77,18 @@ window.openMenu = function(type){
     isChangePause = false;
 
     return 0
+}
+
+window.AutoScribeText = async function(html,text){
+    if(!isRunningScribeAnimation){
+        isRunningScribeAnimation = true;
+        html.innerText = ''
+        for(let i = 0;i < text.length;i++){
+            html.innerText = text.charAt(i);
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        isRunningScribeAnimation = false;
+    }
 }
 
 window.wrong = function(wrong){
@@ -156,30 +161,6 @@ window.loadscena = async function(scena){
     isChangeScena = false;
 }
 
-window.addElementToNode = async function (nodeId, elementData) {
-    const dbRef = ref(database, `/${nodeId}`);
-    try {
-        await set(dbRef, elementData);
-    } catch (error) {
-        console.error("Errore durante l'aggiunta dell'elemento:", error);
-    }
-};
-
-window.getDataForNode = async function (NodeId) {
-    const dbRef = ref(database, `${NodeId}`);
-    try {
-        const snapshot = await get(dbRef);
-        if (snapshot.exists()) {
-            return snapshot.val();
-        } else {
-            return 0;
-        }
-    } catch (error) {
-        console.error("Error getting data:", error);
-        return null
-    }
-};
-
 window.ReloadInventario = function(){
     const removeitems = document.getElementsByClassName('InInventario');
 
@@ -217,6 +198,31 @@ window.ReloadInventario = function(){
     }
 }
 
+window.addElementToNode = async function (nodeId, elementData) {
+    const dbRef = ref(database, `/${nodeId}`);
+    try {
+        await set(dbRef, elementData);
+    } catch (error) {
+        console.error("Errore durante l'aggiunta dell'elemento:", error);
+    }
+};
+
+window.getDataForNode = async function (NodeId) {
+    const dbRef = ref(database, `${NodeId}`);
+    try {
+        const snapshot = await get(dbRef);
+        if (snapshot.exists()) {
+            return snapshot.val();
+        } else {
+            return 0;
+        }
+    } catch (error) {
+        console.error("Error getting data:", error);
+        return null
+    }
+};
+
+
 window.addEventListener('beforeunload', function(event) {
     localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
 });
@@ -253,6 +259,7 @@ window.ObjectivesMoveRight = function(objectives,pos){
     }
 }
 
+
 window.PlayerInteraction = async function(objectives){
     if(isChangeScena){return 0}
     
@@ -271,7 +278,7 @@ window.PlayerInteraction = async function(objectives){
         const distY = Math.abs(doorCenterY - objCenterY);
         if ((((distX / leggenda.offsetWidth)*100) + ((distY /leggenda.offsetHeight)*100)) < 2) {
             const data = localdata.scene[localdata.startscena][doors[chiave]];
-            if(data.scena){
+            if(!data.key || localdata.inventario.key[data.key]){
                 isChangeScena = true;
                 const scroll = [-1,1];
                 const addmotiondoor = door.children;
@@ -297,6 +304,8 @@ window.PlayerInteraction = async function(objectives){
                         },100)
                     }, { once: true });         
                 }, { once: true });
+            }else{
+                AutoScribeText(document.getElementById('dialogo'),`Necessario ${data.key} Per Aprire`)
             }
             return 1
         }

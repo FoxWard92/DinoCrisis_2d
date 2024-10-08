@@ -197,6 +197,7 @@ window.NewGame = async function(){
         for(let i = 0; i < salvataggi;i++){
             if(data.saves['100'+ i].nome == nome.value){
                     WrongNome(nome,0,0);
+                    loadbar.classList.remove('atload');
                 return 0
             }
         }
