@@ -46,7 +46,8 @@ window.onload = async function(){
     localdata = JSON.parse(localStorage.getItem('gamelocaldata'));
     if(localdata != null){
         console.log(localdata)
-        loadscena(localdata.startscena);
+        await loadscena(localdata.startscena);
+        await ReloadInventario()
         player.style.left = `${localdata.startposplayer.posx}%`;
         player.style.top = `${localdata.startposplayer.posy}%`;
         if(!localStorage.getItem('loadgame')){
@@ -115,7 +116,6 @@ window.loadscena = async function(scena){
     isChangeScena = true;
     const props = document.getElementsByClassName('props');
     for(var i = props.length-1; i >= 0 ;i--){
-        console.log(i)
         props[i].remove();
     }
 
@@ -141,14 +141,16 @@ window.loadscena = async function(scena){
 
     const propsload = localdata.scene[scena].leggenda;
     for(const chiave in propsload){
-        const div = document.createElement('div');
-        div.className = `props ${propsload[chiave].nome}`;
-        div.id = `${chiave}`;
-        div.style.backgroundImage = `url(../img/props/props/${propsload[chiave].nome}/step.jpg)`;
-        div.style.left = `${propsload[chiave].posx}%`;
-        div.style.top = `${propsload[chiave].posy}%`;
-        div.style.position = 'absolute';
-        leggenda.appendChild(div);
+        if(propsload[chiave].health > 0){
+            const div = document.createElement('div');
+            div.className = `props ${propsload[chiave].nome} ${propsload[chiave].type}`;
+            div.id = `${chiave}`;
+            div.style.backgroundImage = `url(../img/props/${propsload[chiave].type}/${propsload[chiave].nome}.jpg)`;
+            div.style.left = `${propsload[chiave].posx}%`;
+            div.style.top = `${propsload[chiave].posy}%`;
+            div.style.position = 'absolute';
+            leggenda.appendChild(div);
+        }
     }
     localdata.startscena = scena;
     isChangeScena = false;
@@ -177,6 +179,43 @@ window.getDataForNode = async function (NodeId) {
         return null
     }
 };
+
+window.ReloadInventario = function(){
+    const removeitems = document.getElementsByClassName('InInventario');
+
+    for(let i = removeitems.length-1;i>= 0;i--){
+        removeitems[i].remove()
+    }
+
+    for (let chiave = 0; chiave < 3; chiave++) {
+        const type = Object.keys(localdata.inventario);
+        const objectives = localdata.inventario[type[chiave]];
+        const itemKeys = Object.keys(objectives);
+    
+        for (let i = itemKeys.length - 1; i >= 0; i--) {
+            const lista = document.getElementById(`container-${type[chiave]}s`);
+            
+            const div = document.createElement('div');
+            div.classList.add('InInventario');
+    
+            const items = itemKeys[i];
+    
+            const iconDiv = document.createElement('img');
+            iconDiv.style.backgroundImage = `url(../img/props/${type[chiave]}/${items}.jpg)`;
+
+            div.appendChild(iconDiv);
+    
+            const itemData = localdata.inventario[type[chiave]][items];
+            const chargersText = itemData.chargers ? `${itemData.chargers}/` : '';
+            const quantityText = `${chargersText} ${itemData.quantity}`;
+    
+            const h3 = Object.assign(document.createElement('h3'), { innerText: quantityText });
+            div.appendChild(h3);
+    
+            lista.appendChild(div);
+        }
+    }
+}
 
 window.addEventListener('beforeunload', function(event) {
     localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
@@ -214,27 +253,23 @@ window.ObjectivesMoveRight = function(objectives,pos){
     }
 }
 
-window.PlayerInteraction = async function(objectives,pos){
+window.PlayerInteraction = async function(objectives){
     if(isChangeScena){return 0}
-    const props = localdata.scene[localdata.startscena].leggenda;
     
     const doors = ['leftdoor','centerdoor','rightdoor'];
-    
-    const leggendaheight = leggenda.offsetHeight;
 
-    const leggendawidth = leggenda.offsetWidth;
-
-    const objCenterX = pos.posx + (objectives.offsetWidth >> 1)/ leggendawidth  * 100;
-    const objCenterY = pos.posy + (objectives.offsetHeight >> 1) / leggendaheight * 100;
+    const objCenterX = player.offsetLeft + (objectives.offsetWidth >> 1);
+    const objCenterY = player.offsetTop + (objectives.offsetHeight >> 1);
 
     for(const chiave in doors){
-        
+
         const door = document.getElementById(doors[chiave]);
-        const doorCenterX = door.offsetLeft / leggendawidth * 100 + (door.offsetWidth >> 1) / leggendawidth  * 100;
-        const doorCenterY = (door.offsetTop + (door.offsetHeight/3)) / leggendaheight * 100;
+        const doorCenterX = door.offsetLeft + (door.offsetWidth >> 1);
+        const doorCenterY = door.offsetTop + (door.offsetHeight >> 1);
+
         const distX = Math.abs(doorCenterX - objCenterX);
         const distY = Math.abs(doorCenterY - objCenterY);
-        if ((distX + distY) < 4) {
+        if ((((distX / leggenda.offsetWidth)*100) + ((distY /leggenda.offsetHeight)*100)) < 2) {
             const data = localdata.scene[localdata.startscena][doors[chiave]];
             if(data.scena){
                 isChangeScena = true;
@@ -267,19 +302,32 @@ window.PlayerInteraction = async function(objectives,pos){
         }
     }
 
-    for(const chiave in props){
-        if(props[chiave].type === 'item'){
-            const distX = Math.abs(props[chiave].posx - objCenterX);
-            const distY = Math.abs(props[chiave].posy - objCenterY);
-            if ((distX + distY) < 10) {
-                console.log(props[chiave]);
-                return 1
-            }
-            
+    const props = document.querySelectorAll('.item, .weapon, .key');
+
+    for (const prop of props) {
+        const itemClass = prop.classList;
+        const category = itemClass[2];
+        const itemKey = itemClass[1];
+        const id = prop.id;
+        const health = localdata.scene[localdata.startscena].leggenda[id]?.health;
+        if (health > 0) {
+            const distX = Math.abs(prop.offsetLeft - objCenterX);
+            const distY = Math.abs(prop.offsetTop - objCenterY);
+            const distancePercentage = ((distX / leggenda.offsetWidth) * 100) + ((distY / leggenda.offsetHeight) * 100);
+            if (distancePercentage < 50) {
+            localdata.inventario[category] = localdata.inventario[category] || {};
+            localdata.inventario[category][itemKey] = localdata.inventario[category][itemKey] || { quantity: 0 };
+            localdata.inventario[category][itemKey].quantity++;
+
+            localdata.scene[localdata.startscena].leggenda[id].health = 0;
+            prop.remove();
+            ReloadInventario();
+
+            return 1;
         }
     }
-
-    return 0
+}
+return 0;
 }
 
 window.PlayerShoot = function(){

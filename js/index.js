@@ -84,11 +84,10 @@ window.ReloadSalvataggi = async function(){
         const data = JSON.parse(localStorage.getItem('utente'));
         if(data.saves){
             const numerosalvataggi = Object.keys(data.saves).length;
-        
             const container = document.getElementById('saves');
             
             if(numerosalvataggi > 0){container.querySelector('h3').style.display = 'none'}
-            for (var i = container.childElementCount - 1; i > 0; i--) {
+            for (var i = container.childElementCount; i > 0; i--) {
                 container.lastElementChild.remove();
             }
             for(var i = 0; i < numerosalvataggi;i++){
@@ -224,6 +223,7 @@ window.NewGame = async function(){
     }
     data.saves[idmondo].inventario = await getDataForNode('gamedata/inventario');
     await addElementToNode(`utenti/${data.dati.nome}/saves`,data.saves);
+    await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
     await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
     await ReloadSalvataggi();
     viewchange(2,false);

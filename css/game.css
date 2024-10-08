@@ -8,13 +8,12 @@ body{
 }
 
 h1{
-    color: white;
     font-size: 4vw;
     font-family: 'BAD_GRUNGE';
     margin: 0%;
 }
 
-h2{
+h1,h2,h3{
     color: white;
 }
 
@@ -99,6 +98,31 @@ nav>div{
     backdrop-filter: blur(1vw);
 }
 
+.InInventario{
+    height: 20%;
+    width: 100%;
+    margin-top: 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: gray;
+    border-radius: 1vw;
+}
+
+.InInventario>h3{
+    width: 20%;
+}
+
+.InInventario>img{
+    width: 50%;
+    height: 100%;
+    border: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-image: none;
+}
+
 .wrong{
     animation: wrong 1s;
     animation-iteration-count: infinite;
@@ -109,9 +133,10 @@ nav>div{
     animation-iteration-count: infinite;
 }
 
-#container-items,#container-guns,#container-keys{
+#container-items,#container-weapons,#container-keys{
     flex: 0.8;
     width: 80%;
+    overflow: scroll;
     border-top: solid 0.2vw rgb(95, 0, 0);
 }
 
