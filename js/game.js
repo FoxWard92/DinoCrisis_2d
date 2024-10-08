@@ -50,8 +50,9 @@ window.onload = async function(){
         console.log(localdata)
         await loadscena(localdata.startscena);
         await ReloadInventario()
-        player.style.left = `${localdata.startposplayer.posx}%`;
-        player.style.top = `${localdata.startposplayer.posy}%`;
+        SetLifebar(localdata.statsplayer.health)
+        player.style.left = `${localdata.statsplayer.posx}%`;
+        player.style.top = `${localdata.statsplayer.posy}%`;
         if(!localStorage.getItem('loadgame')){
             loadscena(localdata.startscena);
             localStorage.setItem('loadgame',true);
@@ -63,6 +64,10 @@ window.onload = async function(){
     history.replaceState(null, '','../index.html');
     location.reload()        
     return 0;
+}
+
+window.SetLifebar = function(value){
+    document.getElementById('healthbar').style.background = `linear-gradient(90deg,darkred 0% ${value}%,transparent ${value}% 100%)`
 }
 
 window.openMenu = function(type){
@@ -82,11 +87,12 @@ window.openMenu = function(type){
 window.AutoScribeText = async function(html,text){
     if(!isRunningScribeAnimation){
         isRunningScribeAnimation = true;
-        html.innerText = ''
         for(let i = 0;i < text.length;i++){
-            html.innerText = text.charAt(i);
+            html.innerHTML += text.charAt(i);
             await new Promise(resolve => setTimeout(resolve, 100));
         }
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        html.innerText = ''
         isRunningScribeAnimation = false;
     }
 }
@@ -98,7 +104,7 @@ window.wrong = function(wrong){
         setTimeout(function(){
            wrong.classList.remove('wrong');
            isRunningWrongAnimation = false;
-        },500)
+        },1000)
     }
 }
 
@@ -161,6 +167,19 @@ window.loadscena = async function(scena){
     isChangeScena = false;
 }
 
+window.InventarioEquipitemInkitmedico = function(button){
+    if(localdata.statsplayer.health < 100){
+        localdata.statsplayer.health = localdata.statsplayer.health += 30 > 100 ? 100:localdata.statsplayer.health
+     if(localdata.inventario.item.kitmedico.quantity > 0){
+        localdata.inventario.item.kitmedico.quantity -= 1;
+     }else{
+       delete localdata.inventario.item.kitmedico
+     }
+    }else{
+        wrong(button.parentElement)
+    }
+}
+
 window.ReloadInventario = function(){
     const removeitems = document.getElementsByClassName('InInventario');
 
@@ -180,7 +199,7 @@ window.ReloadInventario = function(){
             div.classList.add('InInventario');
     
             const items = itemKeys[i];
-    
+
             const iconDiv = document.createElement('img');
             iconDiv.style.backgroundImage = `url(../img/props/${type[chiave]}/${items}.jpg)`;
 
@@ -192,6 +211,13 @@ window.ReloadInventario = function(){
     
             const h3 = Object.assign(document.createElement('h3'), { innerText: quantityText });
             div.appendChild(h3);
+
+            const buttonDiv = document.createElement('button');
+            const buttonId = `button${type[chiave]}InventarioId${i})`
+            buttonDiv.id =  buttonId
+            buttonDiv.setAttribute('onclick', `InventarioEquip${type[chiave]}In${items}(document.getElementById('${buttonId}'))`);
+
+            div.appendChild(buttonDiv)
     
             lista.appendChild(div);
         }
@@ -258,6 +284,7 @@ window.ObjectivesMoveRight = function(objectives,pos){
         objectives.style.left = `${cordinates}%`;
     }
 }
+
 
 
 window.PlayerInteraction = async function(objectives){
@@ -361,7 +388,7 @@ document.addEventListener('keydown', function(event) {
     if(!isChangeScena && !isChangePause){
         for(chiave = 0; chiave < 4 ;chiave++){
            if(key === playercommand[chiave]){
-            objectMove[chiave](player,localdata.startposplayer);
+            objectMove[chiave](player,localdata.statsplayer);
             return 0;
         }
         }
@@ -369,7 +396,7 @@ document.addEventListener('keydown', function(event) {
     if(!isChangeScena){
         for(chiave = 4 ;chiave < 8 ;chiave++){
             if(key === playercommand[chiave]){
-            playeraction[chiave-4](player,localdata.startposplayer);
+            playeraction[chiave-4](player,localdata.statsplayer);
             return 1;
             }
         }

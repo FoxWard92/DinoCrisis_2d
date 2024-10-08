@@ -52,6 +52,13 @@ article{
 
 footer>div{
     flex: 0.3;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 80%;
+    width: 100%;
+    border-radius: 1vw;
+    background-color: rgb(50, 50, 50);
 }
 
 nav{
@@ -100,17 +107,20 @@ nav>div{
 
 .InInventario{
     height: 20%;
-    width: 100%;
+    width: 80%;
     margin-top: 10%;
+    margin-left: 10%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: gray;
     border-radius: 1vw;
+    transition: margin 0.2s ease-in-out;
 }
 
 .InInventario>h3{
     width: 20%;
+    transform: translateX(100%);
 }
 
 .InInventario>img{
@@ -123,7 +133,25 @@ nav>div{
     background-image: none;
 }
 
+.InInventario:hover{
+    margin-left: 0%;
+    border-top-right-radius: 0vw;
+    border-bottom-right-radius: 0vw;
+}
+
+.InInventario>button{
+    height: 100%;
+    width: 20%;
+    opacity: 0;
+}
+
+.InInventario:hover>button{
+    opacity: 1;
+    transform: translateX(100%);
+}
+
 .wrong{
+    border: solid 2px;
     animation: wrong 1s;
     animation-iteration-count: infinite;
 }
@@ -158,7 +186,7 @@ nav>div{
 }
 
 #loadbar{
-    height: 100%;
+    height: 10%;
     width: 10%;
     opacity: 0;
     background-image: url('../img/index/brand/loadbar.jpg');
@@ -167,9 +195,34 @@ nav>div{
     background-size: contain;
     background-repeat: no-repeat;
     position: absolute;
-    top: 0%;
+    top: 70%;
     left: 45%;
     z-index: 20;
+}
+
+#healthbar{
+    height: calc(50% - 0.3vw);
+    width: calc(80% - 0.3vw);
+    border-radius: 1vw;
+    border: solid gray 0.3vw;
+}
+
+#lifebar{
+    height: 80%;
+    width: 10%;
+    background-image: url(../img/game/lifebar.jpg);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+#dialogo{
+    width: 90%;
+    max-height: 80%;
+    overflow: scroll;
+    text-align: center;
+    color: white;
+    background-color: rgba(77, 77, 77, 0.537);
 }
 
 @font-face {

@@ -210,11 +210,13 @@ window.NewGame = async function(){
     data.saves[idmondo] = {};
     data.saves[idmondo].scene = {};
     
-    data.saves[idmondo].startscena = 1; 
-    data.saves[idmondo].startposplayer = {
+    data.saves[idmondo].startscena = 1;
+    data.saves[idmondo].statsplayer = {
+        health : 100,
         posx : 50,
         posy : 50
     };
+
     data.saves[idmondo].difficolta = difficolta.value;
     data.saves[idmondo].nome = nome.value;
     const gamedata = (await getDataForNode('gamedata/scene'));
@@ -265,7 +267,7 @@ window.LoadGame = async function (idmondo) {
     const data = (JSON.parse(localStorage.getItem('utente'))).saves[idmondo];
     const localdata = {
         startscena: data.startscena,
-        startposplayer: data.startposplayer,
+        statsplayer: data.statsplayer,
         difficolta : data.difficolta,
         inventario : data.inventario,
         nome : data.nome,
