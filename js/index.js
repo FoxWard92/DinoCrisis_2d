@@ -136,7 +136,6 @@ window.WrongPasswordConferma = function (nome,password,confermapassworld){
 window.AccesoVerificato = async function (nome,password,confermapassworld){
     await ReloadSalvataggi();
     await viewchange(2,false,false);
-    await new Promise(resolve => setTimeout(resolve, 1000));
     return 1
 }
 

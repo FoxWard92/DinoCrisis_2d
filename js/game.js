@@ -210,7 +210,7 @@ window.ReloadInventario = function(){
             div.id = `Id${type[chiave]}Slot${items}`
             div.classList.add(`InInventario`);
 
-            div.style.border =  items === localdata.statsplayer.setgu ?  `0.2vw solid white`:`none`
+            div.style.border =  items === localdata.statsplayer.setgun ?  `0.2vw solid white`:`none`
 
             const iconDiv = document.createElement('img');
             iconDiv.style.backgroundImage = `url(../img/props/${type[chiave]}/${items}.jpg)`;
