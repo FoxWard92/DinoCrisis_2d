@@ -82,14 +82,16 @@ window.ChangeLinearGradient = function(background,degstart,degend){
 
 window.ReloadSalvataggi = async function(){
         const data = JSON.parse(localStorage.getItem('utente'));
+        const container = document.getElementById('saves');
+        container.querySelector('h3').style.display = 'block'
+        for (var i = container.childElementCount-1; i > 0; i--) {
+            container.lastElementChild.remove();
+        }
+
         if(data.saves){
             const numerosalvataggi = Object.keys(data.saves).length;
             const container = document.getElementById('saves');
-            
-            if(numerosalvataggi > 0){container.querySelector('h3').style.display = 'none'}
-            for (var i = container.childElementCount; i > 0; i--) {
-                container.lastElementChild.remove();
-            }
+            container.querySelector('h3').style.display = 'none'
             for(var i = 0; i < numerosalvataggi;i++){
                 addSavesSlot(container);
                 let idmondo = '100' + i;
@@ -212,6 +214,7 @@ window.NewGame = async function(){
     
     data.saves[idmondo].startscena = 1;
     data.saves[idmondo].statsplayer = {
+        setgun : 'glock',
         health : 100,
         posx : 50,
         posy : 50

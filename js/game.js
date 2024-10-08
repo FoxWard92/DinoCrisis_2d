@@ -166,18 +166,27 @@ window.loadscena = async function(scena){
 }
 
 window.InventarioEquipitemInkitmedico = function(button){
-    if(localdata.statsplayer.health < 100){
-        localdata.statsplayer.health = localdata.statsplayer.health += 30 > 100 ? 100:localdata.statsplayer.health
-        SetLifebar(localdata.statsplayer.health)
+    if (localdata.statsplayer.health < 100) {
+        localdata.statsplayer.health = Math.min(localdata.statsplayer.health + 30, 100);
+        SetLifebar(localdata.statsplayer.health);
         localdata.inventario.item.kitmedico.quantity -= 1;
-     if(localdata.inventario.item.kitmedico.quantity > 0){
-     }else{
-       delete localdata.inventario.item.kitmedico
-     }
-    }else{
-        wrong(button.parentElement)
+        if (localdata.inventario.item.kitmedico.quantity <= 0) {
+            delete localdata.inventario.item.kitmedico;
+        }
+        ReloadInventario()
+    } else {
+        wrong(button.parentElement);
     }
-    ReloadInventario()
+}
+
+window.InventarioEquipweaponInglock = function(button){
+
+ 
+    if(localdata.statsplayer.setgun){
+        document.getElementById(`IdweaponSlot${localdata.statsplayer.setgun}`).style.border = `none`;
+    }
+    localdata.statsplayer.setgun = 'glock'
+    document.getElementById(`IdweaponSlot${localdata.statsplayer.setgun}`).style.border = `0.2vw solid white`;
 }
 
 window.ReloadInventario = function(){
@@ -195,10 +204,13 @@ window.ReloadInventario = function(){
         for (let i = itemKeys.length - 1; i >= 0; i--) {
             const lista = document.getElementById(`container-${type[chiave]}s`);
             
-            const div = document.createElement('div');
-            div.classList.add('InInventario');
-    
             const items = itemKeys[i];
+
+            const div = document.createElement('div');
+            div.id = `Id${type[chiave]}Slot${items}`
+            div.classList.add(`InInventario`);
+
+            div.style.border =  items === localdata.statsplayer.setgu ?  `0.2vw solid white`:`none`
 
             const iconDiv = document.createElement('img');
             iconDiv.style.backgroundImage = `url(../img/props/${type[chiave]}/${items}.jpg)`;
@@ -220,6 +232,7 @@ window.ReloadInventario = function(){
             div.appendChild(buttonDiv)
     
             lista.appendChild(div);
+            
         }
     }
 }
@@ -332,7 +345,7 @@ window.PlayerInteraction = async function(objectives){
                     }, { once: true });         
                 }, { once: true });
             }else{
-                AutoScribeText(document.getElementById('dialogo'),`Necessario ${data.key} Per Aprire`)
+                AutoScribeText(document.getElementById('dialogo'),`Necessaria Chiave ${data.key} Per Aprire`)
             }
             return 1
         }
