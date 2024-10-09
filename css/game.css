@@ -13,8 +13,15 @@ h1{
     margin: 0%;
 }
 
-h1,h2,h3{
+h1,h2,h3,p{
     color: white;
+    text-align: center;
+}
+
+p{
+    margin: 0%;
+    font-size: 2vw;
+    overflow: scroll;
 }
 
 section{
@@ -111,20 +118,22 @@ nav>div{
     margin-top: 10%;
     margin-left: 10%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     background-color: gray;
     border-radius: 1vw;
-    transition: margin 0.2s ease-in-out;
+    border: solid 0.3vw rgb(71, 0, 71);
+    transition: all 0.2s ease-in-out;
 }
 
 .InInventario>h3{
     width: 20%;
-    transform: translateX(100%);
+    margin: 0%;
+    text-align: center;
 }
 
-.InInventario>img{
-    width: 50%;
+.InInventario>.img{
+    width: 40%;
     height: 100%;
     border: none;
     background-repeat: no-repeat;
@@ -134,20 +143,23 @@ nav>div{
 }
 
 .InInventario:hover{
-    margin-left: 0%;
+    margin-left: 5%;
+    width: 90%;
     border-top-right-radius: 0vw;
     border-bottom-right-radius: 0vw;
 }
 
 .InInventario>button{
-    height: 100%;
+    height: 80%;
     width: 20%;
     opacity: 0;
+    color: white;
+    background-color: transparent;
 }
 
 .InInventario:hover>button{
     opacity: 1;
-    transform: translateX(100%);
+    
 }
 
 .wrong{
@@ -219,9 +231,6 @@ nav>div{
 #dialogo{
     width: 90%;
     max-height: 80%;
-    overflow: scroll;
-    text-align: center;
-    color: white;
     background-color: rgba(77, 77, 77, 0.537);
 }
 

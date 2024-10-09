@@ -10,6 +10,7 @@
     background-position: center;
     background-repeat: no-repeat;
     transition: opacity ease-in-out 0.5s;
+    background-color: antiquewhite;
 }
 
 .props{

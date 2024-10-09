@@ -30,7 +30,7 @@ const firebaseConfig = {
 
   let isRunningScribeAnimation = false;
 
-  let playercommand = ['w','s','a','d','e',' ','i','escape'];
+  let playercommand = ['w','s','a','d','e',' ','i','escape','r'];
 
   let memscena = 0;
 
@@ -106,14 +106,23 @@ window.wrong = function(wrong){
     }
 }
 
-window.exitgame = async function(){
+window.exitgame = function(){
+    localStorage.removeItem('localgame')
+    history.replaceState(null, '','../index.html');
+    location.reload()
+}
+
+window.savegame = async function(){
     loadbar.classList.add('atload');
     const data =  JSON.parse(localStorage.getItem('utente'));
+    if(!data){
+        loadbar.classList.remove('atload');
+        wrong(document.getElementById('savebutton'));
+        return 2
+    }
     if(data.dati.password == await getDataForNode(`utenti/${data.dati.nome}/dati/password`)){
         await addElementToNode(`utenti/${data.dati.nome}/saves/${localStorage.getItem('idmondo')}/`,localdata)
-        localStorage.removeItem('localgame')
-        history.replaceState(null, '','../index.html');
-        location.reload()
+        exitgame()
         return 1
     }
     loadbar.classList.remove('atload');
@@ -210,16 +219,26 @@ window.ReloadInventario = function(){
             div.id = `Id${type[chiave]}Slot${items}`
             div.classList.add(`InInventario`);
 
-            div.style.border =  items === localdata.statsplayer.setgun ?  `0.2vw solid white`:`none`
-
-            const iconDiv = document.createElement('img');
+            const iconDiv = document.createElement('div');
+            iconDiv.classList.add('img')
             iconDiv.style.backgroundImage = `url(../img/props/${type[chiave]}/${items}.jpg)`;
 
             div.appendChild(iconDiv);
     
             const itemData = localdata.inventario[type[chiave]][items];
-            const chargersText = itemData.chargers ? `${itemData.chargers}/` : '';
-            const quantityText = `${chargersText} ${itemData.quantity}`;
+
+            let quantityText = null;
+
+            if(type[chiave] == 'weapon'){
+                quantityText = `${itemData.chargers} / ${itemData.ammons}`;
+                if(items === localdata.statsplayer.setgun){
+                    div.style.border = `0.2vw solid white`
+                    document.getElementById('equpaggimento-text').innerHTML = quantityText;
+                    document.getElementById('equpaggimento-img').style.backgroundImage = `url(../img/props/${type[chiave]}/${items}.jpg)`;
+                }
+            }else{
+                quantityText = `${itemData.quantity}`;
+            }
     
             const h3 = Object.assign(document.createElement('h3'), { innerText: quantityText });
             div.appendChild(h3);
@@ -228,6 +247,8 @@ window.ReloadInventario = function(){
             const buttonId = `button${type[chiave]}InventarioId${i})`
             buttonDiv.id =  buttonId
             buttonDiv.setAttribute('onclick', `InventarioEquip${type[chiave]}In${items}(document.getElementById('${buttonId}'))`);
+            buttonDiv.innerHTML = 'usa';
+
 
             div.appendChild(buttonDiv)
     
@@ -266,40 +287,6 @@ window.addEventListener('beforeunload', function(event) {
     localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
 });
 
-window.ObjectivesMoveUp = function(objectives,pos){
-    const cordinates = pos.posy - movepx;
-    if(cordinates > leggenda.offsetTop / window.innerHeight * 100){
-        pos.posy = cordinates;
-        objectives.style.top = `${cordinates}%`
-    }
-}
-
-window.ObjectivesMoveDown = function(objectives,pos){
-    const cordinates = pos.posy + movepx;
-    if(cordinates < (leggenda.offsetHeight - leggenda.offsetTop) / window.innerHeight * 100){
-        pos.posy = cordinates; 
-        objectives.style.top = `${cordinates}%`
-    }
-}
-
-window.ObjectivesMoveLeft = function(objectives,pos){
-    const cordinates = pos.posx - movepx;
-    if(cordinates >= 0){  
-        pos.posx = cordinates;
-        objectives.style.left = `${cordinates}%`
-    }
-}
-
-window.ObjectivesMoveRight = function(objectives,pos){
-    const cordinates = pos.posx + movepx;
-    if(cordinates < 100 - (objectives.offsetWidth / leggenda.offsetWidth * 100)){  
-        pos.posx = cordinates;
-        objectives.style.left = `${cordinates}%`;
-    }
-}
-
-
-
 window.PlayerInteraction = async function(objectives){
     if(isChangeScena){return 0}
     
@@ -316,7 +303,7 @@ window.PlayerInteraction = async function(objectives){
 
         const distX = Math.abs(doorCenterX - objCenterX);
         const distY = Math.abs(doorCenterY - objCenterY);
-        if ((((distX / leggenda.offsetWidth)*100) + ((distY /leggenda.offsetHeight)*100)) < 2) {
+        if ((((distX / leggenda.offsetWidth)*100) + ((distY /leggenda.offsetHeight)*100)) < 3) {
             const data = localdata.scene[localdata.startscena][doors[chiave]];
             if(!data.key || localdata.inventario.key[data.key]){
                 isChangeScena = true;
@@ -363,7 +350,7 @@ window.PlayerInteraction = async function(objectives){
             const distX = Math.abs(prop.offsetLeft - objCenterX);
             const distY = Math.abs(prop.offsetTop - objCenterY);
             const distancePercentage = ((distX / leggenda.offsetWidth) * 100) + ((distY / leggenda.offsetHeight) * 100);
-            if (distancePercentage < 50) {
+            if (distancePercentage < 20) {
             localdata.inventario[category] = localdata.inventario[category] || {};
             localdata.inventario[category][itemKey] = localdata.inventario[category][itemKey] || { quantity: 0 };
             localdata.inventario[category][itemKey].quantity++;
@@ -379,8 +366,79 @@ window.PlayerInteraction = async function(objectives){
 return 0;
 }
 
+window.EffectCreateBullet = function(pos,type){
+    const div = document.createElement('div');
+    div.style.height = '1%';
+    div.style.width = '2%';
+    div.backgroundImage = `url(../img/animations/bullets/${type}.jpg)`;
+    div.style.position ='absolute';
+    div.style.left = `${pos.style.left}`;
+    div.style.top = `${pos.style.top}`;
+    div.style.transition = 'transform 1s ease-in-out';
+    div.style.transform = 'translateY(-10%)';
+    leggenda.appendChild(div);
+    setTimeout(function(){
+        div.remove();
+    },10000)
+}
+
+window.RaycastBullutsDamage = function(facing,pos,damage){
+    
+    const bersagli = querySelectorAll('.entity');
+    const posx = parseInt(pos.style.left) + parseInt(facing)
+    const posy = parseInt(pos.style.left)
+
+}
+
+let isplayershooting = false;
+
+let isplayerinreloading = false;
+
 window.PlayerShoot = function(){
-    player.style.top = `${parseInt(player.style.top) + movepx}px`
+    if(!isplayershooting){
+        const type = localdata.statsplayer.setgun;
+        const weapon = localdata.inventario.weapon[type];
+        if(weapon.chargers > 0){
+            isplayershooting = true;
+            weapon.chargers -= 1;
+            player.style.backgroundImage = `url(../img/animations/player/shooting/${type}.jpg)`
+            EffectCreateBullet(player,type);
+            
+            setTimeout(function(){
+               isplayershooting = false;
+            },weapon.shootdelay)
+            ReloadInventario();
+       }else{
+           AutoScribeText(document.getElementById('dialogo'), weapon.ammons > 0 ? `Premi ${playercommand[8]} per Ricaricare` : `Munizioni ${localdata.statsplayer.setgun} Finite`);
+       }
+    }else{
+        player.style.backgroundImage = `url(../img/animations/player/handgun/${type}.jpg)`
+    }
+}
+
+window.PlayerShootReload = function(){
+    
+    if(!isplayerinreloading){
+        const weapon = localdata.inventario.weapon[localdata.statsplayer.setgun];
+
+    if(weapon.chargers < weapon.maxchargers){
+        if(weapon.ammons > 0){
+            isplayerinreloading = true;
+            const ammoToReload = Math.min(weapon.maxchargers, weapon.ammons);
+            weapon.chargers += ammoToReload;
+            weapon.ammons -= ammoToReload;
+            setTimeout(function(){
+                isplayerinreloading = false;
+            },weapon.reloadtime)
+            ReloadInventario();
+        }else{
+            AutoScribeText(document.getElementById('dialogo'), `Munizioni ${localdata.statsplayer.setgun} Finite`);
+        }
+    }else{
+        AutoScribeText(document.getElementById('dialogo'), `Munizioni ${localdata.statsplayer.setgun} Al Massimo`);
+    }
+    }
+    
 }
 
 window.PlayerInventory = function(){
@@ -391,29 +449,102 @@ window.PlayerMenuGame = function(){
     openMenu(0)
 }
 
-const playeraction = [PlayerInteraction,PlayerShoot,PlayerInventory,PlayerMenuGame]
+window.ObjectivesMoveUp = function(objectives,pos){
+    const cordinates = pos.posy - movepx;
+    if(cordinates > leggenda.offsetTop / window.innerHeight * 100){
+        pos.posy = cordinates;
+        objectives.style.top = `${cordinates}%`
+    }
+}
 
-const objectMove = [ObjectivesMoveUp,ObjectivesMoveDown,ObjectivesMoveLeft,ObjectivesMoveRight]
+window.ObjectivesMoveDown = function(objectives,pos){
+    const cordinates = pos.posy + movepx;
+    if(cordinates < (leggenda.offsetHeight - leggenda.offsetTop) / window.innerHeight * 100){
+        pos.posy = cordinates; 
+        objectives.style.top = `${cordinates}%`
+    }
+}
+
+window.ObjectivesMoveLeft = function(objectives,pos){
+    const cordinates = pos.posx - movepx;
+    if(cordinates >= 0){  
+        pos.posx = cordinates;
+        objectives.style.left = `${cordinates}%`
+        objectives.style.transform = 'rotateY(180deg)'
+    }
+}
+
+window.ObjectivesMoveRight = function(objectives,pos){
+    const cordinates = pos.posx + movepx;
+    if(cordinates < 100 - (objectives.offsetWidth / leggenda.offsetWidth * 100)){  
+        pos.posx = cordinates;
+        objectives.style.left = `${cordinates}%`;
+        objectives.style.transform = 'rotateY(0deg)'
+    }
+}
+
+const playeraction = [PlayerInteraction, PlayerShoot, PlayerInventory, PlayerMenuGame,PlayerShootReload];
+const objectMove = [ObjectivesMoveUp, ObjectivesMoveDown, ObjectivesMoveLeft, ObjectivesMoveRight];
+
+const keysPressed = {};
+
+let movementInterval;
 
 document.addEventListener('keydown', function(event) {
     const key = event.key.toLowerCase();
-    let chiave = 0;
-    if(!isChangeScena && !isChangePause){
-        for(chiave = 0; chiave < 4 ;chiave++){
-           if(key === playercommand[chiave]){
-            objectMove[chiave](player,localdata.statsplayer);
-            return 0;
+
+    if (!isChangeScena) {
+        const isMovementKey = playercommand.slice(0, 4).includes(key);
+        const isActionKey = playercommand.slice(4, 9).includes(key);
+
+        if (!isChangePause && isMovementKey) {
+            const index = playercommand.indexOf(key);
+            if (!keysPressed[key]) {
+                keysPressed[key] = true;
+                objectMove[index](player, localdata.statsplayer);
+                startMovement();
+            }
+            return; 
         }
+
+        if (isActionKey) {
+            const actionIndex = playercommand.indexOf(key) - 4;
+            playeraction[actionIndex](player, localdata.statsplayer);
         }
     }
-    if(!isChangeScena){
-        for(chiave = 4 ;chiave < 8 ;chiave++){
-            if(key === playercommand[chiave]){
-            playeraction[chiave-4](player,localdata.statsplayer);
-            return 1;
+});
+
+document.addEventListener('keyup', function(event) {
+    const key = event.key.toLowerCase();
+    if (keysPressed[key]) {
+        keysPressed[key] = false;
+        if (Object.values(keysPressed).every(v => !v)) {
+            stopMovement();
+        }
+    }
+});
+
+function handleKeyAction() {
+    if (!isChangeScena && !isChangePause) {
+        for (let i = 0; i < 4; i++) {
+            if (keysPressed[playercommand[i]]) {
+                objectMove[i](player, localdata.statsplayer);
             }
         }
     }
+}
 
-    return 2
-});
+function updateMovement() {
+    handleKeyAction(); 
+}
+
+function startMovement() {
+    if (!movementInterval) {
+        movementInterval = setInterval(updateMovement, 50);
+    }
+}
+
+function stopMovement() {
+    clearInterval(movementInterval);
+    movementInterval = null;
+}
