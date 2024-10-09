@@ -118,6 +118,10 @@ window.savegame = async function(){
     if(!data){
         loadbar.classList.remove('atload');
         wrong(document.getElementById('savebutton'));
+        setTimeout(function(){
+            openMenu(2)
+            document.getElementById('consoledialogo').innerHTML = `Errore Dati Account Non Trovati`;
+        },1000)
         return 2
     }
     if(data.dati.password == await getDataForNode(`utenti/${data.dati.nome}/dati/password`)){
@@ -127,6 +131,10 @@ window.savegame = async function(){
     }
     loadbar.classList.remove('atload');
     wrong(document.getElementById('savebutton'));
+    setTimeout(function(){
+        openMenu(2)
+        document.getElementById('consoledialogo').innerHTML = `Errore Dati Account Passworld Errati`;
+    },1000)
     return 0
 }
 
@@ -350,7 +358,7 @@ window.PlayerInteraction = async function(objectives){
             const distX = Math.abs(prop.offsetLeft - objCenterX);
             const distY = Math.abs(prop.offsetTop - objCenterY);
             const distancePercentage = ((distX / leggenda.offsetWidth) * 100) + ((distY / leggenda.offsetHeight) * 100);
-            if (distancePercentage < 20) {
+            if (distancePercentage < 10) {
             localdata.inventario[category] = localdata.inventario[category] || {};
             localdata.inventario[category][itemKey] = localdata.inventario[category][itemKey] || { quantity: 0 };
             localdata.inventario[category][itemKey].quantity++;
