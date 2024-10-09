@@ -29,3 +29,20 @@
     height: 4%;
     width: 5%;
 }
+
+.bullet{
+    background-image: url(../img/game/backgroud-body.jpg);
+    animation: movebullet 1s;
+    animation-fill-mode: forwards;
+    z-index: 10;
+    height: 1%;
+    width: 1.5%;
+}
+
+
+@keyframes movebullet {
+
+    from{transform: translateY(0vh);}
+    to{transform: translateY(20vh);}
+    
+}

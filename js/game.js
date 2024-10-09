@@ -376,35 +376,30 @@ return 0;
 
 window.EffectCreateBullet = function(pos,type){
     const div = document.createElement('div');
-    div.style.height = '1%';
-    div.style.width = '2%';
-    div.backgroundImage = `url(../img/animations/bullets/${type}.jpg)`;
     div.style.position ='absolute';
     div.style.left = `${pos.style.left}`;
     div.style.top = `${pos.style.top}`;
-    div.style.transition = 'transform 1s ease-in-out';
-    div.style.transform = 'translateY(-10%)';
+    div.classList.add(`bullet`);
+    div.backgroundImage = `url(../img/animations/bullets/${type}.jpg)`;
     leggenda.appendChild(div);
     setTimeout(function(){
-        div.remove();
-    },10000)
+            div.remove();
+    },5000)
 }
 
-window.RaycastBullutsDamage = function(objectives,damage){
+window.RaycastBullutsDamage = function(objectives,damage,rotation){
     
     const objectivesY = (objectives.offsetHeight/3 + objectives.offsetTop);
 
     const bersagli = leggenda.querySelectorAll('.entity');
     
-    const rotation = parseInt(objectives.style.transform.match(/rotateY\((-?\d+)deg\)/)[1], 10) ? -1 : 1;
-    console.log(rotation)
     for(let i = bersagli.length-1 ;i >= 0;i--){
         const bersaglio = bersagli[i];
         const bersaglioOffsetLeft = bersaglio.offsetLeft + bersaglio.offsetWidth / 2;
         const bersaglioOffsetTop = bersaglio.offsetTop;
         const bersaglioOffsetBottom = bersaglioOffsetTop + bersaglio.offsetHeight;
         
-        if (((rotation < 0 && bersaglioOffsetLeft <= objectives.offsetLeft) || (rotation > 0 && bersaglioOffsetLeft >= objectives.offsetLeft)) && objectivesY > bersaglioOffsetTop && objectivesY < bersaglioOffsetBottom) {
+        if (((rotation === 0 && bersaglioOffsetLeft >= objectives.offsetLeft) || (rotation === 180 && bersaglioOffsetLeft <= objectives.offsetLeft)) && objectivesY > bersaglioOffsetTop && objectivesY < bersaglioOffsetBottom) {
             console.log(bersaglio);
             return 1;
         }
@@ -427,7 +422,7 @@ window.PlayerShoot = function(){
             weapon.chargers -= 1;
             player.style.backgroundImage = `url(../img/animations/player/shooting/${type}.jpg)`
             EffectCreateBullet(player,type);
-            RaycastBullutsDamage(player,10);
+            RaycastBullutsDamage(player,10,localdata.statsplayer.rotation);
             setTimeout(function(){
                isplayershooting = false;
             },weapon.shootdelay)
@@ -495,6 +490,7 @@ window.ObjectivesMoveLeft = function(objectives,pos){
     const cordinates = pos.posx - movepx;
     if(cordinates >= 0){  
         pos.posx = cordinates;
+        pos.rotation = 180;
         objectives.style.left = `${cordinates}%`
         objectives.style.transform = 'rotateY(180deg)'
     }
@@ -504,6 +500,7 @@ window.ObjectivesMoveRight = function(objectives,pos){
     const cordinates = pos.posx + movepx;
     if(cordinates < 100 - (objectives.offsetWidth / leggenda.offsetWidth * 100)){  
         pos.posx = cordinates;
+        pos.rotation = 0;
         objectives.style.left = `${cordinates}%`;
         objectives.style.transform = 'rotateY(0deg)'
     }
