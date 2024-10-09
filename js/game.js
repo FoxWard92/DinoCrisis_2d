@@ -238,14 +238,14 @@ window.ReloadInventario = function(){
             let quantityText = null;
 
             if(type[chiave] == 'weapon'){
-                quantityText = `${itemData.chargers} / ${itemData.ammons}`;
+                quantityText = `${items} : ${itemData.ammons+itemData.chargers}`;
                 if(items === localdata.statsplayer.setgun){
                     div.style.border = `0.2vw solid white`
-                    document.getElementById('equpaggimento-text').innerHTML = quantityText;
+                    document.getElementById('equpaggimento-text').innerHTML = `${itemData.chargers} / ${itemData.ammons}`;
                     document.getElementById('equpaggimento-img').style.backgroundImage = `url(../img/props/${type[chiave]}/${items}.jpg)`;
                 }
             }else{
-                quantityText = `${itemData.quantity}`;
+                quantityText = `${items}`;
             }
     
             const h3 = Object.assign(document.createElement('h3'), { innerText: quantityText });
@@ -255,7 +255,7 @@ window.ReloadInventario = function(){
             const buttonId = `button${type[chiave]}InventarioId${i})`
             buttonDiv.id =  buttonId
             buttonDiv.setAttribute('onclick', `InventarioEquip${type[chiave]}In${items}(document.getElementById('${buttonId}'))`);
-            buttonDiv.innerHTML = 'usa';
+            buttonDiv.innerHTML = `Usa Qut:${itemData.quantity}`;
 
 
             div.appendChild(buttonDiv)
@@ -390,11 +390,27 @@ window.EffectCreateBullet = function(pos,type){
     },10000)
 }
 
-window.RaycastBullutsDamage = function(facing,pos,damage){
+window.RaycastBullutsDamage = function(objectives,damage){
     
-    const bersagli = querySelectorAll('.entity');
-    const posx = parseInt(pos.style.left) + parseInt(facing)
-    const posy = parseInt(pos.style.left)
+    const objectivesY = (objectives.offsetHeight/3 + objectives.offsetTop);
+
+    const bersagli = leggenda.querySelectorAll('.entity');
+    
+    const rotation = parseInt(objectives.style.transform.match(/rotateY\((-?\d+)deg\)/)[1], 10) ? -1 : 1;
+    console.log(rotation)
+    for(let i = bersagli.length-1 ;i >= 0;i--){
+        const bersaglio = bersagli[i];
+        const bersaglioOffsetLeft = bersaglio.offsetLeft + bersaglio.offsetWidth / 2;
+        const bersaglioOffsetTop = bersaglio.offsetTop;
+        const bersaglioOffsetBottom = bersaglioOffsetTop + bersaglio.offsetHeight;
+        
+        if (((rotation < 0 && bersaglioOffsetLeft <= objectives.offsetLeft) || (rotation > 0 && bersaglioOffsetLeft >= objectives.offsetLeft)) && objectivesY > bersaglioOffsetTop && objectivesY < bersaglioOffsetBottom) {
+            console.log(bersaglio);
+            return 1;
+        }
+
+    }
+    return 0
 
 }
 
@@ -403,19 +419,19 @@ let isplayershooting = false;
 let isplayerinreloading = false;
 
 window.PlayerShoot = function(){
+    const type = localdata.statsplayer.setgun;
     if(!isplayershooting){
-        const type = localdata.statsplayer.setgun;
         const weapon = localdata.inventario.weapon[type];
         if(weapon.chargers > 0){
             isplayershooting = true;
             weapon.chargers -= 1;
             player.style.backgroundImage = `url(../img/animations/player/shooting/${type}.jpg)`
             EffectCreateBullet(player,type);
-            
+            RaycastBullutsDamage(player,10);
             setTimeout(function(){
                isplayershooting = false;
             },weapon.shootdelay)
-            ReloadInventario();
+            document.getElementById('equpaggimento-text').innerHTML = `${weapon.chargers} / ${weapon.ammons}`
        }else{
            AutoScribeText(document.getElementById('dialogo'), weapon.ammons > 0 ? `Premi ${playercommand[8]} per Ricaricare` : `Munizioni ${localdata.statsplayer.setgun} Finite`);
        }
@@ -432,13 +448,15 @@ window.PlayerShootReload = function(){
     if(weapon.chargers < weapon.maxchargers){
         if(weapon.ammons > 0){
             isplayerinreloading = true;
-            const ammoToReload = Math.min(weapon.maxchargers, weapon.ammons);
-            weapon.chargers += ammoToReload;
-            weapon.ammons -= ammoToReload;
+            setTimeout(function(){
+                const ammoToReload = Math.min(weapon.maxchargers-weapon.chargers, weapon.ammons);
+                weapon.chargers += ammoToReload;
+                weapon.ammons -= ammoToReload;
+                document.getElementById('equpaggimento-text').innerHTML = `${weapon.chargers} / ${weapon.ammons}`
+            },weapon.reloadtime/2)
             setTimeout(function(){
                 isplayerinreloading = false;
             },weapon.reloadtime)
-            ReloadInventario();
         }else{
             AutoScribeText(document.getElementById('dialogo'), `Munizioni ${localdata.statsplayer.setgun} Finite`);
         }
@@ -530,6 +548,8 @@ document.addEventListener('keyup', function(event) {
             stopMovement();
         }
     }
+
+    isplayershooting = false;
 });
 
 function handleKeyAction() {
