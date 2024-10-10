@@ -23,7 +23,8 @@ h1,h2,h3,p{
 
 p{
     margin: 0%;
-    font-size: 1vw;
+    font-size: 2vw;
+    white-space: wrap;
     overflow: scroll;
 }
 
@@ -192,6 +193,14 @@ nav>div{
     
 }
 
+.volker{
+    animation: volker 1s forwards;
+}
+
+.troble{
+    animation: troble 1s;
+    animation-iteration-count: infinite;
+}
 
 .wrong{
     border: solid 2px;
@@ -259,11 +268,19 @@ nav>div{
     background-repeat: no-repeat;
 }
 
-#dialogo{
+#msgfeedback{
+    opacity: 0;
     width: 90%;
     max-height: 80%;
-    background-color: rgba(77, 77, 77, 0.537);
+    background-color: transparent;
 }
+
+#msgfeedback>p{
+    width: 90%;
+    max-height: 80%;
+    text-shadow: 0.1vw 0.1vw 0.1vw rgb(95, 0, 0);
+}
+
 
 @font-face {
     font-family: 'BAD_GRUNGE';
@@ -278,6 +295,19 @@ nav>div{
     75%{border-color: red;transform: translateX(2%);}
     100%{border-color: gray;transform: translateX(0%);}
     
+}
+
+@keyframes troble {
+    0%{transform: translateX(0%);}
+    25%{transform: translateX(2%);}
+    50%{transform: translateX(-2%);}
+    75%{transform: translateX(2%);}
+    100%{transform: translateX(0%);}
+}
+
+@keyframes volker {
+    0%{opacity: 0;}
+    100%{opacity: 1;}
 }
 
 @keyframes atload {

@@ -28,6 +28,8 @@ const firebaseConfig = {
 
   let isRunningWrongAnimation = false;
 
+  let isRunningTrobleAnimation = false;
+
   let isRunningScribeAnimation = false;
 
   let playercommand = ['w','s','a','d','e',' ','i','escape','r'];
@@ -52,7 +54,7 @@ window.onload = async function(){
         console.log(localdata)
         await loadscena(localdata.startscena,true);
         await ReloadInventario()
-        SetLifebar(localdata.statsplayer.health)
+        SetLifebar(localdata.statsplayer.health,false)
         player.style.left = `${localdata.statsplayer.posx}%`;
         player.style.top = `${localdata.statsplayer.posy}%`;
         player.style.height = `${localdata.statsplayer.height}%`;
@@ -66,9 +68,18 @@ window.onload = async function(){
     return 0;
 }
 
-window.SetLifebar = function(value){
+window.SetLifebar = function(value,animations){
     localdata.statsplayer.health = value;
-    document.getElementById('healthbar').style.background = `linear-gradient(90deg,darkred 0% ${value}%,transparent ${value}% 100%)`
+    const lifebar = document.getElementById('healthbar');
+    if(!isRunningTrobleAnimation && animations){
+        isRunningTrobleAnimation = true;
+        lifebar.classList.add('troble')
+        setTimeout(function(){
+            isRunningTrobleAnimation = false;
+            lifebar.classList.remove('troble')
+        },1000)
+    }
+    lifebar.style.background = `linear-gradient(90deg,darkred 0% ${value}%,transparent ${value}% 100%)`
 }
 window.openMenu = function(type){
     const menu = document.getElementsByClassName('gamemenu');
@@ -87,13 +98,16 @@ window.openMenu = function(type){
 
 window.AutoScribeText = async function(html,text){
     if(!isRunningScribeAnimation){
+        html.classList.add('volker')
+        const p = html.querySelector('p')
         isRunningScribeAnimation = true;
         for(let i = 0;i < text.length;i++){
-            html.innerHTML += text.charAt(i);
+            p.innerHTML += text.charAt(i);
             await new Promise(resolve => setTimeout(resolve, 100));
         }
         await new Promise(resolve => setTimeout(resolve, 1000));
-        html.innerText = ''
+        p.innerText = ''
+        html.classList.remove('volker')
         isRunningScribeAnimation = false;
     }
 }
@@ -123,7 +137,7 @@ window.savegame = async function(){
         wrong(document.getElementById('savebutton'));
         setTimeout(function(){
             openMenu(2)
-            document.getElementById('consoledialogo').innerHTML = `Errore Dati Account Non Trovati`;
+            document.getElementById('cmdfeedback').innerHTML = `Errore Dati Account Non Trovati`;
         },1000)
         return 2
     }
@@ -136,7 +150,7 @@ window.savegame = async function(){
     wrong(document.getElementById('savebutton'));
     setTimeout(function(){
         openMenu(2)
-        document.getElementById('consoledialogo').innerHTML = `Errore Dati Account Passworld Errati`;
+        document.getElementById('cmdfeedback').innerHTML = `Errore Dati Account Passworld Errati`;
     },1000)
     return 0
 }
@@ -194,7 +208,7 @@ window.loadscena = async function(scena,isreload){
 
 window.InventarioEquipitemInkitmedico = function(button){
     if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
-    SetLifebar(Math.min(localdata.statsplayer.health + (50 - 10 * localdata.difficolta), 100));
+    SetLifebar(Math.min(localdata.statsplayer.health + (50 - 10 * localdata.difficolta), 100),true);
     if (--localdata.inventario.item.kitmedico.quantity <= 0) {
         delete localdata.inventario.item.kitmedico;
     }
@@ -343,7 +357,7 @@ window.PlayerInteraction = async function(objectives){
                     }, { once: true });         
                 }, { once: true });
             }else{
-                AutoScribeText(document.getElementById('dialogo'),`Necessaria Chiave ${data.key} Per Aprire`)
+                AutoScribeText(document.getElementById('msgfeedback'),`Necessaria Chiave ${data.key} Per Aprire`)
             }
             return 1
         }
@@ -407,7 +421,7 @@ window.AiEntity = async function (entita){
         
         if(Math.abs(dx) + Math.abs(dy) < 10 && now - dino.lastattacktime >= 1000){
             if(health > 0){
-                SetLifebar(localdata.statsplayer.health -= dino.damage + (localdata.difficolta*5))
+                SetLifebar(localdata.statsplayer.health -= dino.damage + (localdata.difficolta*5),true)
                 dino.lastattacktime = now
             }else{
                 isChangeScena = true
@@ -489,7 +503,7 @@ window.PlayerShoot = function(){
             },weapon.shootdelay)
             document.getElementById('equpaggimento-text').innerHTML = `${weapon.chargers} / ${weapon.ammons}`
        }else{
-           AutoScribeText(document.getElementById('dialogo'), weapon.ammons > 0 ? `Premi ${playercommand[8]} per Ricaricare` : `Munizioni ${localdata.statsplayer.setgun} Finite`);
+           AutoScribeText(document.getElementById('msgfeedback'), weapon.ammons > 0 ? `Premi ${playercommand[8]} per Ricaricare` : `Munizioni ${localdata.statsplayer.setgun} Finite`);
        }
     }else{
         player.style.backgroundImage = `url(../img/animations/player/handgun/${type}.jpg)`
@@ -514,10 +528,10 @@ window.PlayerShootReload = function(){
                 isplayerinreloading = false;
             },weapon.reloadtime)
         }else{
-            AutoScribeText(document.getElementById('dialogo'), `Munizioni ${localdata.statsplayer.setgun} Finite`);
+            AutoScribeText(document.getElementById('msgfeedback'), `Munizioni ${localdata.statsplayer.setgun} Finite`);
         }
     }else{
-        AutoScribeText(document.getElementById('dialogo'), `Munizioni ${localdata.statsplayer.setgun} Al Massimo`);
+        AutoScribeText(document.getElementById('msgfeedback'), `Munizioni ${localdata.statsplayer.setgun} Al Massimo`);
     }
     }
     
