@@ -214,9 +214,11 @@ window.NewGame = async function(){
     data.saves[idmondo].startscena = 1;
     data.saves[idmondo].statsplayer = {
         setgun : 'glock',
+        width :  10,
+        height :  20,
         health : 100,
         rotation : 0,
-        posx : 50,
+        posx: 50,
         posy : 50
     };
 

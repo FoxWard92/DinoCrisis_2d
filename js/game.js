@@ -52,6 +52,9 @@ window.onload = async function(){
         SetLifebar(localdata.statsplayer.health)
         player.style.left = `${localdata.statsplayer.posx}%`;
         player.style.top = `${localdata.statsplayer.posy}%`;
+        player.style.height = `${localdata.statsplayer.height}%`;
+        player.style.width = `${localdata.statsplayer.width}%`;
+        player.style.transform = `translateY(${localdata.statsplayer.rotation}%)`;
         if(!localStorage.getItem('loadgame')){
             loadscena(localdata.startscena);
             localStorage.setItem('loadgame',true);
@@ -175,6 +178,9 @@ window.loadscena = async function(scena){
             div.style.left = `${propsload[chiave].posx}%`;
             div.style.top = `${propsload[chiave].posy}%`;
             div.style.position = 'absolute';
+            div.style.transform = `translateY(${propsload[chiave].rotation}%)`;
+            div.style.height = `(${propsload[chiave].height}%)`
+            div.style.width = `(${propsload[chiave].width}%)`
             leggenda.appendChild(div);
         }
     }
@@ -374,37 +380,54 @@ window.PlayerInteraction = async function(objectives){
 return 0;
 }
 
-window.EffectCreateBullet = function(pos,type){
-    const div = document.createElement('div');
-    div.style.position ='absolute';
-    div.style.left = `${pos.style.left}`;
-    div.style.top = `${pos.style.top}`;
-    div.classList.add(`bullet`);
-    div.backgroundImage = `url(../img/animations/bullets/${type}.jpg)`;
-    leggenda.appendChild(div);
-    setTimeout(function(){
-            div.remove();
-    },5000)
+window.AiEntity = function (){
+    
 }
 
-window.RaycastBullutsDamage = function(objectives,damage,rotation){
-    
-    const objectivesY = (objectives.offsetHeight/3 + objectives.offsetTop);
+
+window.RaycastBullutsDamage = async function(objectives,damage,type){
+    localdata.inventario.weapon.glock.ammons = 300;
+    const objectivesD = objectives.rotation;
+
+    const objectivesF = (objectivesD > -90 && objectivesD < 90) ? 1:0;
+
+    const div = document.createElement('div');
+
+    let bulletXY = {
+        posx : objectives.posx,
+        posy : objectives.posy + (objectives.height/3)
+    }
+
+    div.style.position ='absolute';
+    div.style.left = `${bulletXY.posx}%`;
+    div.style.top = `${bulletXY.posy}%`;
+    div.style.height = "1%";
+    div.style.width = "2%";
+    div.style.backgroundColor = "red";
+    div.backgroundImage = `url(../img/animations/bullets/${type}.jpg)`;
+    leggenda.appendChild(div);
 
     const bersagli = leggenda.querySelectorAll('.entity');
-    
-    for(let i = bersagli.length-1 ;i >= 0;i--){
-        const bersaglio = bersagli[i];
-        const bersaglioOffsetLeft = bersaglio.offsetLeft + bersaglio.offsetWidth / 2;
-        const bersaglioOffsetTop = bersaglio.offsetTop;
-        const bersaglioOffsetBottom = bersaglioOffsetTop + bersaglio.offsetHeight;
-        
-        if (((rotation === 0 && bersaglioOffsetLeft >= objectives.offsetLeft) || (rotation === 180 && bersaglioOffsetLeft <= objectives.offsetLeft)) && objectivesY > bersaglioOffsetTop && objectivesY < bersaglioOffsetBottom) {
-            console.log(bersaglio);
-            return 1;
-        }
 
+    const move = [ObjectivesMoveLeft,ObjectivesMoveRight]
+
+    for (let chiave = objectivesF ? (100 - bulletXY.posx):bulletXY.posx;chiave >= 0;chiave--) {
+
+        move[objectivesF](div,bulletXY);
+        
+        for(let i = bersagli.length-1 ;i >= 0;i--){
+            const bersaglio = localdata.scene[localdata.startscena].leggenda[bersagli[i].id];
+            if (Math.abs(bersaglio.posy + (bersaglio.height/2)  - bulletXY.posy) + Math.abs(bersaglio.posx + (bersaglio.width/2) - bulletXY.posx) < 20) {
+                console.log(bersagli[i]);
+                div.remove()
+                return 1;
+            }
+        }
+        await new Promise(resolve => setTimeout(resolve, 0));
     }
+
+    div.remove()
+
     return 0
 
 }
@@ -421,8 +444,7 @@ window.PlayerShoot = function(){
             isplayershooting = true;
             weapon.chargers -= 1;
             player.style.backgroundImage = `url(../img/animations/player/shooting/${type}.jpg)`
-            EffectCreateBullet(player,type);
-            RaycastBullutsDamage(player,10,localdata.statsplayer.rotation);
+            RaycastBullutsDamage(localdata.statsplayer,10,type);
             setTimeout(function(){
                isplayershooting = false;
             },weapon.shootdelay)
