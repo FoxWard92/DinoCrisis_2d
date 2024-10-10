@@ -40,6 +40,8 @@ const firebaseConfig = {
 
   const player = document.getElementById('Player')
 
+  let entita = leggenda.querySelectorAll('.entity');
+
   const movepx = 1;
 
   
@@ -178,12 +180,15 @@ window.loadscena = async function(scena){
             div.style.left = `${propsload[chiave].posx}%`;
             div.style.top = `${propsload[chiave].posy}%`;
             div.style.position = 'absolute';
-            div.style.transform = `translateY(${propsload[chiave].rotation}%)`;
-            div.style.height = `(${propsload[chiave].height}%)`
-            div.style.width = `(${propsload[chiave].width}%)`
+            div.style.transform = `scaleX(${propsload[chiave].rotation})`;
+            div.style.height = `${propsload[chiave].height}%`
+            div.style.width = `${propsload[chiave].width}%`
             leggenda.appendChild(div);
         }
     }
+
+    entita = leggenda.querySelectorAll('.entity');
+
     localdata.startscena = scena;
     isChangeScena = false;
 }
@@ -380,16 +385,27 @@ window.PlayerInteraction = async function(objectives){
 return 0;
 }
 
+
+
 window.AiEntity = function (){
     
+    for(let i = entita.length-1; i >= 0;i--){
+
+        const data = localdata.scene[localdata.startscena].leggenda[entita[i].id]
+        objectMove[0](entita[i],data)
+        console.log(localdata.scene[localdata.startscena].leggenda[entita[i].id])
+    }
 }
+
+setInterval(function(){AiEntity()},100)
 
 
 window.RaycastBullutsDamage = async function(objectives,damage,type){
     localdata.inventario.weapon.glock.ammons = 300;
+
     const objectivesD = objectives.rotation;
 
-    const objectivesF = (objectivesD > -90 && objectivesD < 90) ? 1:0;
+    const objectivesF = objectivesD === -1 ? 1:0;
 
     const div = document.createElement('div');
 
@@ -399,15 +415,13 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
     }
 
     div.style.position ='absolute';
-    div.style.left = `${bulletXY.posx}%`;
-    div.style.top = `${bulletXY.posy}%`;
+    div.style.left = `${bulletXY.posx}vh`;
+    div.style.top = `${bulletXY.posy}vh`;
     div.style.height = "1%";
     div.style.width = "2%";
     div.style.backgroundColor = "red";
     div.backgroundImage = `url(../img/animations/bullets/${type}.jpg)`;
     leggenda.appendChild(div);
-
-    const bersagli = leggenda.querySelectorAll('.entity');
 
     const move = [ObjectivesMoveLeft,ObjectivesMoveRight]
 
@@ -415,8 +429,8 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
 
         move[objectivesF](div,bulletXY);
         
-        for(let i = bersagli.length-1 ;i >= 0;i--){
-            const bersaglio = localdata.scene[localdata.startscena].leggenda[bersagli[i].id];
+        for(let i = entita.length-1 ;i >= 0;i--){
+            const bersaglio = localdata.scene[localdata.startscena].leggenda[entita[i].id];
             if (Math.abs(bersaglio.posy + (bersaglio.height/2)  - bulletXY.posy) + Math.abs(bersaglio.posx + (bersaglio.width/2) - bulletXY.posx) < 20) {
                 console.log(bersagli[i]);
                 div.remove()
@@ -494,7 +508,8 @@ window.PlayerMenuGame = function(){
 
 window.ObjectivesMoveUp = function(objectives,pos){
     const cordinates = pos.posy - movepx;
-    if(cordinates > leggenda.offsetTop / window.innerHeight * 100){
+    console.log((leggenda.offsetTop / window.innerHeight * 100))
+    if(cordinates > (leggenda.offsetTop / window.innerHeight * 100)){
         pos.posy = cordinates;
         objectives.style.top = `${cordinates}%`
     }
@@ -512,9 +527,9 @@ window.ObjectivesMoveLeft = function(objectives,pos){
     const cordinates = pos.posx - movepx;
     if(cordinates >= 0){  
         pos.posx = cordinates;
-        pos.rotation = 180;
+        pos.rotation = 1;
         objectives.style.left = `${cordinates}%`
-        objectives.style.transform = 'rotateY(180deg)'
+        objectives.style.transform = 'scaleX(1)'
     }
 }
 
@@ -522,9 +537,9 @@ window.ObjectivesMoveRight = function(objectives,pos){
     const cordinates = pos.posx + movepx;
     if(cordinates < 100 - (objectives.offsetWidth / leggenda.offsetWidth * 100)){  
         pos.posx = cordinates;
-        pos.rotation = 0;
+        pos.rotation = -1;
         objectives.style.left = `${cordinates}%`;
-        objectives.style.transform = 'rotateY(0deg)'
+        objectives.style.transform = 'scaleX(-1)'
     }
 }
 
@@ -537,7 +552,6 @@ let movementInterval;
 
 document.addEventListener('keydown', function(event) {
     const key = event.key.toLowerCase();
-
     if (!isChangeScena) {
         const isMovementKey = playercommand.slice(0, 4).includes(key);
         const isActionKey = playercommand.slice(4, 9).includes(key);

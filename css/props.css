@@ -15,15 +15,6 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    z-index: 4;
     position: absolute;
-}
-
-.velociraptor{
-    height: 30%;
-    width: 20%;
-}
-
-.kitmedico{
-    height: 4%;
-    width: 5%;
 }
