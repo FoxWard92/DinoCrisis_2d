@@ -54,6 +54,7 @@ window.onload = async function(){
         console.log(localdata)
         await loadscena(localdata.startscena,true);
         await ReloadInventario()
+        localdata.statsplayer.health = 100;
         SetLifebar(localdata.statsplayer.health,false)
         player.style.left = `${localdata.statsplayer.posx}%`;
         player.style.top = `${localdata.statsplayer.posy}%`;
@@ -162,7 +163,9 @@ window.loadscena = async function(scena,isreload){
         props[i].remove();
     }
 
-    document.getElementById('back-game').style.backgroundImage = `url(${[localdata.scene[scena].background]})`;
+    document.getElementById('maindoors').style.backgroundImage = `url(${[localdata.scene[scena].backgroundheader]})`;
+    document.getElementById('leggenda').style.backgroundImage = `url(${[localdata.scene[scena].backgroundarticle]})`;
+    document.getElementById('gui').style.backgroundImage = `url(${[localdata.scene[scena].backgroundfooter]})`;
 
     for(const chiave in doors){
         const door = document.getElementById(doors[chiave]);
@@ -547,7 +550,7 @@ window.PlayerMenuGame = function(){
 
 window.ObjectivesMoveUp = function(objectives,pos,movepx){
     const cordinates = pos.posy - movepx;
-    if(cordinates > (leggenda.offsetTop / window.innerHeight * 100)){
+    if(cordinates > 20){
         pos.posy = cordinates;
         objectives.style.top = `${cordinates}%`
     }
@@ -555,7 +558,7 @@ window.ObjectivesMoveUp = function(objectives,pos,movepx){
 
 window.ObjectivesMoveDown = function(objectives,pos,movepx){
     const cordinates = pos.posy + movepx;
-    if(cordinates < (leggenda.offsetHeight - leggenda.offsetTop) / window.innerHeight * 100){
+    if(cordinates < 70){
         pos.posy = cordinates; 
         objectives.style.top = `${cordinates}%`
     }

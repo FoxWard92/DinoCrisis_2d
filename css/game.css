@@ -35,26 +35,29 @@ section{
     justify-content: center;
 }
 
-header,footer{
+footer{
     flex: 0.1;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-header>div,footer>div{
+footer>div{
     flex: 0.2;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-header>button{
-    color: white;
+header{
+    flex: 0.4;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
 }
 
 article{
-    flex: 0.80;
+    flex: 0.50;
     display: flex;
     justify-content: space-around;
     align-items: start;
@@ -121,7 +124,7 @@ nav>div{
 
 .Menubutton{
     height: 50%;
-    width: 40%;
+    width: 30%;
     border-top-left-radius: 1vw;
     border-top-right-radius: 1vw;
     border: none;
@@ -223,7 +226,7 @@ nav>div{
 
 #centerdoor,#leftdoor,#rightdoor{
     overflow: hidden;
-    height: 27%;
+    height: 50%;
     width: 25%;
     display: flex;
     justify-content: center;
