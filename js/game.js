@@ -180,7 +180,7 @@ window.loadscena = async function(scena){
             div.style.left = `${propsload[chiave].posx}%`;
             div.style.top = `${propsload[chiave].posy}%`;
             div.style.position = 'absolute';
-            div.style.transform = `scaleX(${propsload[chiave].rotation})`;
+            div.style.transform = `scaleX(${propsload[chiave].rotation*-1})`;
             div.style.height = `${propsload[chiave].height}%`
             div.style.width = `${propsload[chiave].width}%`
             leggenda.appendChild(div);
@@ -392,8 +392,7 @@ window.AiEntity = function (){
     for(let i = entita.length-1; i >= 0;i--){
 
         const data = localdata.scene[localdata.startscena].leggenda[entita[i].id]
-        objectMove[0](entita[i],data)
-        console.log(localdata.scene[localdata.startscena].leggenda[entita[i].id])
+        objectMove[3](entita[i],data)
     }
 }
 
@@ -405,7 +404,7 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
 
     const objectivesD = objectives.rotation;
 
-    const objectivesF = objectivesD === -1 ? 1:0;
+    const objectivesF = (objectivesD + 1) / 2;
 
     const div = document.createElement('div');
 
@@ -432,7 +431,7 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
         for(let i = entita.length-1 ;i >= 0;i--){
             const bersaglio = localdata.scene[localdata.startscena].leggenda[entita[i].id];
             if (Math.abs(bersaglio.posy + (bersaglio.height/2)  - bulletXY.posy) + Math.abs(bersaglio.posx + (bersaglio.width/2) - bulletXY.posx) < 20) {
-                console.log(bersagli[i]);
+                console.log(bersaglio);
                 div.remove()
                 return 1;
             }
@@ -508,7 +507,6 @@ window.PlayerMenuGame = function(){
 
 window.ObjectivesMoveUp = function(objectives,pos){
     const cordinates = pos.posy - movepx;
-    console.log((leggenda.offsetTop / window.innerHeight * 100))
     if(cordinates > (leggenda.offsetTop / window.innerHeight * 100)){
         pos.posy = cordinates;
         objectives.style.top = `${cordinates}%`
@@ -527,7 +525,7 @@ window.ObjectivesMoveLeft = function(objectives,pos){
     const cordinates = pos.posx - movepx;
     if(cordinates >= 0){  
         pos.posx = cordinates;
-        pos.rotation = 1;
+        pos.rotation = -1;
         objectives.style.left = `${cordinates}%`
         objectives.style.transform = 'scaleX(1)'
     }
@@ -537,7 +535,7 @@ window.ObjectivesMoveRight = function(objectives,pos){
     const cordinates = pos.posx + movepx;
     if(cordinates < 100 - (objectives.offsetWidth / leggenda.offsetWidth * 100)){  
         pos.posx = cordinates;
-        pos.rotation = -1;
+        pos.rotation = +1;
         objectives.style.left = `${cordinates}%`;
         objectives.style.transform = 'scaleX(-1)'
     }
