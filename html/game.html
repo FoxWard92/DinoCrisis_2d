@@ -25,14 +25,18 @@
             <div class="space-around-coloum">
                 <h1>Impostazioni</h1>
                 <div class="space-around-row">
-                    <div><h2>Audio</h2></div>
+                    <div class="space-around-coloum container-gray">
+                        <h2>Audio</h2>
+                    </div>
                 </div>
                 <div class="space-around-row">
-                    <div><h2>Comandi</h2></div>
+                    <div class="space-around-coloum container-gray">
+                        <h2>Comandi</h2>
+                    </div>
                 </div>
-                <div class="space-around-row">
-                    <div><button onclick="savegame()" id="savebutton" >Torna Al Gioco</button></div>
-                    <div><button onclick="exitgame('none')">Esci Senza Salvare</button></div>
+                <div class="space-around-row container-gray">
+                    <button onclick="savegame()" class="Menubutton" id="savebutton" >Torna Al Gioco</button>
+                    <button onclick="exitgame('none')" class="Menubutton">Esci Senza Salvare</button>
                 </div>
             </div>
         </nav>
@@ -52,6 +56,14 @@
                 <h1>Errore Di Sistema</h1>
                 <div class="space-around-row">
                     <div><p id="consoledialogo"></p></div>
+                </div>
+            </div>
+        </nav>
+        <nav id="Console" class="gamemenu">
+            <div class="space-around-coloum">
+                <h1>Game Over</h1>
+                <div class="space-around-row container-gray">
+                    <button onclick="exitgame()" class="Menubutton" >Esci Dal Gioco</button>
                 </div>
             </div>
         </nav>

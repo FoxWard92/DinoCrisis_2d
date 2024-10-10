@@ -35,6 +35,8 @@ const firebaseConfig = {
 window.onload = async function(){
     if(localStorage.getItem('utente') != null){
         const data = JSON.parse(localStorage.getItem('utente'));
+        const elemento1 = document.getElementsByClassName('contenitore-scheda');
+        await ChangeLinearGradient(elemento1[0],315,125)
         await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
         await ReloadSalvataggi();
         await viewchange(2,false,true); 
@@ -110,28 +112,23 @@ window.addSavesSlot = function(container){
     container.appendChild(newSlot); 
 }
 
-window.WrongClassList = function(wrong){
-    isRunnigWrongAnimation = true;
-    wrong.classList.add('wrong');
-
-    setTimeout(function(){
-        wrong.classList.remove('wrong');
-        isRunnigWrongAnimation = false;
-    },1000);
+window.Wrong = function(wrong){
+    if(!isRunnigWrongAnimation){
+        isRunnigWrongAnimation = true;
+        wrong.classList.add('wrong');
+    
+        setTimeout(function(){
+            wrong.classList.remove('wrong');
+            isRunnigWrongAnimation = false;
+        },1000);
+    }
 }
 
-window.WrongNome = function (nome,password,confermapassworld){
-    if(!isRunnigWrongAnimation){WrongClassList(nome);}
-}
+window.WrongNome = function (nome,password,confermapassworld){Wrong(nome);}
 
-window.WrongPassword = function (nome,password,confermapassworld){
-    if(!isRunnigWrongAnimation){WrongClassList(password);}
-}
+window.WrongPassword = function (nome,password,confermapassworld){Wrong(password);}
 
-window.WrongPasswordConferma = function (nome,password,confermapassworld){
-    if(!isRunnigWrongAnimation){WrongClassList(confermapassworld);}
-
-}
+window.WrongPasswordConferma = function (nome,password,confermapassworld){Wrong(confermapassworld);}
 
 window.AccesoVerificato = async function (nome,password,confermapassworld){
     await ReloadSalvataggi();
@@ -141,10 +138,10 @@ window.AccesoVerificato = async function (nome,password,confermapassworld){
 
 window.RegistroVerificato = async function (nome,password,confermapassworld){
     if(password.value == ''){
-        arrayDiFunzioni[1](nome,password,confermapassworld);
+        Wrong(password)
         return 0
     }else if(password.value != confermapassworld.value){
-        arrayDiFunzioni[3](nome,password,confermapassworld);
+        Wrong(confermapassworld)
         return 1
     }
     const utenteogggeto = {
@@ -189,7 +186,7 @@ window.NewGame = async function(){
     
     loadbar.classList.add('atload');
     const nome = document.getElementById('NomePartitaNuova');
-    if(nome.value === ''){WrongNome(nome,0,0);loadbar.classList.remove('atload'); return 0}
+    if(nome.value === ''){Wrong(nome);loadbar.classList.remove('atload'); return 0}
     const difficolta =  document.querySelector('input[name="difficoltà"]:checked');
     const data = JSON.parse(localStorage.getItem('utente'));
     let salvataggi = 0;
@@ -261,7 +258,7 @@ window.RemoveGame = async function () {
         }
     }
 
-    WrongNome(nome,0,0);
+    Wrong(nome);
     loadbar.classList.remove('atload');
     return 0
 }
@@ -301,11 +298,13 @@ window.LoadGame = async function (idmondo) {
             centerdoor: scenaGamedata.centerdoor,
             leftdoor: scenaGamedata.leftdoor,
             rightdoor: scenaGamedata.rightdoor,
+            background: scenaGamedata.background,
             leggenda: aggiornaOggettiNpcs(scenaData.leggenda, scenaGamedata.leggenda),
         };
     } else {
         console.warn(`La scena ${scenaKey} non contiene leggenda.`, scenaData);
         localdata.scene[scenaKey] = {
+            background: scenaGamedata.background,
             centerdoor: scenaGamedata.centerdoor,
             leftdoor: scenaGamedata.leftdoor,
             rightdoor: scenaGamedata.rightdoor,

@@ -93,7 +93,7 @@ article{
     border-radius: 1vw;
     backdrop-filter: blur(0.2vw);
     box-shadow: 0vw 0vw 1vw 1vw rgb(20,20,20);
-    background: linear-gradient(125deg,transparent  0% ,rgb(20,20,20) 70%);
+    background: linear-gradient(315deg,transparent  0% ,rgb(20,20,20) 70%);
 }
 
 .contenitore-bottoni{

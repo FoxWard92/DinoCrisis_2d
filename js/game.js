@@ -34,6 +34,9 @@ const firebaseConfig = {
 
   let memscena = 0;
 
+  
+  const doors = ['leftdoor','centerdoor','rightdoor'];
+
   const loadbar = document.getElementById('loadbar')
 
   const leggenda = document.getElementById('leggenda');
@@ -42,14 +45,12 @@ const firebaseConfig = {
 
   let entita = leggenda.querySelectorAll('.entity');
 
-  const movepx = 1;
-
   
 window.onload = async function(){
     localdata = JSON.parse(localStorage.getItem('gamelocaldata'));
     if(localdata != null){
         console.log(localdata)
-        await loadscena(localdata.startscena);
+        await loadscena(localdata.startscena,true);
         await ReloadInventario()
         SetLifebar(localdata.statsplayer.health)
         player.style.left = `${localdata.statsplayer.posx}%`;
@@ -57,11 +58,6 @@ window.onload = async function(){
         player.style.height = `${localdata.statsplayer.height}%`;
         player.style.width = `${localdata.statsplayer.width}%`;
         player.style.transform = `translateY(${localdata.statsplayer.rotation}%)`;
-        if(!localStorage.getItem('loadgame')){
-            loadscena(localdata.startscena);
-            localStorage.setItem('loadgame',true);
-            return 1
-        }
         return 2
     }
 
@@ -71,6 +67,7 @@ window.onload = async function(){
 }
 
 window.SetLifebar = function(value){
+    localdata.statsplayer.health = value;
     document.getElementById('healthbar').style.background = `linear-gradient(90deg,darkred 0% ${value}%,transparent ${value}% 100%)`
 }
 window.openMenu = function(type){
@@ -81,6 +78,7 @@ window.openMenu = function(type){
         menu[type].style.display = 'flex'
         return 1
     }
+
     menu[type].style.display = 'none'
     isChangePause = false;
 
@@ -143,17 +141,14 @@ window.savegame = async function(){
     return 0
 }
 
-window.loadscena = async function(scena){
+window.loadscena = async function(scena,isreload){
     isChangeScena = true;
     const props = document.getElementsByClassName('props');
     for(var i = props.length-1; i >= 0 ;i--){
         props[i].remove();
     }
 
-    document.getElementById('back-game').style.backgroundImage = `url(../img/props/scene/${[scena]}.jpg)`;
-    
-    
-    const doors = ['leftdoor','centerdoor','rightdoor']
+    document.getElementById('back-game').style.backgroundImage = `url(${[localdata.scene[scena].background]})`;
 
     for(const chiave in doors){
         const door = document.getElementById(doors[chiave]);
@@ -173,6 +168,10 @@ window.loadscena = async function(scena){
     const propsload = localdata.scene[scena].leggenda;
     for(const chiave in propsload){
         if(propsload[chiave].health > 0){
+            if(!isreload && propsload[chiave].type === 'entity'){
+                propsload[chiave].posx = Math.random()*51+30
+                propsload[chiave].posy = Math.random()*51+30
+            }
             const div = document.createElement('div');
             div.className = `props ${propsload[chiave].nome} ${propsload[chiave].type}`;
             div.id = `${chiave}`;
@@ -194,17 +193,12 @@ window.loadscena = async function(scena){
 }
 
 window.InventarioEquipitemInkitmedico = function(button){
-    if (localdata.statsplayer.health < 100) {
-        localdata.statsplayer.health = Math.min(localdata.statsplayer.health + (50 - 10*localdata.difficolta), 100);
-        SetLifebar(localdata.statsplayer.health);
-        localdata.inventario.item.kitmedico.quantity -= 1;
-        if (localdata.inventario.item.kitmedico.quantity <= 0) {
-            delete localdata.inventario.item.kitmedico;
-        }
-        ReloadInventario()
-    } else {
-        wrong(button.parentElement);
+    if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
+    SetLifebar(Math.min(localdata.statsplayer.health + (50 - 10 * localdata.difficolta), 100));
+    if (--localdata.inventario.item.kitmedico.quantity <= 0) {
+        delete localdata.inventario.item.kitmedico;
     }
+    ReloadInventario();
 }
 
 window.InventarioEquipweaponInglock = function(button){
@@ -308,8 +302,6 @@ window.addEventListener('beforeunload', function(event) {
 
 window.PlayerInteraction = async function(objectives){
     if(isChangeScena){return 0}
-    
-    const doors = ['leftdoor','centerdoor','rightdoor'];
 
     const objCenterX = player.offsetLeft + (objectives.offsetWidth >> 1);
     const objCenterY = player.offsetTop + (objectives.offsetHeight >> 1);
@@ -344,7 +336,7 @@ window.PlayerInteraction = async function(objectives){
                             addmotiondoor[i].style.transform = `translateX(${0}%) translateY(${0}%)`;
                         }
                         setTimeout( async function(){
-                            await loadscena(data.scena);
+                            await loadscena(data.scena,false);
                             objectives.style.opacity = 1;
                             isChangeScena = false;
                         },100)
@@ -387,16 +379,50 @@ return 0;
 
 
 
-window.AiEntity = function (){
-    
-    for(let i = entita.length-1; i >= 0;i--){
+window.AiEntity = async function (entita){
+        const dino = localdata.scene[localdata.startscena].leggenda[entita.id]
+        if(dino.health < 0){entita.remove()}
+        const playerX = localdata.statsplayer.posx
+        const playerY = localdata.statsplayer.posy
 
-        const data = localdata.scene[localdata.startscena].leggenda[entita[i].id]
-        objectMove[3](entita[i],data)
-    }
+        let dx = playerX - dino.posx;
+        let dy = playerY - dino.posy;
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx < 0) {
+                objectMove[2](entita, dino,dino.speed);
+            } else if(dx > dino.speed) {
+                objectMove[3](entita, dino,dino.speed);
+            }
+        } else {
+            if (dy < 0) {
+                objectMove[0](entita, dino,dino.speed);
+            } else if (dy > dino.speed) {
+                objectMove[1](entita, dino,dino.speed);
+            }
+        }
+        const now = Date.now();
+
+        const health = localdata.statsplayer.health
+        
+        if(Math.abs(dx) + Math.abs(dy) < 10 && now - dino.lastattacktime >= 1000){
+            if(health > 0){
+                SetLifebar(localdata.statsplayer.health -= dino.damage + (localdata.difficolta*5))
+                dino.lastattacktime = now
+            }else{
+                isChangeScena = true
+                openMenu(3)
+            }
+        }
 }
 
-setInterval(function(){AiEntity()},100)
+setInterval(function(){
+    if(!isChangePause && !isChangeScena){
+        for(let i = entita.length-1; i >= 0;i--){
+            AiEntity(entita[i])
+        }
+    }
+},10)
 
 
 window.RaycastBullutsDamage = async function(objectives,damage,type){
@@ -414,8 +440,8 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
     }
 
     div.style.position ='absolute';
-    div.style.left = `${bulletXY.posx}vh`;
-    div.style.top = `${bulletXY.posy}vh`;
+    div.style.left = `${bulletXY.posx}%`;
+    div.style.top = `${bulletXY.posy}%`;
     div.style.height = "1%";
     div.style.width = "2%";
     div.style.backgroundColor = "red";
@@ -424,19 +450,19 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
 
     const move = [ObjectivesMoveLeft,ObjectivesMoveRight]
 
-    for (let chiave = objectivesF ? (100 - bulletXY.posx):bulletXY.posx;chiave >= 0;chiave--) {
+    for (let chiave = (objectivesF ? (100 - bulletXY.posx):bulletXY.posx)/2;chiave >= 0;chiave--) {
 
-        move[objectivesF](div,bulletXY);
+        move[objectivesF](div,bulletXY,2);
         
         for(let i = entita.length-1 ;i >= 0;i--){
             const bersaglio = localdata.scene[localdata.startscena].leggenda[entita[i].id];
             if (Math.abs(bersaglio.posy + (bersaglio.height/2)  - bulletXY.posy) + Math.abs(bersaglio.posx + (bersaglio.width/2) - bulletXY.posx) < 20) {
-                console.log(bersaglio);
+                bersaglio.health -= damage 
                 div.remove()
                 return 1;
             }
         }
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise(resolve => setTimeout(resolve, 10));
     }
 
     div.remove()
@@ -505,7 +531,7 @@ window.PlayerMenuGame = function(){
     openMenu(0)
 }
 
-window.ObjectivesMoveUp = function(objectives,pos){
+window.ObjectivesMoveUp = function(objectives,pos,movepx){
     const cordinates = pos.posy - movepx;
     if(cordinates > (leggenda.offsetTop / window.innerHeight * 100)){
         pos.posy = cordinates;
@@ -513,7 +539,7 @@ window.ObjectivesMoveUp = function(objectives,pos){
     }
 }
 
-window.ObjectivesMoveDown = function(objectives,pos){
+window.ObjectivesMoveDown = function(objectives,pos,movepx){
     const cordinates = pos.posy + movepx;
     if(cordinates < (leggenda.offsetHeight - leggenda.offsetTop) / window.innerHeight * 100){
         pos.posy = cordinates; 
@@ -521,7 +547,7 @@ window.ObjectivesMoveDown = function(objectives,pos){
     }
 }
 
-window.ObjectivesMoveLeft = function(objectives,pos){
+window.ObjectivesMoveLeft = function(objectives,pos,movepx){
     const cordinates = pos.posx - movepx;
     if(cordinates >= 0){  
         pos.posx = cordinates;
@@ -531,7 +557,7 @@ window.ObjectivesMoveLeft = function(objectives,pos){
     }
 }
 
-window.ObjectivesMoveRight = function(objectives,pos){
+window.ObjectivesMoveRight = function(objectives,pos,movepx){
     const cordinates = pos.posx + movepx;
     if(cordinates < 100 - (objectives.offsetWidth / leggenda.offsetWidth * 100)){  
         pos.posx = cordinates;
@@ -587,7 +613,7 @@ function handleKeyAction() {
     if (!isChangeScena && !isChangePause) {
         for (let i = 0; i < 4; i++) {
             if (keysPressed[playercommand[i]]) {
-                objectMove[i](player, localdata.statsplayer);
+                objectMove[i](player, localdata.statsplayer,0.5);
             }
         }
     }
@@ -599,7 +625,7 @@ function updateMovement() {
 
 function startMovement() {
     if (!movementInterval) {
-        movementInterval = setInterval(updateMovement, 50);
+        movementInterval = setInterval(updateMovement, 10);
     }
 }
 
