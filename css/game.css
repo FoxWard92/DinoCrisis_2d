@@ -22,7 +22,7 @@ h1,h2,h3,p{
 
 p{
     margin: 0%;
-    font-size: 2vw;
+    font-size: 1.8vw;
     white-space: wrap;
     overflow: scroll;
 }
@@ -242,6 +242,9 @@ nav>div{
 #centerdoor>div,#leftdoor>div,#rightdoor>div{
     height: 100%;
     width: 45%;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
     transition: all 1s ease-in-out;
     z-index: 1;
 }
@@ -286,7 +289,7 @@ nav>div{
 
 #msgfeedback>p{
     width: 90%;
-    max-height: 80%;
+    max-height: 90%;
     text-shadow: 0.1vw 0.1vw 0.1vw rgb(95, 0, 0);
 }
 

@@ -54,7 +54,6 @@ window.onload = async function(){
         console.log(localdata)
         await loadscena(localdata.startscena,true);
         await ReloadInventario()
-        localdata.statsplayer.health = 100;
         SetLifebar(localdata.statsplayer.health,false)
         player.style.left = `${localdata.statsplayer.posx}%`;
         player.style.top = `${localdata.statsplayer.posy}%`;
@@ -157,29 +156,18 @@ window.savegame = async function(){
     return 0
 }
 
-const loadBackgroundImage = url => new Promise((resolve, reject) => {
-    Object.assign(new Image(), { onload: () => resolve(url), onerror: () => reject(new Error(`Errore nel caricamento: ${url}`)), src: url });
-});
-
-
 window.loadscena = async function(scena,isreload){
     isChangeScena = true;
     const props = document.getElementsByClassName('props');
     for(var i = props.length-1; i >= 0 ;i--){
         props[i].remove();
     }
+    
+    document.getElementById('maindoors').style.backgroundImage = `url(${localdata.scene[scena].backgroundheader})`;
+    document.getElementById('leggenda').style.backgroundImage = `url(${localdata.scene[scena].backgroundarticle})`;
+    document.getElementById('gui').style.backgroundImage = `url(${localdata.scene[scena].backgroundfooter})`;
 
-    try {
-        await loadBackgroundImage(localdata.scene[scena].backgroundheader);
-        await loadBackgroundImage(localdata.scene[scena].backgroundarticle);
-        await loadBackgroundImage(localdata.scene[scena].backgroundfooter);
-        document.getElementById('maindoors').style.backgroundImage = `url(${localdata.scene[scena].backgroundheader})`;
-        document.getElementById('leggenda').style.backgroundImage = `url(${localdata.scene[scena].backgroundarticle})`;
-        document.getElementById('gui').style.backgroundImage = `url(${localdata.scene[scena].backgroundfooter})`;
-    } catch (error) {
-        console.error(error.message);
-    }
-
+    await new Promise(resolve => setTimeout(resolve, 400));
 
     for(const chiave in doors){
         const door = document.getElementById(doors[chiave]);
@@ -193,6 +181,8 @@ window.loadscena = async function(scena,isreload){
             }else{
                 door.style.background = `linear-gradient(90deg,transparent 0% 20%,black 30% 70%,transparent 80% 100%)`;
             }
+        }else{
+            door.style.background = `transparent`;
         }
     }
 
@@ -327,6 +317,7 @@ window.getDataForNode = async function (NodeId) {
 
 
 window.addEventListener('beforeunload', function(event) {
+    console.log(localdata.statsplayer.health)
     localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
 });
 
@@ -337,6 +328,8 @@ window.PlayerInteraction = async function(objectives){
     const objCenterY = player.offsetTop + (objectives.offsetHeight >> 1);
 
     for(const chiave in doors){
+        const data = localdata.scene[localdata.startscena][doors[chiave]];
+        if(data.scena){
 
         const door = document.getElementById(doors[chiave]);
         const doorCenterX = door.offsetLeft + (door.offsetWidth >> 1);
@@ -344,14 +337,13 @@ window.PlayerInteraction = async function(objectives){
 
         const distX = Math.abs(doorCenterX - objCenterX);
         const distY = Math.abs(doorCenterY - objCenterY);
-        if ((((distX / leggenda.offsetWidth)*100) + ((distY /leggenda.offsetHeight)*100)) < 3) {
-            const data = localdata.scene[localdata.startscena][doors[chiave]];
+        if ((((distX / leggenda.offsetWidth)*100) + ((distY /leggenda.offsetHeight)*100)) < 4) {
             if(!data.key || localdata.inventario.key[data.key]){
                 isChangeScena = true;
                 const scroll = [-1,1];
                 const addmotiondoor = door.children;
                 for(var i = 0; i < addmotiondoor.length;i++){
-                    addmotiondoor[i].style.transform = `translateX(${data.scroll.left * 100 * scroll[i]}%) translateY(${data.scroll.top * 100 * scroll[i]}%)`;
+                    addmotiondoor[i].style.transform = `translateX(${data.scroll.left * 100 * scroll[i]}%) translateY(${data.scroll.top * 100 * -1}%)`;
                 }
                 
                 addmotiondoor[0].addEventListener('transitionend', async function() {
@@ -378,6 +370,7 @@ window.PlayerInteraction = async function(objectives){
             return 1
         }
     }
+    }
 
     const props = document.querySelectorAll('.item, .weapon, .key');
 
@@ -391,7 +384,7 @@ window.PlayerInteraction = async function(objectives){
             const distX = Math.abs(prop.offsetLeft - objCenterX);
             const distY = Math.abs(prop.offsetTop - objCenterY);
             const distancePercentage = ((distX / leggenda.offsetWidth) * 100) + ((distY / leggenda.offsetHeight) * 100);
-            if (distancePercentage < 10) {
+            if (distancePercentage < 12) {
             localdata.inventario[category] = localdata.inventario[category] || {};
             localdata.inventario[category][itemKey] = localdata.inventario[category][itemKey] || { quantity: 0 };
             localdata.inventario[category][itemKey].quantity++;
@@ -437,7 +430,7 @@ window.AiEntity = async function (entita){
         
         if(Math.abs(dx) + Math.abs(dy) < 10 && now - dino.lastattacktime >= 1000){
             entita.style.backgroundImage = `url(../img/animations/velociraptor/attack.gif)`
-            SetLifebar(localdata.statsplayer.health -= dino.damage + (localdata.difficolta*5),true)
+            SetLifebar(localdata.statsplayer.health - (dino.damage + (localdata.difficolta*5)),true)
             if(health > 0){
                 dino.lastattacktime = now
             }else{
@@ -445,7 +438,8 @@ window.AiEntity = async function (entita){
                 localdata = null
                 openMenu(3)
             }
-        }else{
+        }else if(now - dino.lastattacktime >= 1000){
+            dino.lastattacktime = now
             entita.style.backgroundImage = `url(../img/animations/velociraptor/walk.gif)`
         }
 }
@@ -460,7 +454,6 @@ setInterval(function(){
 
 
 window.RaycastBullutsDamage = async function(objectives,damage,type){
-    localdata.inventario.weapon.glock.ammons = 300;
 
     const objectivesD = objectives.rotation;
 
@@ -661,7 +654,7 @@ function updateMovement() {
 function startMovement() {
     player.style.backgroundImage = `url(../img/animations/player/walk.gif)`
     if (!movementInterval) {
-        movementInterval = setInterval(updateMovement, 5);
+        movementInterval = setInterval(updateMovement, 1);
     }
 }
 
