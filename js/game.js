@@ -61,6 +61,7 @@ window.onload = async function(){
         player.style.height = `${localdata.statsplayer.height}%`;
         player.style.width = `${localdata.statsplayer.width}%`;
         player.style.transform = `translateY(${localdata.statsplayer.rotation}%)`;
+        loadbar.classList.remove('atload');
         return 2
     }
 
@@ -519,14 +520,14 @@ window.PlayerShoot = function(){
             RaycastBullutsDamage(localdata.statsplayer,10,type);
             setTimeout(function(){
                isplayershooting = false;
-               player.style.backgroundImage = `url(../img/animations/player/handgun/${type}.jpg)`
+               if(movementInterval == null){
+                   player.style.backgroundImage = `url(../img/animations/player/handgun/${type}.jpg)`
+               }
             },weapon.shootdelay)
             document.getElementById('equpaggimento-text').innerHTML = `${weapon.chargers} / ${weapon.ammons}`
        }else{
            AutoScribeText(document.getElementById('msgfeedback'), weapon.ammons > 0 ? `Premi ${playercommand[8]} per Ricaricare` : `Munizioni ${localdata.statsplayer.setgun} Finite`);
        }
-    }else{
-        player.style.backgroundImage = `url(../img/animations/player/handgun/${type}.jpg)`
     }
 }
 
@@ -624,7 +625,7 @@ document.addEventListener('keydown', function(event) {
             return 1;
         }
 
-        if (isActionKey) {
+        if (isActionKey && movementInterval == null) {
             const actionIndex = playercommand.indexOf(key) - 4;
             playeraction[actionIndex](player, localdata.statsplayer);
         }
@@ -660,7 +661,7 @@ function updateMovement() {
 function startMovement() {
     player.style.backgroundImage = `url(../img/animations/player/walk.gif)`
     if (!movementInterval) {
-        movementInterval = setInterval(updateMovement, 10);
+        movementInterval = setInterval(updateMovement, 5);
     }
 }
 
