@@ -1,14 +1,13 @@
 .personaggio{
     max-width: 150px;
     max-height: 250px;
-    background-image: url(../img/game/backgroud-body.jpg);
+    background-image: url(../img/animations/player/natural.gif);
     position: absolute;
     z-index: 3;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     transition: opacity ease-in-out 0.5s;
-    background-color: antiquewhite;
 }
 
 .props{
@@ -17,4 +16,13 @@
     background-repeat: no-repeat;
     z-index: 4;
     position: absolute;
+}
+
+.velociraptor{
+    background-size: contain;
+    background-image: url(../img/animations/velociraptor/walk.gif);
+}
+
+.kitmedico{
+    background-image: url(../img/props/item/kitmedico.jpg);
 }

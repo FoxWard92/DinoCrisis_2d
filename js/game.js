@@ -156,6 +156,11 @@ window.savegame = async function(){
     return 0
 }
 
+const loadBackgroundImage = url => new Promise((resolve, reject) => {
+    Object.assign(new Image(), { onload: () => resolve(url), onerror: () => reject(new Error(`Errore nel caricamento: ${url}`)), src: url });
+});
+
+
 window.loadscena = async function(scena,isreload){
     isChangeScena = true;
     const props = document.getElementsByClassName('props');
@@ -163,9 +168,17 @@ window.loadscena = async function(scena,isreload){
         props[i].remove();
     }
 
-    document.getElementById('maindoors').style.backgroundImage = `url(${[localdata.scene[scena].backgroundheader]})`;
-    document.getElementById('leggenda').style.backgroundImage = `url(${[localdata.scene[scena].backgroundarticle]})`;
-    document.getElementById('gui').style.backgroundImage = `url(${[localdata.scene[scena].backgroundfooter]})`;
+    try {
+        await loadBackgroundImage(localdata.scene[scena].backgroundheader);
+        await loadBackgroundImage(localdata.scene[scena].backgroundarticle);
+        await loadBackgroundImage(localdata.scene[scena].backgroundfooter);
+        document.getElementById('maindoors').style.backgroundImage = `url(${localdata.scene[scena].backgroundheader})`;
+        document.getElementById('leggenda').style.backgroundImage = `url(${localdata.scene[scena].backgroundarticle})`;
+        document.getElementById('gui').style.backgroundImage = `url(${localdata.scene[scena].backgroundfooter})`;
+    } catch (error) {
+        console.error(error.message);
+    }
+
 
     for(const chiave in doors){
         const door = document.getElementById(doors[chiave]);
@@ -192,7 +205,6 @@ window.loadscena = async function(scena,isreload){
             const div = document.createElement('div');
             div.className = `props ${propsload[chiave].nome} ${propsload[chiave].type}`;
             div.id = `${chiave}`;
-            div.style.backgroundImage = `url(../img/props/${propsload[chiave].type}/${propsload[chiave].nome}.jpg)`;
             div.style.left = `${propsload[chiave].posx}%`;
             div.style.top = `${propsload[chiave].posy}%`;
             div.style.position = 'absolute';
@@ -204,7 +216,7 @@ window.loadscena = async function(scena,isreload){
     }
 
     entita = leggenda.querySelectorAll('.entity');
-
+    
     localdata.startscena = scena;
     isChangeScena = false;
 }
@@ -398,7 +410,7 @@ return 0;
 
 window.AiEntity = async function (entita){
         const dino = localdata.scene[localdata.startscena].leggenda[entita.id]
-        if(dino.health < 0){entita.remove()}
+        if(dino.health < 0){entita.remove();return 0}
         const playerX = localdata.statsplayer.posx
         const playerY = localdata.statsplayer.posy
 
@@ -423,13 +435,17 @@ window.AiEntity = async function (entita){
         const health = localdata.statsplayer.health
         
         if(Math.abs(dx) + Math.abs(dy) < 10 && now - dino.lastattacktime >= 1000){
+            entita.style.backgroundImage = `url(../img/animations/velociraptor/attack.gif)`
+            SetLifebar(localdata.statsplayer.health -= dino.damage + (localdata.difficolta*5),true)
             if(health > 0){
-                SetLifebar(localdata.statsplayer.health -= dino.damage + (localdata.difficolta*5),true)
                 dino.lastattacktime = now
             }else{
                 isChangeScena = true
+                localdata = null
                 openMenu(3)
             }
+        }else{
+            entita.style.backgroundImage = `url(../img/animations/velociraptor/walk.gif)`
         }
 }
 
@@ -452,15 +468,15 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
     const div = document.createElement('div');
 
     let bulletXY = {
-        posx : objectives.posx,
-        posy : objectives.posy + (objectives.height/3)
+        posx : objectives.posx + objectives.width/2,
+        posy : objectives.posy + (objectives.height/3.3)
     }
 
     div.style.position ='absolute';
     div.style.left = `${bulletXY.posx}%`;
     div.style.top = `${bulletXY.posy}%`;
-    div.style.height = "1%";
-    div.style.width = "2%";
+    div.style.height = "0.5%";
+    div.style.width = "1.5%";
     div.style.backgroundColor = "red";
     div.backgroundImage = `url(../img/animations/bullets/${type}.jpg)`;
     leggenda.appendChild(div);
@@ -503,6 +519,7 @@ window.PlayerShoot = function(){
             RaycastBullutsDamage(localdata.statsplayer,10,type);
             setTimeout(function(){
                isplayershooting = false;
+               player.style.backgroundImage = `url(../img/animations/player/handgun/${type}.jpg)`
             },weapon.shootdelay)
             document.getElementById('equpaggimento-text').innerHTML = `${weapon.chargers} / ${weapon.ammons}`
        }else{
@@ -604,7 +621,7 @@ document.addEventListener('keydown', function(event) {
                 objectMove[index](player, localdata.statsplayer);
                 startMovement();
             }
-            return; 
+            return 1;
         }
 
         if (isActionKey) {
@@ -612,6 +629,7 @@ document.addEventListener('keydown', function(event) {
             playeraction[actionIndex](player, localdata.statsplayer);
         }
     }
+    return 1
 });
 
 document.addEventListener('keyup', function(event) {
@@ -622,8 +640,6 @@ document.addEventListener('keyup', function(event) {
             stopMovement();
         }
     }
-
-    isplayershooting = false;
 });
 
 function handleKeyAction() {
@@ -634,6 +650,7 @@ function handleKeyAction() {
             }
         }
     }
+
 }
 
 function updateMovement() {
@@ -641,12 +658,15 @@ function updateMovement() {
 }
 
 function startMovement() {
+    player.style.backgroundImage = `url(../img/animations/player/walk.gif)`
     if (!movementInterval) {
         movementInterval = setInterval(updateMovement, 10);
     }
 }
 
 function stopMovement() {
+    
+    player.style.backgroundImage = `url(../img/animations/player/natural.gif)`
     clearInterval(movementInterval);
     movementInterval = null;
 }

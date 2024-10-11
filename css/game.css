@@ -54,6 +54,8 @@ header{
     display: flex;
     justify-content: space-between;
     align-items: end;
+    background-size: contain;
+    background-repeat: repeat-x;
 }
 
 article{

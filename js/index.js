@@ -298,13 +298,17 @@ window.LoadGame = async function (idmondo) {
             centerdoor: scenaGamedata.centerdoor,
             leftdoor: scenaGamedata.leftdoor,
             rightdoor: scenaGamedata.rightdoor,
-            background: scenaGamedata.background,
+            backgroundheader: scenaGamedata.backgroundheader,
+            backgroundarticle: scenaGamedata.backgroundarticle,
+            backgroundfooter: scenaGamedata.backgroundfooter,
             leggenda: aggiornaOggettiNpcs(scenaData.leggenda, scenaGamedata.leggenda),
         };
     } else {
         console.warn(`La scena ${scenaKey} non contiene leggenda.`, scenaData);
         localdata.scene[scenaKey] = {
-            background: scenaGamedata.background,
+            backgroundheader: scenaGamedata.backgroundheader,
+            backgroundarticle: scenaGamedata.backgroundarticle,
+            backgroundfooter: scenaGamedata.backgroundfooter,
             centerdoor: scenaGamedata.centerdoor,
             leftdoor: scenaGamedata.leftdoor,
             rightdoor: scenaGamedata.rightdoor,
