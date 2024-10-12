@@ -207,7 +207,7 @@ window.NewGame = async function(){
 
     data.saves[idmondo] = {};
     data.saves[idmondo].scene = {};
-    
+
     data.saves[idmondo].startscena = 1;
     data.saves[idmondo].statsplayer = {
         setgun : 'glock',
@@ -268,10 +268,10 @@ window.LoadGame = async function (idmondo) {
     const gamedata = (await getDataForNode('gamedata/scene'));
     const data = (JSON.parse(localStorage.getItem('utente'))).saves[idmondo];
     const localdata = {
-        startscena: data.startscena,
-        statsplayer: data.statsplayer,
-        difficolta : data.difficolta,
-        inventario : data.inventario,
+        startscena: data.startscena ? data.startscena:{},
+        statsplayer: data.statsplayer ? data.statsplayer:{},
+        difficolta : data.difficolta ? data.difficolta:{},
+        inventario : data.inventario ? data.inventario:{},
         nome : data.nome,
         scene :{
         }

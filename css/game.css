@@ -22,7 +22,7 @@ h1,h2,h3,p{
 
 p{
     margin: 0%;
-    font-size: 1.8vw;
+    font-size: 2vw;
     white-space: wrap;
     overflow: scroll;
 }
@@ -41,7 +41,7 @@ section{
 footer{
     flex: 0.1;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 }
 
@@ -282,14 +282,12 @@ nav>div{
 
 #msgfeedback{
     opacity: 0;
-    width: 90%;
-    max-height: 80%;
-    background-color: transparent;
+    overflow: scroll;
 }
 
 #msgfeedback>p{
     width: 90%;
-    max-height: 90%;
+    height: 90%;
     text-shadow: 0.1vw 0.1vw 0.1vw rgb(95, 0, 0);
 }
 

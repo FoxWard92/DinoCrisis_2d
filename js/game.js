@@ -241,7 +241,7 @@ window.ReloadInventario = function(){
     for (let chiave = 0; chiave < 3; chiave++) {
         const type = Object.keys(localdata.inventario);
         const objectives = localdata.inventario[type[chiave]];
-        const itemKeys = Object.keys(objectives);
+        const itemKeys = Object.keys(objectives ? objectives:0);
     
         for (let i = itemKeys.length - 1; i >= 0; i--) {
             const lista = document.getElementById(`container-${type[chiave]}s`);
@@ -337,8 +337,8 @@ window.PlayerInteraction = async function(objectives){
 
         const distX = Math.abs(doorCenterX - objCenterX);
         const distY = Math.abs(doorCenterY - objCenterY);
-        if ((((distX / leggenda.offsetWidth)*100) + ((distY /leggenda.offsetHeight)*100)) < 4) {
-            if(!data.key || localdata.inventario.key[data.key]){
+        if ((((distX / leggenda.offsetWidth)*100) + ((distY /leggenda.offsetHeight)*100)) < 8) {
+            if(!data.key || localdata.inventario.key && localdata.inventario.key[data.key]){
                 isChangeScena = true;
                 const scroll = [-1,1];
                 const addmotiondoor = door.children;
@@ -413,15 +413,15 @@ window.AiEntity = async function (entita){
 
         if (Math.abs(dx) > Math.abs(dy)) {
             if (dx < 0) {
-                objectMove[2](entita, dino,dino.speed);
+                objectMove[2](entita, dino,dino.speed+(localdata.difficolta/100));
             } else if(dx > dino.speed) {
-                objectMove[3](entita, dino,dino.speed);
+                objectMove[3](entita, dino,dino.speed+(localdata.difficolta/100));
             }
         } else {
             if (dy < 0) {
-                objectMove[0](entita, dino,dino.speed);
+                objectMove[0](entita, dino,dino.speed+(localdata.difficolta/100));
             } else if (dy > dino.speed) {
-                objectMove[1](entita, dino,dino.speed);
+                objectMove[1](entita, dino,dino.speed+(localdata.difficolta/100));
             }
         }
         const now = Date.now();
@@ -510,13 +510,15 @@ window.PlayerShoot = function(){
             isplayershooting = true;
             weapon.chargers -= 1;
             player.style.backgroundImage = `url(../img/animations/player/shooting/${type}.jpg)`
-            RaycastBullutsDamage(localdata.statsplayer,10,type);
-            setTimeout(function(){
-               isplayershooting = false;
-               if(movementInterval == null){
-                   player.style.backgroundImage = `url(../img/animations/player/handgun/${type}.jpg)`
-               }
-            },weapon.shootdelay)
+            RaycastBullutsDamage(localdata.statsplayer,weapon.damage,type);
+            if(movementInterval == null){
+                if(weapon.shootdelay != -1){
+                    setTimeout(function(){
+                        isplayershooting = false;
+                    },weapon.shootdelay)
+                }
+                setTimeout(function(){player.style.backgroundImage = `url(../img/animations/player/handgun/${type}.jpg)`},100)
+            }
             document.getElementById('equpaggimento-text').innerHTML = `${weapon.chargers} / ${weapon.ammons}`
        }else{
            AutoScribeText(document.getElementById('msgfeedback'), weapon.ammons > 0 ? `Premi ${playercommand[8]} per Ricaricare` : `Munizioni ${localdata.statsplayer.setgun} Finite`);
@@ -561,7 +563,7 @@ window.PlayerMenuGame = function(){
 
 window.ObjectivesMoveUp = function(objectives,pos,movepx){
     const cordinates = pos.posy - movepx;
-    if(cordinates > 20){
+    if(cordinates > 23){
         pos.posy = cordinates;
         objectives.style.top = `${cordinates}%`
     }
@@ -612,7 +614,7 @@ document.addEventListener('keydown', function(event) {
             const index = playercommand.indexOf(key);
             if (!keysPressed[key]) {
                 keysPressed[key] = true;
-                objectMove[index](player, localdata.statsplayer);
+                objectMove[index](player, localdata.statsplayer,0.3);
                 startMovement();
             }
             return 1;
@@ -634,13 +636,14 @@ document.addEventListener('keyup', function(event) {
             stopMovement();
         }
     }
+    isplayershooting = false;
 });
 
 function handleKeyAction() {
     if (!isChangeScena && !isChangePause) {
         for (let i = 0; i < 4; i++) {
             if (keysPressed[playercommand[i]]) {
-                objectMove[i](player, localdata.statsplayer,0.5);
+                objectMove[i](player, localdata.statsplayer,0.3);
             }
         }
     }

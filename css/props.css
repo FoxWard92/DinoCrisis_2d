@@ -11,7 +11,7 @@
 }
 
 .props{
-    background-size: cover;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     z-index: 4;
@@ -19,7 +19,6 @@
 }
 
 .velociraptor{
-    background-size: contain;
     background-image: url(../img/animations/velociraptor/walk.gif);
 }
 
@@ -28,9 +27,9 @@
 }
 
 .eletronica{
-    background-image: url(../img/props/keys/eletronica.jpg);
+    background-image: url(../img/props/key/eletronica.jpg);
 }
 
 .magnetica{
-    background-image: url(../img/props/keys/magnetica.jpg);
+    background-image: url(../img/props/key/magnetica.jpg);
 }
