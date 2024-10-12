@@ -1,6 +1,4 @@
 .personaggio{
-    max-width: 150px;
-    max-height: 250px;
     background-image: url(../img/animations/player/natural.gif);
     position: absolute;
     z-index: 3;
@@ -14,7 +12,7 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    z-index: 4;
+    z-index: 2;
     position: absolute;
 }
 
@@ -32,4 +30,9 @@
 
 .magnetica{
     background-image: url(../img/props/key/magnetica.jpg);
+}
+
+.novemm{
+    background-image: url(../img/props/ammon/novemm.jpg);
+
 }

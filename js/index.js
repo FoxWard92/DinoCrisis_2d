@@ -242,19 +242,21 @@ window.RemoveGame = async function () {
     loadbar.classList.add('atload');
     const nome = document.getElementById('NomePartitaCancella');
     const data = JSON.parse(localStorage.getItem('utente'));
-    const salvataggi = Object.keys(data.saves).length;
-    for(let i = 0; i < salvataggi;i++){
-        if(data.saves['100'+ i].nome == nome.value){
-            for(let x = i;x < salvataggi-1;x++){
-                data.saves['100'+ x] = data.saves['100'+ (x+1)];
+    if(data.saves){
+        const salvataggi = Object.keys(data.saves).length;
+        for(let i = 0; i < salvataggi;i++){
+            if(data.saves['100'+ i].nome == nome.value){
+                for(let x = i;x < salvataggi-1;x++){
+                    data.saves['100'+ x] = data.saves['100'+ (x+1)];
+                }
+                delete data.saves['100' + (salvataggi-1)];
+                await addElementToNode(`utenti/${data.dati.nome}/saves`,data.saves);
+                await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
+                await ReloadSalvataggi();
+                viewchange(2,false);
+                loadbar.classList.remove('atload');
+                return 1
             }
-            delete data.saves['100' + (salvataggi-1)];
-            await addElementToNode(`utenti/${data.dati.nome}/saves`,data.saves);
-            await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
-            await ReloadSalvataggi();
-            viewchange(2,false);
-            loadbar.classList.remove('atload');
-            return 1
         }
     }
 

@@ -59,7 +59,7 @@ window.onload = async function(){
         player.style.top = `${localdata.statsplayer.posy}%`;
         player.style.height = `${localdata.statsplayer.height}%`;
         player.style.width = `${localdata.statsplayer.width}%`;
-        player.style.transform = `translateY(${localdata.statsplayer.rotation}%)`;
+        player.style.transform = `ScaleX(${localdata.statsplayer.rotation})`;
         loadbar.classList.remove('atload');
         return 2
     }
@@ -177,6 +177,7 @@ window.loadscena = async function(scena,isreload){
             door.appendChild(Object.assign(document.createElement('div'), { className: `door ${doorload.scroll}`,style : `background-image: url(../img/props/doors/${[doorload.type]}.jpg)`}));
             if(doorload.large){
                 door.appendChild(Object.assign(document.createElement('div'), { className: `door ${doorload.scroll}`,style : `background-image: url(../img/props/doors/${[doorload.type]}.jpg)`}));
+                door.lastElementChild.style.transform = 
                 door.style.background = `linear-gradient(90deg,transparent 0%,black 5% 95%,transparent 100%)`;
             }else{
                 door.style.background = `linear-gradient(90deg,transparent 0% 20%,black 30% 70%,transparent 80% 100%)`;
@@ -221,9 +222,16 @@ window.InventarioEquipitemInkitmedico = function(button){
     ReloadInventario();
 }
 
-window.InventarioEquipweaponInglock = function(button){
+window.InventarioEquipammonInnovemm = function(button){
+    if (!localdata.inventario.weapon.glock) return wrong(button.parentElement);
+    localdata.inventario.weapon.glock.ammons += localdata.inventario.ammon.novemm.ammons
+    if (--localdata.inventario.ammon.novemm.quantity <= 0) {
+        delete localdata.inventario.ammon.novemm;
+    }
+    ReloadInventario();
+}
 
- 
+window.InventarioEquipweaponInglock = function(button){ 
     if(localdata.statsplayer.setgun){
         document.getElementById(`IdweaponSlot${localdata.statsplayer.setgun}`).style.border = `none`;
     }
@@ -238,8 +246,11 @@ window.ReloadInventario = function(){
         removeitems[i].remove()
     }
 
-    for (let chiave = 0; chiave < 3; chiave++) {
-        const type = Object.keys(localdata.inventario);
+    
+    const type = Object.keys(localdata.inventario);
+
+    for (let chiave = 0; chiave < 4; chiave++) {
+        
         const objectives = localdata.inventario[type[chiave]];
         const itemKeys = Object.keys(objectives ? objectives:0);
     
@@ -260,30 +271,32 @@ window.ReloadInventario = function(){
     
             const itemData = localdata.inventario[type[chiave]][items];
 
-            let quantityText = null;
+            let quantityText = `${items}`;
 
             if(type[chiave] == 'weapon'){
                 quantityText = `${items} : ${itemData.ammons+itemData.chargers}`;
                 if(items === localdata.statsplayer.setgun){
                     div.style.border = `0.2vw solid white`
                     document.getElementById('equpaggimento-text').innerHTML = `${itemData.chargers} / ${itemData.ammons}`;
+                    console.log(`url(../img/props/${type[chiave]}/${items}.jpg)`)
                     document.getElementById('equpaggimento-img').style.backgroundImage = `url(../img/props/${type[chiave]}/${items}.jpg)`;
                 }
-            }else{
-                quantityText = `${items}`;
             }
     
-            const h3 = Object.assign(document.createElement('h3'), { innerText: quantityText });
-            div.appendChild(h3);
+            if(type[chiave] != 'ammon'){
+                div.appendChild(Object.assign(document.createElement('h3'), { innerText: quantityText }));
+            }
 
-            const buttonDiv = document.createElement('button');
-            const buttonId = `button${type[chiave]}InventarioId${i})`
-            buttonDiv.id =  buttonId
-            buttonDiv.setAttribute('onclick', `InventarioEquip${type[chiave]}In${items}(document.getElementById('${buttonId}'))`);
-            buttonDiv.innerHTML = `Usa Qut:${itemData.quantity}`;
+            if(type[chiave] == 'item' || type[chiave]== 'ammon'){
+                const buttonDiv = document.createElement('button');
+                const buttonId = `button${type[chiave]}InventarioId${i})`
+                buttonDiv.id =  buttonId
+                buttonDiv.setAttribute('onclick', `InventarioEquip${type[chiave]}In${items}(document.getElementById('${buttonId}'))`);
+                buttonDiv.innerHTML = `Usa Qut:${itemData.quantity}`;   div.appendChild(buttonDiv)
+            }
 
 
-            div.appendChild(buttonDiv)
+            
     
             lista.appendChild(div);
             
@@ -324,20 +337,21 @@ window.addEventListener('beforeunload', function(event) {
 window.PlayerInteraction = async function(objectives){
     if(isChangeScena){return 0}
 
-    const objCenterX = player.offsetLeft + (objectives.offsetWidth >> 1);
-    const objCenterY = player.offsetTop + (objectives.offsetHeight >> 1);
+    const objCenterX = localdata.statsplayer.posx + localdata.statsplayer.width/2;
+    const objCenterY = localdata.statsplayer.posy + localdata.statsplayer.height/2;
 
     for(const chiave in doors){
         const data = localdata.scene[localdata.startscena][doors[chiave]];
         if(data.scena){
 
         const door = document.getElementById(doors[chiave]);
-        const doorCenterX = door.offsetLeft + (door.offsetWidth >> 1);
-        const doorCenterY = door.offsetTop + (door.offsetHeight >> 1);
+        const doorCenterX = (door.offsetLeft + (door.offsetWidth >> 1)) / window.innerWidth * 100;
+        const doorCenterY = (door.offsetTop + (door.offsetHeight >> 1)) / window.innerHeight * 100;
 
         const distX = Math.abs(doorCenterX - objCenterX);
         const distY = Math.abs(doorCenterY - objCenterY);
-        if ((((distX / leggenda.offsetWidth)*100) + ((distY /leggenda.offsetHeight)*100)) < 8) {
+
+        if (distX < 3 && distY < 3) {
             if(!data.key || localdata.inventario.key && localdata.inventario.key[data.key]){
                 isChangeScena = true;
                 const scroll = [-1,1];
@@ -372,31 +386,35 @@ window.PlayerInteraction = async function(objectives){
     }
     }
 
-    const props = document.querySelectorAll('.item, .weapon, .key');
+    const props = document.querySelectorAll('.item, .weapon, .key ,.ammon');
 
     for (const prop of props) {
         const itemClass = prop.classList;
         const category = itemClass[2];
         const itemKey = itemClass[1];
-        const id = prop.id;
-        const health = localdata.scene[localdata.startscena].leggenda[id]?.health;
-        if (health > 0) {
-            const distX = Math.abs(prop.offsetLeft - objCenterX);
-            const distY = Math.abs(prop.offsetTop - objCenterY);
-            const distancePercentage = ((distX / leggenda.offsetWidth) * 100) + ((distY / leggenda.offsetHeight) * 100);
-            if (distancePercentage < 12) {
-            localdata.inventario[category] = localdata.inventario[category] || {};
-            localdata.inventario[category][itemKey] = localdata.inventario[category][itemKey] || { quantity: 0 };
-            localdata.inventario[category][itemKey].quantity++;
-
-            localdata.scene[localdata.startscena].leggenda[id].health = 0;
-            prop.remove();
-            ReloadInventario();
-
-            return 1;
+        const itemData = localdata.scene[localdata.startscena].leggenda[prop.id];
+    
+        if (itemData?.health > 0) {
+            const distX = Math.abs((itemData.posx + itemData.width/2) - objCenterX);
+            const distY = Math.abs((itemData.posy + itemData.height/2) - objCenterY);
+            if (distX + distY < 8) {
+                localdata.inventario[category] = localdata.inventario[category] || {};
+                localdata.inventario[category][itemKey] = localdata.inventario[category][itemKey] || { quantity: 0 };
+    
+                localdata.inventario[category][itemKey].quantity += 1;
+    
+                localdata.inventario[category][itemKey] = { ...itemData, quantity: localdata.inventario[category][itemKey].quantity };
+    
+                itemData.health = 0;
+                prop.remove();
+    
+                ReloadInventario();
+    
+                return 1;
+            }
         }
     }
-}
+    
 return 0;
 }
 
@@ -408,20 +426,22 @@ window.AiEntity = async function (entita){
         const playerX = localdata.statsplayer.posx
         const playerY = localdata.statsplayer.posy
 
+        const difficolta = (localdata.difficolta)
+
         let dx = playerX - dino.posx;
         let dy = playerY - dino.posy;
 
         if (Math.abs(dx) > Math.abs(dy)) {
             if (dx < 0) {
-                objectMove[2](entita, dino,dino.speed+(localdata.difficolta/100));
+                objectMove[2](entita, dino,dino.speed+(difficolta/100));
             } else if(dx > dino.speed) {
-                objectMove[3](entita, dino,dino.speed+(localdata.difficolta/100));
+                objectMove[3](entita, dino,dino.speed+(difficolta/100));
             }
         } else {
             if (dy < 0) {
-                objectMove[0](entita, dino,dino.speed+(localdata.difficolta/100));
+                objectMove[0](entita, dino,dino.speed+(difficolta/100));
             } else if (dy > dino.speed) {
-                objectMove[1](entita, dino,dino.speed+(localdata.difficolta/100));
+                objectMove[1](entita, dino,dino.speed+(difficolta/100));
             }
         }
         const now = Date.now();
@@ -430,7 +450,7 @@ window.AiEntity = async function (entita){
         
         if(Math.abs(dx) + Math.abs(dy) < 10 && now - dino.lastattacktime >= 1000){
             entita.style.backgroundImage = `url(../img/animations/velociraptor/attack.gif)`
-            SetLifebar(localdata.statsplayer.health - (dino.damage + (localdata.difficolta*5)),true)
+            SetLifebar(localdata.statsplayer.health - (dino.damage + (difficolta*5)),true)
             if(health > 0){
                 dino.lastattacktime = now
             }else{
@@ -563,7 +583,7 @@ window.PlayerMenuGame = function(){
 
 window.ObjectivesMoveUp = function(objectives,pos,movepx){
     const cordinates = pos.posy - movepx;
-    if(cordinates > 23){
+    if(cordinates > 22){
         pos.posy = cordinates;
         objectives.style.top = `${cordinates}%`
     }
