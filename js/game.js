@@ -22,6 +22,8 @@ const firebaseConfig = {
 
   let localdata = null;
 
+  let localsound = {musica:false,creature:false,effetti:false}
+
   let isChangeScena = false;
 
   let isChangePause = false
@@ -37,6 +39,7 @@ const firebaseConfig = {
   let memscena = 0;
 
   
+  
   const doors = ['leftdoor','centerdoor','rightdoor'];
 
   const loadbar = document.getElementById('loadbar')
@@ -45,10 +48,22 @@ const firebaseConfig = {
 
   const player = document.getElementById('Player')
 
+  const sorgenti = ['musica','effetti','creature']
+
   let entita = leggenda.querySelectorAll('.entity');
 
   
 window.onload = async function(){
+
+    const gamelocalsound = localStorage.getItem('gamelocalsound');
+    const gamelocaldata = localStorage.getItem('utente');
+    if(gamelocalsound != null){
+        localsound = JSON.parse(gamelocalsound);
+        if(localsound.musica){
+            document.getElementById('musica').play()
+        }
+    }
+
     localdata = JSON.parse(localStorage.getItem('gamelocaldata'));
     if(localdata != null){
         console.log(localdata)
@@ -59,7 +74,7 @@ window.onload = async function(){
         player.style.top = `${localdata.statsplayer.posy}%`;
         player.style.height = `${localdata.statsplayer.height}%`;
         player.style.width = `${localdata.statsplayer.width}%`;
-        player.style.transform = `ScaleX(${localdata.statsplayer.rotation})`;
+        player.style.transform = `ScaleX(${localdata.statsplayer.rotation*-1})`;
         loadbar.classList.remove('atload');
         return 2
     }
@@ -544,6 +559,22 @@ let isplayershooting = false;
 
 let isplayerinreloading = false;
 
+window.audio = async function(type,src){
+    if(localsound[type]){
+        let audioElement = document.createElement('audio');
+
+        audioElement.src = `../soudtruck/${type}/${src}`;
+    
+        audioElement.autoplay = true;
+    
+        await new Promise(resolve => setTimeout(resolve, 5000));
+    
+        audioElement.pause();
+
+        audioElement = null;
+    }
+}
+
 window.PlayerShoot = function(){
     const type = localdata.statsplayer.setgun;
     if(!isplayershooting){
@@ -553,8 +584,9 @@ window.PlayerShoot = function(){
             weapon.chargers -= 1;
             player.style.backgroundImage = `url(../img/animations/player/shooting/${type}.jpg)`
             RaycastBullutsDamage(localdata.statsplayer,weapon.damage,type);
+            audio('effetti',`${type}/shoot.mp3`)
             if(movementInterval == null){
-                if(weapon.shootdelay != -1){
+                if(weapon.shootdelay != null){
                     setTimeout(function(){
                         isplayershooting = false;
                     },weapon.shootdelay)
@@ -576,6 +608,7 @@ window.PlayerShootReload = function(){
     if(weapon.chargers < weapon.maxchargers){
         if(weapon.ammons > 0){
             isplayerinreloading = true;
+            audio('effetti',`${localdata.statsplayer.setgun}/reload.mp3`)
             setTimeout(function(){
                 const ammoToReload = Math.min(weapon.maxchargers-weapon.chargers, weapon.ammons);
                 weapon.chargers += ammoToReload;

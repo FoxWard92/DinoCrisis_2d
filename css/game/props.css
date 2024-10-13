@@ -1,0 +1,38 @@
+.personaggio{
+    background-image: url(../../img/animations/player/natural.gif);
+    position: absolute;
+    z-index: 3;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity ease-in-out 0.5s;
+}
+
+.props{
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+    position: absolute;
+}
+
+.velociraptor{
+    background-image: url(../../img/animations/velociraptor/natural.gif);
+}
+
+.kitmedico{
+    background-image: url(../../img/props/item/kitmedico.jpg);
+}
+
+.eletronica{
+    background-image: url(../../img/props/key/eletronica.jpg);
+}
+
+.magnetica{
+    background-image: url(../../img/props/key/magnetica.jpg);
+}
+
+.novemm{
+    background-image: url(../../img/props/ammon/novemm.jpg);
+
+}

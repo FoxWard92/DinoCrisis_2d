@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/index.css" type="text/css">
+    <link rel="stylesheet" href="css/index/index.css" type="text/css">
+    <link rel="stylesheet" href="css/index/schede.css" type="text/css">
     <script type="module" src="js/index.js"></script>
     <title>Dino Crisis 2D</title>
 </head>
@@ -47,6 +48,21 @@
                     <div class="scheda space-coloum" id="Impostazioni">
                         <h2>Impostazioni</h2>
                         <div class="cont-scheda">
+                            <h2>Audio</h2>
+                            
+                            <div class="space-row minsize">
+                                <h4>Musica</h4>
+                                <button class="button-audio" id="0-audio-button" onclick="AudioSetLoop(0)"><div></div></button>
+                            </div>
+                            <div class="space-row minsize">
+                                <h4>Effetti</h4>
+                                <button class="button-audio" id="1-audio-button" onclick="AudioSetLoop(1)"><div></div></button>
+                            </div>
+                            <div class="space-row minsize">
+                                <h4>Creature</h4>
+                                <button class="button-audio" id="2-audio-button" onclick="AudioSetLoop(2)"><div></div></button>
+                            </div>
+                            <h2>Danger Zone</h2>
                             <div class="space-row minsize">
                                 <input type="text" id="NomePartitaCancella" class="input-set" placeholder="Nome Partita Da Eliminare">
                                 <button class="button-set" onclick="RemoveGame()">Cancella</button>
@@ -80,8 +96,8 @@
                 </div>
             </div>
         </article>
-        <audio loop>
-            <source src="soudtruck/lobby.mp4" type="audio/mpeg">
+        <audio id="musica" loop >
+            <source src="soudtruck/musica/index.mp3" type="audio/mp3">
         </audio>
     </section>
 </body>

@@ -24,6 +24,10 @@ const firebaseConfig = {
   
   const schede = document.getElementsByClassName('scheda');
 
+  const sorgenti = ['musica','effetti','creature']
+
+  let localsound = {musica:false,creature:false,effetti:false}
+
   let ScenaDefaultGame = {};
 
   let isRunninglinearAnimation = false;
@@ -33,8 +37,21 @@ const firebaseConfig = {
   let statoslidespreviwew = false;
   
 window.onload = async function(){
-    if(localStorage.getItem('utente') != null){
-        const data = JSON.parse(localStorage.getItem('utente'));
+    const gamelocalsound = localStorage.getItem('gamelocalsound');
+    const gamelocaldata = localStorage.getItem('utente');
+    if(gamelocalsound != null){
+        localsound = JSON.parse(gamelocalsound);
+        for(let button = Object.keys(localsound).length-1;button >= 0;button--){
+            if(localsound[sorgenti[button]]){
+                document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
+                if(button == 0){
+                    document.getElementById(sorgenti[button]).play()
+                }
+            }
+        }
+    }
+    if(gamelocaldata != null){
+        const data = JSON.parse(gamelocaldata);
         const elemento1 = document.getElementsByClassName('contenitore-scheda');
         await ChangeLinearGradient(elemento1[0],315,125)
         await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
@@ -103,6 +120,23 @@ window.ReloadSalvataggi = async function(){
         }
         
     return 1
+}
+
+window.AudioSetLoop = function(button){
+    const audioenable = document.getElementById(`${button}-audio-button`)
+    audioenable.classList.toggle('button-audio-active')
+    if(audioenable.classList.contains('button-audio-active')){
+        localsound[sorgenti[button]] = true
+        if(button == 0){
+            document.getElementById(sorgenti[button]).play()
+        }
+    }else{
+        localsound[sorgenti[button]] = false
+        if(button == 0){
+           document.getElementById(sorgenti[button]).pause()
+        }
+    }
+    localStorage.setItem('gamelocalsound',JSON.stringify(localsound))
 }
 
 window.addSavesSlot = function(container){

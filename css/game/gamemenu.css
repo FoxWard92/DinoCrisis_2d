@@ -1,0 +1,113 @@
+.InInventario{
+    height: 20%;
+    width: 80%;
+    margin-top: 10%;
+    margin-left: 10%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: gray;
+    border-radius: 1vw;
+    border: solid 0.3vw rgb(71, 0, 71);
+    transition: all 0.2s ease-in-out;
+}
+
+.InInventario>h3{
+    width: 35%;
+    margin: 0%;
+    text-align: center;
+}
+
+.InInventario>.img{
+    width: 35%;
+    height: 100%;
+    border: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-image: none;
+}
+
+.InInventario:hover{
+    margin-left: 5%;
+    width: 90%;
+    border-top-right-radius: 0vw;
+    border-bottom-right-radius: 0vw;
+}
+
+.InInventario>button{
+    height: 80%;
+    width: 20%;
+    opacity: 0;
+    color: white;
+    background-color: transparent;
+}
+
+.InInventario:hover>button{
+    opacity: 1;
+    
+}
+
+#inventario>div{
+    height: 70%;
+    width: 70%;
+}
+
+#inventario>div>div{
+    height: 80%;
+    width: 80%;
+    
+}
+
+#inventario>div>div>div{
+    height: 80%;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+}
+
+#inventario>div>div>div>div{
+    height: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+}
+
+#inventario>div>div>div>div>div>.InInventario{
+    height: 50%;
+}
+
+#impostazioni>div{
+    height: 50%;
+    width: 50%;
+}
+
+#impostazioni>div>div{
+    height: 25%;
+    width: 80%;
+    
+}
+
+#impostazioni>div>div>div{
+    height: 100%;
+    width: 80%;
+}
+
+#gameover>div{
+    height: 50%;
+    width: 40%;
+}
+
+#gameover>div>div{
+    height: 20%;
+    width: 50%;
+}
+
+#gameover>div>div>button{
+    height: 50%;
+    width: 50%;
+}
