@@ -191,8 +191,8 @@ window.loadscena = async function(scena,isreload){
     for(const chiave in propsload){
         if(propsload[chiave].health > 0){
             if(!isreload && propsload[chiave].type === 'entity'){
-                propsload[chiave].posx = Math.random()*51+30
-                propsload[chiave].posy = Math.random()*51+30
+                propsload[chiave].posx = Math.random()*51+10
+                propsload[chiave].posy = Math.random()*51+10
             }
             const div = document.createElement('div');
             div.className = `props ${propsload[chiave].nome} ${propsload[chiave].type}`;
@@ -278,7 +278,6 @@ window.ReloadInventario = function(){
                 if(items === localdata.statsplayer.setgun){
                     div.style.border = `0.2vw solid white`
                     document.getElementById('equpaggimento-text').innerHTML = `${itemData.chargers} / ${itemData.ammons}`;
-                    console.log(`url(../img/props/${type[chiave]}/${items}.jpg)`)
                     document.getElementById('equpaggimento-img').style.backgroundImage = `url(../img/props/${type[chiave]}/${items}.jpg)`;
                 }
             }
@@ -456,6 +455,7 @@ window.AiEntity = async function (entita){
             }else{
                 isChangeScena = true
                 localdata = null
+                localStorage.removeItem('gamelocaldata');
                 openMenu(3)
             }
         }else if(now - dino.lastattacktime >= 1000){
@@ -464,13 +464,33 @@ window.AiEntity = async function (entita){
         }
 }
 
-setInterval(function(){
-    if(!isChangePause && !isChangeScena){
-        for(let i = entita.length-1; i >= 0;i--){
-            AiEntity(entita[i])
+setInterval(function() {
+    if (!isChangePause && !isChangeScena) {
+        const scena = localdata.scene[localdata.startscena];
+        const playerPosX = localdata.statsplayer.posx;
+
+        for (let i = entita.length - 1; i >= 0; i--) {
+            const entitaElem = entita[i];
+
+            if (!entitaElem.classList.contains('angryAt')) {
+                const data = scena.leggenda[entitaElem.id];
+                const distX = (data.posx-data.width/2) - playerPosX;
+
+                if (distX * data.rotation < 0) {
+                    entitaElem.classList.add('angryAt');
+                }                
+            } else {
+                AiEntity(entitaElem);
+            }
+        }
+    } else {
+        for (let i = entita.length - 1; i >= 0; i--) {
+            const entitaElem = entita[i];
+            entitaElem.style.backgroundImage = `url(../img/animations/velociraptor/natural.gif)`;
         }
     }
-},10)
+}, 10);
+
 
 
 window.RaycastBullutsDamage = async function(objectives,damage,type){
@@ -504,7 +524,9 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
         for(let i = entita.length-1 ;i >= 0;i--){
             const bersaglio = localdata.scene[localdata.startscena].leggenda[entita[i].id];
             if (Math.abs(bersaglio.posy + (bersaglio.height/2)  - bulletXY.posy) + Math.abs(bersaglio.posx + (bersaglio.width/2) - bulletXY.posx) < 20) {
-                bersaglio.health -= damage 
+                bersaglio.health -= damage
+                if(bersaglio.health <= 0){entita[i].remove()} 
+                entita[i].classList.add('angryAt');
                 div.remove()
                 return 1;
             }
