@@ -248,7 +248,7 @@ window.NewGame = async function(){
         width :  10,
         height :  20,
         health : 100,
-        rotation : 0,
+        rotation : 1,
         posx: 50,
         posy : 50
     };
