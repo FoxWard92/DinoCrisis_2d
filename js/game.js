@@ -206,8 +206,8 @@ window.loadscena = async function(scena,isreload){
     for(const chiave in propsload){
         if(propsload[chiave].health > 0){
             if(!isreload && propsload[chiave].type === 'entity'){
-                propsload[chiave].posx = Math.random()*51+10
-                propsload[chiave].posy = Math.random()*51+10
+                propsload[chiave].posx = Math.random()*51
+                propsload[chiave].posy = Math.random()*51+20
             }
             const div = document.createElement('div');
             div.className = `props ${propsload[chiave].nome} ${propsload[chiave].type}`;
