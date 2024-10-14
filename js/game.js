@@ -539,7 +539,7 @@ window.AiEntity = async function (entitaElem,dino){
                     entitaElem.classList.remove('walk')
                 },250)
             }
-            entita.style.backgroundImage = `url(../img/animations/velociraptor/walk.gif)`
+            entitaElem.style.backgroundImage = `url(../img/animations/velociraptor/walk.gif)`
         }
 
 }
