@@ -497,7 +497,7 @@ return 0;
 
 
 
-window.AiEntity = async function (entita,dino){
+window.AiEntity = async function (entitaElem,dino){
         const playerX = localdata.statsplayer.posx
         const playerY = localdata.statsplayer.posy
 
@@ -505,7 +505,7 @@ window.AiEntity = async function (entita,dino){
 
         let dx = (localdata.statsplayer.posx+localdata.statsplayer.width/2) - (dino.posx+dino.width/2);
         let dy = (localdata.statsplayer.posy+localdata.statsplayer.height/2) - (dino.posy+dino.height/2);
-        if(dino.health < 0){entita.remove();return 0}
+        if(dino.health < 0){entitaElem.remove();entita = entita.filter(item => item.id !== 2);return 0}
 
         const now = Date.now();
 
@@ -513,7 +513,7 @@ window.AiEntity = async function (entita,dino){
 
         if(Math.abs(dx) + Math.abs(dy) < 10){
             if(now - dino.lastattacktime >= 1000){
-                entita.style.backgroundImage = `url(../img/animations/velociraptor/attack.gif)`
+                entitaElem.style.backgroundImage = `url(../img/animations/velociraptor/attack.gif)`
                 SetLifebar(localdata.statsplayer.health - (dino.damage + (difficolta*5)),true)
                 audio('creature',`${dino.nome}/attack.mp3`)
                 if(health <= 0){
@@ -527,16 +527,16 @@ window.AiEntity = async function (entita,dino){
         }else{
 
             if (Math.abs(dx) > Math.abs(dy)) {
-                objectMove[dx < 0 ? 2:3](entita, dino,dino.speed+(difficolta/100));
+                objectMove[dx < 0 ? 2:3](entitaElem, dino,dino.speed+(difficolta/100));
             } else {
-                objectMove[dy < 5 ? 0:1](entita, dino,dino.speed+(difficolta/100));
+                objectMove[dy < 5 ? 0:1](entitaElem, dino,dino.speed+(difficolta/100));
             }
 
-            if(!entita.classList.contains('walk')){
-                entita.classList.add('walk')
+            if(!entitaElem.classList.contains('walk')){
+                entitaElem.classList.add('walk')
                 audio('creature',`${dino.nome}/${Math.abs(dx) + Math.abs(dy) > 50 ? 'run':'walk'}.mp3`)
                 setTimeout(function(){
-                    entita.classList.remove('walk')
+                    entitaElem.classList.remove('walk')
                 },250)
             }
             entita.style.backgroundImage = `url(../img/animations/velociraptor/walk.gif)`
@@ -614,7 +614,7 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
             const bersaglio = localdata.scene[localdata.startscena].leggenda[entita[i].id];
             if (Math.abs(bersaglio.posy + (bersaglio.height/2)  - bulletXY.posy) + Math.abs(bersaglio.posx + (bersaglio.width/2) - bulletXY.posx) < 20) {
                 bersaglio.health -= damage
-                if(bersaglio.health <= 0){entita[i].remove()} 
+                if(bersaglio.health <= 0){entita[i].remove();
                 entita[i].classList.add('angryAt');
                 if(!entita[i].classList.contains('hurt')){
                     entita[i].classList.add('hurt')
@@ -622,6 +622,7 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
                     setTimeout(function(){
                         entita[i].classList.remove('hurt')
                     },200)
+                }
                 }
                 div.remove()
                 return 1;
