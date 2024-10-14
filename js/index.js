@@ -33,7 +33,7 @@ const firebaseConfig = {
   let isRunninglinearAnimation = false;
 
   let statoslidespreviwew = false;
-  
+   
 window.onload = async function(){
     const gamelocalsound = localStorage.getItem('gamelocalsound');
     const gamelocaldata = localStorage.getItem('utente');
@@ -42,19 +42,17 @@ window.onload = async function(){
         for(let button = Object.keys(localsound).length-1;button >= 0;button--){
             if(localsound[sorgenti[button]]){
                 document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
-                if(button == 0){
-                    document.getElementById(sorgenti[button]).play()
-                }
             }
         }
     }
     if(gamelocaldata != null){
         const data = JSON.parse(gamelocaldata);
         const elemento1 = document.getElementsByClassName('contenitore-scheda');
+        playMusic();
         await ChangeLinearGradient(elemento1[0],315,125)
         await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
         await ReloadSalvataggi();
-        await viewchange(2,false,true); 
+        await viewchange(2,false,true);
     }else{
         await viewchange(0,false,true); 
     }
@@ -97,6 +95,46 @@ window.ChangeLinearGradient = function(background,degstart,degend){
     }
 }
 
+window.AudioSetLoop = function(button){
+    const audioenable = document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
+    localsound[sorgenti[button]] = !localsound[sorgenti[button]]
+    const audioElement = document.getElementsByClassName(sorgenti[button])
+    if(!localsound[sorgenti[button]]){
+    for(let i = audioElement.length-1; i >= 0; i--){
+        audioElement[i].pause()
+    }
+    }else if(localsound.musica){
+        playMusic()
+    }
+    localStorage.setItem('gamelocalsound',JSON.stringify(localsound))
+}
+
+window.playMusic = async function (){
+    if (localsound.musica) {
+        let audioElement = document.createElement('audio');
+
+        document.body.appendChild(audioElement)
+        
+        audioElement.classList.add('musica')
+
+        audioElement.src = `../soudtruck/musica/index/${Math.floor(Math.random() * 3 + 1)}.mp3`;
+
+        audioElement.autoplay = true;
+
+        await new Promise(resolve => {
+            audioElement.addEventListener('ended', resolve);
+        });
+
+        audioElement.remove()
+        audioElement.pause();
+        audioElement = null;
+
+        await new Promise(resolve => setTimeout(resolve, 10000));
+
+        playMusic();
+    }
+}
+
 window.ReloadSalvataggi = async function(){
         const data = JSON.parse(localStorage.getItem('utente'));
         const container = document.getElementById('saves');
@@ -118,23 +156,6 @@ window.ReloadSalvataggi = async function(){
         }
         
     return 1
-}
-
-window.AudioSetLoop = function(button){
-    const audioenable = document.getElementById(`${button}-audio-button`)
-    audioenable.classList.toggle('button-audio-active')
-    if(audioenable.classList.contains('button-audio-active')){
-        localsound[sorgenti[button]] = true
-        if(button == 0){
-            document.getElementById(sorgenti[button]).play()
-        }
-    }else{
-        localsound[sorgenti[button]] = false
-        if(button == 0){
-           document.getElementById(sorgenti[button]).pause()
-        }
-    }
-    localStorage.setItem('gamelocalsound',JSON.stringify(localsound))
 }
 
 window.addSavesSlot = function(container){

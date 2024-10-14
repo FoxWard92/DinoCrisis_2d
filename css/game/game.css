@@ -12,12 +12,13 @@ h1{
     margin: 0%;
 }
 
-h1,h2,h3,p{
+h1,h2,h3,h4,p{
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     color: white;
     text-align: center;
+    margin: 0%;
 }
 
 p{
@@ -244,7 +245,7 @@ audio{
 
 @font-face {
     font-family: 'BAD_GRUNGE';
-    src: url(../font/BAD_GRUNGE.ttf);
+    src: url(../../font/BAD_GRUNGE.ttf);
 }
 
 @keyframes wrong {

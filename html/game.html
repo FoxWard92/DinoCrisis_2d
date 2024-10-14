@@ -11,15 +11,6 @@
 </head>
 <body>
     <section id="back-game">
-        <audio controls id="effetti">
-            <source src="" type="audio/mp3">
-        </audio>
-        <audio controls id="musica" loop>
-            <source src="../soudtruck/musica/game.mp3" type="audio/mp3">
-        </audio>
-        <audio controls id="creature">
-            <source src="" type="audio/mp3">
-        </audio>
         <div id="loadbar" class="atload"></div>
         <header id="maindoors">
             <div id="leftdoor" class="pos-asolute"><div class="door-container"></div></div>
@@ -34,7 +25,21 @@
                 <h1>Impostazioni</h1>
                 <div class="space-around-row">
                     <div class="space-around-coloum container-gray">
-                        <h2>Comandi</h2>
+                        <h2>Audio</h2>
+                        <div>
+                        <div>
+                            <h4>Musica</h4>
+                            <button class="button-audio" id="0-audio-button" onclick="AudioSetLoop(0)"><div></div></button>
+                        </div>
+                        <div>
+                            <h4>Effetti</h4>
+                            <button class="button-audio" id="1-audio-button" onclick="AudioSetLoop(1)"><div></div></button>
+                        </div>
+                        <div>
+                            <h4>Creature</h4>
+                            <button class="button-audio" id="2-audio-button" onclick="AudioSetLoop(2)"><div></div></button>
+                        </div>
+                    </div>
                     </div>
                 </div>
                 <div class="space-around-row container-gray">

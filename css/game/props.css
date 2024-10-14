@@ -18,6 +18,7 @@
 
 .velociraptor{
     background-image: url(../../img/animations/velociraptor/natural.gif);
+    z-index: 4;
 }
 
 .kitmedico{
