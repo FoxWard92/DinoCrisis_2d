@@ -128,14 +128,13 @@ window.AutoScribeText = async function(html,text){
     }
 }
 
-window.wrong = function(wrong){
-    if(!isRunningWrongAnimation){
-        isRunningWrongAnimation = true
+window.wrong = async function(wrong){
+    if(!wrong.classList.contains('wrong')){
         wrong.classList.add('wrong');
+    
         setTimeout(function(){
-           wrong.classList.remove('wrong');
-           isRunningWrongAnimation = false;
-        },1000)
+            wrong.classList.remove('wrong');
+        },1000);
     }
 }
 

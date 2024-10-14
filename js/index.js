@@ -32,8 +32,6 @@ const firebaseConfig = {
 
   let isRunninglinearAnimation = false;
 
-  let isRunnigWrongAnimation = false;
-
   let statoslidespreviwew = false;
   
 window.onload = async function(){
@@ -146,14 +144,12 @@ window.addSavesSlot = function(container){
     container.appendChild(newSlot); 
 }
 
-window.Wrong = function(wrong){
-    if(!isRunnigWrongAnimation){
-        isRunnigWrongAnimation = true;
+window.Wrong = async function(wrong){
+    if(!wrong.classList.contains('wrong')){
         wrong.classList.add('wrong');
     
         setTimeout(function(){
             wrong.classList.remove('wrong');
-            isRunnigWrongAnimation = false;
         },1000);
     }
 }
@@ -198,6 +194,7 @@ window.Login = async function () {
     loadbar.classList.add('atload');
     const schedaload = document.getElementsByClassName('schedaLoaded')[0];
     const nome = schedaload.querySelector('.nome');
+    if(nome.value === ''){Wrong(nome);loadbar.classList.remove('atload');return 0;}
     const password =  schedaload.querySelector('.password');
     await arrayDiFunzioni[(await getDataForNodeByLogin(`utenti/${nome.value}`,password.value))](nome,password,0);
     isRunninglinearAnimation = false;
