@@ -505,7 +505,6 @@ window.AiEntity = async function (entitaElem,dino){
 
         let dx = (localdata.statsplayer.posx+localdata.statsplayer.width/2) - (dino.posx+dino.width/2);
         let dy = (localdata.statsplayer.posy+localdata.statsplayer.height/2) - (dino.posy+dino.height/2);
-        if(dino.health < 0){entitaElem.remove();entita = entita.filter(item => item.id !== 2);return 0}
 
         const now = Date.now();
 
@@ -545,37 +544,38 @@ window.AiEntity = async function (entitaElem,dino){
 }
 
 setInterval(function() {
-    if (!isChangePause && !isChangeScena) {
-        const scena = localdata.scene[localdata.startscena];
-        const playerPosX = localdata.statsplayer.posx + (localdata.statsplayer.width/2);
-
-        for (let i = entita.length - 1; i >= 0; i--) {
-            const entitaElem = entita[i];
-            const dino = localdata.scene[localdata.startscena].leggenda[entitaElem.id]
-
-            if (!entitaElem.classList.contains('angryAt')) {
-                const data = scena.leggenda[entitaElem.id];
-                const distX = (data.posx+data.width/2) - playerPosX;
-
-                if (distX * data.rotation < 0) {
-                    entitaElem.classList.add('angryAt');
+    if(entita){
+        if (!isChangePause && !isChangeScena) {
+            const scena = localdata.scene[localdata.startscena];
+            const playerPosX = localdata.statsplayer.posx + (localdata.statsplayer.width/2);
+            for (let i = entita.length - 1; i >= 0; i--) {
+                const entitaElem = entita[i];
+                const dino = localdata.scene[localdata.startscena].leggenda[entitaElem.id]
+    
+                if (!entitaElem.classList.contains('angryAt')) {
+                    const data = scena.leggenda[entitaElem.id];
+                    const distX = (data.posx+data.width/2) - playerPosX;
+    
+                    if (distX * data.rotation < 0) {
+                        entitaElem.classList.add('angryAt');
+                    }
+                    if(!entitaElem.classList.contains('natural')){
+                        entitaElem.classList.add('natural')
+                        audio('creature',`${dino.nome}/natural.mp3`)
+                        setTimeout(function(){
+                            entitaElem.classList.remove('natural')
+                        },3000)
+                    }                
+                } else {
+                    AiEntity(entitaElem,dino);
                 }
-                if(!entitaElem.classList.contains('natural')){
-                    entitaElem.classList.add('natural')
-                    audio('creature',`${dino.nome}/natural.mp3`)
-                    setTimeout(function(){
-                        entitaElem.classList.remove('natural')
-                    },3000)
-                }                
-            } else {
-                AiEntity(entitaElem,dino);
             }
-        }
-        
-    } else {
-        for (let i = entita.length - 1; i >= 0; i--) {
-            const entitaElem = entita[i];
-            entitaElem.style.backgroundImage = `url(../img/animations/velociraptor/natural.gif)`;
+            
+        } else {
+            for (let i = entita.length - 1; i >= 0; i--) {
+                const entitaElem = entita[i];
+                entitaElem.style.backgroundImage = `url(../img/animations/velociraptor/natural.gif)`;
+            }
         }
     }
 }, 10);
@@ -609,23 +609,27 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
     for (let chiave = (objectivesF ? (100 - bulletXY.posx):bulletXY.posx)/2;chiave >= 0;chiave--) {
 
         move[objectivesF](div,bulletXY,2);
-        
-        for(let i = entita.length-1 ;i >= 0;i--){
-            const bersaglio = localdata.scene[localdata.startscena].leggenda[entita[i].id];
-            if (Math.abs(bersaglio.posy + (bersaglio.height/2)  - bulletXY.posy) + Math.abs(bersaglio.posx + (bersaglio.width/2) - bulletXY.posx) < 20) {
-                bersaglio.health -= damage
-                if(bersaglio.health <= 0){entita[i].remove();
-                entita[i].classList.add('angryAt');
-                if(!entita[i].classList.contains('hurt')){
-                    entita[i].classList.add('hurt')
-                    audio('creature',`${bersaglio.nome}/damage.mp3`)
-                    setTimeout(function(){
-                        entita[i].classList.remove('hurt')
-                    },200)
+        if(entita){
+            for(let i = entita.length-1 ;i >= 0;i--){
+                const bersaglio = localdata.scene[localdata.startscena].leggenda[entita[i].id];
+                if (Math.abs(bersaglio.posy + (bersaglio.height/2)  - bulletXY.posy) + Math.abs(bersaglio.posx + (bersaglio.width/2) - bulletXY.posx) < 20) {
+                    bersaglio.health -= damage
+                    if(bersaglio.health > 0){
+                        entita[i].classList.add('angryAt');
+                        if(!entita[i].classList.contains('hurt')){
+                            entita[i].classList.add('hurt')
+                            audio('creature',`${bersaglio.nome}/damage.mp3`)
+                        setTimeout(function(){
+                            entita[i].classList.remove('hurt')
+                        },200)
+                         }
+                    }else{
+                        entita[i].remove();
+                        entita = document.querySelector('.entity')
+                    }
+                    div.remove()
+                    return 1;
                 }
-                }
-                div.remove()
-                return 1;
             }
         }
         await new Promise(resolve => setTimeout(resolve, 10));
