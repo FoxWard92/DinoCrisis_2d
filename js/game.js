@@ -711,7 +711,9 @@ window.ObjectivesMoveUp = function(objectives,pos,movepx){
     if(cordinates > 22){
         pos.posy = cordinates;
         objectives.style.top = `${cordinates}%`
+        return 1
     }
+    return 0
 }
 
 window.ObjectivesMoveDown = function(objectives,pos,movepx){
@@ -719,7 +721,9 @@ window.ObjectivesMoveDown = function(objectives,pos,movepx){
     if(cordinates < 70){
         pos.posy = cordinates; 
         objectives.style.top = `${cordinates}%`
+        return 1
     }
+    return 0
 }
 
 window.ObjectivesMoveLeft = function(objectives,pos,movepx){
@@ -729,7 +733,9 @@ window.ObjectivesMoveLeft = function(objectives,pos,movepx){
         pos.rotation = -1;
         objectives.style.left = `${cordinates}%`
         objectives.style.transform = 'scaleX(1)'
+        return 1
     }
+    return 0
 }
 
 window.ObjectivesMoveRight = function(objectives,pos,movepx){
@@ -739,7 +745,9 @@ window.ObjectivesMoveRight = function(objectives,pos,movepx){
         pos.rotation = +1;
         objectives.style.left = `${cordinates}%`;
         objectives.style.transform = 'scaleX(-1)'
+        return 1
     }
+    return 0
 }
 
 const playeraction = [PlayerInteraction, PlayerShoot, PlayerInventory, PlayerMenuGame,PlayerShootReload];
@@ -759,7 +767,7 @@ document.addEventListener('keydown', function(event) {
             const index = playercommand.indexOf(key);
             if (!keysPressed[key]) {
                 keysPressed[key] = true;
-                objectMove[index](player, localdata.statsplayer,0.3);
+                objectMove[index](player, localdata.statsplayer)
                 startMovement();
             }
             return 1;
@@ -785,38 +793,46 @@ document.addEventListener('keyup', function(event) {
     isplayershooting = false;
 });
 
-function handleKeyAction() {
-    if (!isChangeScena && !isChangePause) {
-        for (let i = 0; i < 4; i++) {
-            if (keysPressed[playercommand[i]]) {
-                objectMove[i](player, localdata.statsplayer,0.3);
-            }
+function handleKeyAction(speed) {
+    for (let i = 0; i < 4; i++) {
+        if (keysPressed[playercommand[i]]) {
+            objectMove[i](player, localdata.statsplayer, speed);
         }
     }
-
 }
 
-function updateMovement() {
-    handleKeyAction(); 
-    if(!player.classList.contains('walk')){
-        player.classList.add('walk')
-        audio('creature',`player/walk.mp3`)
-        setTimeout(function(){
-            player.classList.remove('walk')
-        },220)
+let lastTime = performance.now();
+
+function updateMovement(time) {
+    const deltaTime = time - lastTime;
+    lastTime = time;
+
+    const speed = 0.4 * (deltaTime / 16.67);
+
+    handleKeyAction(speed);
+    if (!player.classList.contains('walk')) {
+        player.classList.add('walk');
+        audio('creature', 'player/walk.mp3');
+        setTimeout(function () {
+            player.classList.remove('walk');
+        }, 220);
     }
+    movementInterval = requestAnimationFrame(updateMovement);
 }
 
 function startMovement() {
-    player.style.backgroundImage = `url(../img/animations/player/walk.gif)`
+    player.style.backgroundImage = `url(../img/animations/player/walk.gif)`;
     if (!movementInterval) {
-        movementInterval = setInterval(updateMovement, 1);
+        lastTime = performance.now();
+        movementInterval = requestAnimationFrame(updateMovement);
     }
 }
 
+
 function stopMovement() {
-    
-    player.style.backgroundImage = `url(../img/animations/player/natural.gif)`
-    clearInterval(movementInterval);
-    movementInterval = null;
+    player.style.backgroundImage = `url(../img/animations/player/natural.gif)`;
+    if (movementInterval) {
+        cancelAnimationFrame(movementInterval);
+        movementInterval = null;
+    }
 }
