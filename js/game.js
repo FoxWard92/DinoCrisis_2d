@@ -656,7 +656,7 @@ window.PlayerShoot = function(){
             RaycastBullutsDamage(localdata.statsplayer,weapon.damage,type);
             audio('effetti',`${type}/shoot.mp3`)
             if(movementInterval == null){
-                if(weapon.shootdelay != null){
+                if(weapon.shootdelay){
                     setTimeout(function(){
                         isplayershooting = false;
                     },weapon.shootdelay)
