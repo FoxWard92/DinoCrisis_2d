@@ -321,7 +321,7 @@ window.InventarioEquipitemInbende = function(button){
 
 window.InventarioEquipitemInkitmedico = function(button){
     if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
-    SetLifebar(Math.min(localdata.statsplayer.health + (50 - 5 * localdata.difficolta), 100),true);
+    SetLifebar(Math.min(localdata.statsplayer.health + (75 - 5 * localdata.difficolta), 100),true);
     removeItem('kitmedico','item')
 }
 
