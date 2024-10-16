@@ -181,8 +181,14 @@ window.playMusic = async function (){
     }
 }
 
-window.audio = async function(type,src){
-    if(localsound[type]){
+window.audio = async function(type,src,classList,time,Object){
+    if(localsound[type] && !Object.classList.contains(classList)){
+        Object.classList.add(classList)
+
+        setTimeout(function(){
+            Object.classList.remove(classList)
+        },time)
+        
         let audioElement = document.createElement('audio');
 
         document.body.appendChild(audioElement)
@@ -435,14 +441,14 @@ window.PlayerInteraction = async function(objectives){
                 for(var i = 0; i < addmotiondoor.length;i++){
                     addmotiondoor[i].style.transform = `translateX(${data.scroll.left * 100 * scroll[i]}%) translateY(${data.scroll.top * 100 * -1}%)`;
                 }
-                audio('effetti',`porte/${data.type}.mp3`)
+                audio('effetti',`porte/${data.type}.mp3`,'open',0,door)
                 addmotiondoor[0].addEventListener('transitionend', async function() {
                     objectives.style.opacity = 0;
                     await new Promise(resolve => setTimeout(resolve, 500));
                     for(var i = 0; i < addmotiondoor.length;i++){
                         addmotiondoor[i].style.transform = `translateX(${0}%) translateY(${0}%)`;
                     }
-                    audio('effetti',`porte/${data.type}.mp3`)
+                    audio('effetti',`porte/${data.type}.mp3`,'close',0,door)
                     addmotiondoor[0].addEventListener('transitionend', async function() {
                         objectives.style.opacity = 0;
                         for(var i = 0; i < addmotiondoor.length;i++){
@@ -514,7 +520,7 @@ window.AiEntity = async function (entitaElem,dino){
             if(now - dino.lastattacktime >= 1000){
                 entitaElem.style.backgroundImage = `url(../img/animations/velociraptor/attack.gif)`
                 SetLifebar(localdata.statsplayer.health - (dino.damage + (difficolta*5)),true)
-                audio('creature',`${dino.nome}/attack.mp3`)
+                audio('creature',`${dino.nome}/attack.mp3`,'attack',0,entitaElem)
                 if(health <= 0){
                    isChangeScena = true
                    localdata = null
@@ -530,14 +536,7 @@ window.AiEntity = async function (entitaElem,dino){
             } else {
                 objectMove[dy < 5 ? 0:1](entitaElem, dino,dino.speed+(difficolta/100));
             }
-
-            if(!entitaElem.classList.contains('walk')){
-                entitaElem.classList.add('walk')
-                audio('creature',`${dino.nome}/${Math.abs(dx) + Math.abs(dy) > 50 ? 'run':'walk'}.mp3`)
-                setTimeout(function(){
-                    entitaElem.classList.remove('walk')
-                },250)
-            }
+                audio('creature',`${dino.nome}/${Math.abs(dx) + Math.abs(dy) > 50 ? 'run':'walk'}.mp3`,'walk',250,entitaElem)
             entitaElem.style.backgroundImage = `url(../img/animations/velociraptor/walk.gif)`
         }
 
@@ -559,13 +558,7 @@ setInterval(function() {
                     if (distX * data.rotation < 0) {
                         entitaElem.classList.add('angryAt');
                     }
-                    if(!entitaElem.classList.contains('natural')){
-                        entitaElem.classList.add('natural')
-                        audio('creature',`${dino.nome}/natural.mp3`)
-                        setTimeout(function(){
-                            entitaElem.classList.remove('natural')
-                        },3000)
-                    }                
+                    audio('creature',`${dino.nome}/natural.mp3`,'natural',3000,entitaElem)
                 } else {
                     AiEntity(entitaElem,dino);
                 }
@@ -615,14 +608,7 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
                 if (Math.abs(bersaglio.posy + (bersaglio.height/2)  - bulletXY.posy) + Math.abs(bersaglio.posx + (bersaglio.width/2) - bulletXY.posx) < 20) {
                     bersaglio.health -= damage
                     if(bersaglio.health > 0){
-                        entita[i].classList.add('angryAt');
-                        if(!entita[i].classList.contains('hurt')){
-                            entita[i].classList.add('hurt')
-                            audio('creature',`${bersaglio.nome}/damage.mp3`)
-                        setTimeout(function(){
-                            entita[i].classList.remove('hurt')
-                        },200)
-                         }
+                            audio('creature',`${bersaglio.nome}/damage.mp3`,'hurt',200,entita[i])
                     }else{
                         entita[i].remove();
                         entita = document.querySelector('.entity')
@@ -654,7 +640,7 @@ window.PlayerShoot = function(){
             weapon.chargers -= 1;
             player.style.backgroundImage = `url(../img/animations/player/shooting/${type}.jpg)`
             RaycastBullutsDamage(localdata.statsplayer,weapon.damage,type);
-            audio('effetti',`${type}/shoot.mp3`)
+            audio('effetti',`${type}/shoot.mp3`,'shoot',0,player)
             if(movementInterval == null){
                 if(weapon.shootdelay){
                     setTimeout(function(){
@@ -678,7 +664,7 @@ window.PlayerShootReload = function(){
     if(weapon.chargers < weapon.maxchargers){
         if(weapon.ammons > 0){
             isplayerinreloading = true;
-            audio('effetti',`${localdata.statsplayer.setgun}/reload.mp3`)
+            audio('effetti',`${localdata.statsplayer.setgun}/reload.mp3`,'reload',0,player)
             setTimeout(function(){
                 const ammoToReload = Math.min(weapon.maxchargers-weapon.chargers, weapon.ammons);
                 weapon.chargers += ammoToReload;
@@ -801,6 +787,8 @@ function handleKeyAction(speed) {
     }
 }
 
+
+
 let lastTime = performance.now();
 
 function updateMovement(time) {
@@ -810,13 +798,7 @@ function updateMovement(time) {
     const speed = 0.4 * (deltaTime / 16.67);
 
     handleKeyAction(speed);
-    if (!player.classList.contains('walk')) {
-        player.classList.add('walk');
-        audio('creature', 'player/walk.mp3');
-        setTimeout(function () {
-            player.classList.remove('walk');
-        }, 250);
-    }
+    audio('creature', 'player/walk.mp3','walk',250,player);
     movementInterval = requestAnimationFrame(updateMovement);
 }
 
