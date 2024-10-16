@@ -20,28 +20,3 @@
     background-image: url(../../img/animations/velociraptor/natural.gif);
     z-index: 4;
 }
-
-.kitmedico{
-    background-image: url(../../img/props/item/kitmedico.jpg);
-}
-
-.eletronica{
-    background-image: url(../../img/props/key/eletronica.jpg);
-}
-
-.magnetica{
-    background-image: url(../../img/props/key/magnetica.jpg);
-}
-
-.novemm{
-    background-image: url(../../img/props/ammon/novemm.jpg);
-
-}
-
-.anestetico{
-    background-image: url(../../img/props/item/anestetico.jpg);
-}
-
-.bende{
-    background-image: url(../../img/props/item/bende.jpg);
-}

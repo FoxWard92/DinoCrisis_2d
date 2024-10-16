@@ -273,11 +273,13 @@ window.loadscena = async function(scena,isreload){
     const propsload = localdata.scene[scena].leggenda;
     for(const chiave in propsload){
         if(propsload[chiave].health > 0){
+            const div = document.createElement('div');
             if(!isreload && propsload[chiave].type === 'entity'){
                 propsload[chiave].posx = Math.random()*51
                 propsload[chiave].posy = Math.random()*51+20
+            }else{
+                div.style.backgroundImage = `url(../img/props/${[propsload[chiave].type]}/${[propsload[chiave].nome]}.jpg)`  
             }
-            const div = document.createElement('div');
             div.className = `props ${propsload[chiave].nome} ${propsload[chiave].type}`;
             div.id = `${chiave}`;
             div.style.left = `${propsload[chiave].posx}%`;
