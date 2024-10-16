@@ -245,10 +245,10 @@ window.loadscena = async function(scena,isreload){
     for(var i = props.length-1; i >= 0 ;i--){
         props[i].remove();
     }
-    
-    document.getElementById('maindoors').style.backgroundImage = `url(${localdata.scene[scena].backgroundheader})`;
-    document.getElementById('leggenda').style.backgroundImage = `url(${localdata.scene[scena].backgroundarticle})`;
-    document.getElementById('gui').style.backgroundImage = `url(${localdata.scene[scena].backgroundfooter})`;
+
+    document.getElementById('maindoors').style.backgroundImage = `url(../img/props/sfondi/header/${localdata.scene[scena].background}.jpg)`;
+    document.getElementById('leggenda').style.backgroundImage = `url(../img/props/sfondi/article/${localdata.scene[scena].background}.jpg)`;
+    document.getElementById('gui').style.backgroundImage = `url(../img/props/sfondi/footer/${localdata.scene[scena].background}.jpg)`;
 
     await new Promise(resolve => setTimeout(resolve, 400));
 
@@ -296,9 +296,31 @@ window.loadscena = async function(scena,isreload){
     isChangeScena = false;
 }
 
+window.InventarioEquipitemInanestetico = function(button){
+    if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
+    for(let i = 0; i < 8;i++){
+        setTimeout(function(){
+            SetLifebar(Math.min(localdata.statsplayer.health + (20 - 5 * localdata.difficolta), 100),true);
+        },3000*i)
+    }
+    if (--localdata.inventario.item.anestetico.quantity <= 0) {
+        delete localdata.inventario.item.anestetico;
+    }
+    ReloadInventario();
+}
+
+window.InventarioEquipitemInbenda = function(button){
+    if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
+    SetLifebar(Math.min(localdata.statsplayer.health + (30 - 5 * localdata.difficolta), 100),true);
+    if (--localdata.inventario.item.benda.quantity <= 0) {
+        delete localdata.inventario.item.benda;
+    }
+    ReloadInventario();
+}
+
 window.InventarioEquipitemInkitmedico = function(button){
     if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
-    SetLifebar(Math.min(localdata.statsplayer.health + (50 - 10 * localdata.difficolta), 100),true);
+    SetLifebar(Math.min(localdata.statsplayer.health + (50 - 5 * localdata.difficolta), 100),true);
     if (--localdata.inventario.item.kitmedico.quantity <= 0) {
         delete localdata.inventario.item.kitmedico;
     }
@@ -608,6 +630,7 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
                 if (Math.abs(bersaglio.posy + (bersaglio.height/2)  - bulletXY.posy) + Math.abs(bersaglio.posx + (bersaglio.width/2) - bulletXY.posx) < 20) {
                     bersaglio.health -= damage
                     if(bersaglio.health > 0){
+                        entita[i].classList.add('angryAt')
                             audio('creature',`${bersaglio.nome}/damage.mp3`,'hurt',200,entita[i])
                     }else{
                         entita[i].remove();
