@@ -309,11 +309,11 @@ window.InventarioEquipitemInanestetico = function(button){
     ReloadInventario();
 }
 
-window.InventarioEquipitemInbenda = function(button){
+window.InventarioEquipitemInbende = function(button){
     if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
     SetLifebar(Math.min(localdata.statsplayer.health + (30 - 5 * localdata.difficolta), 100),true);
-    if (--localdata.inventario.item.benda.quantity <= 0) {
-        delete localdata.inventario.item.benda;
+    if (--localdata.inventario.item.bende.quantity <= 0) {
+        delete localdata.inventario.item.bende;
     }
     ReloadInventario();
 }
