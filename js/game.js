@@ -815,7 +815,7 @@ function updateMovement(time) {
         audio('creature', 'player/walk.mp3');
         setTimeout(function () {
             player.classList.remove('walk');
-        }, 220);
+        }, 250);
     }
     movementInterval = requestAnimationFrame(updateMovement);
 }
