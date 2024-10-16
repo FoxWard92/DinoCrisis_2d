@@ -299,7 +299,7 @@ window.loadscena = async function(scena,isreload){
 window.InventarioEquipitemInanestetico = function(button){
     if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
     for(let i = 0; i < 8;i++){
-        setTimeout(function(){
+        setTimeout(function(){sss
             SetLifebar(Math.min(localdata.statsplayer.health + (20 - 5 * localdata.difficolta), 100),true);
         },3000*i)
     }
