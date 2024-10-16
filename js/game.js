@@ -321,7 +321,7 @@ window.InventarioEquipitemInbende = function(button){
 
 window.InventarioEquipitemInkitmedico = function(button){
     if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
-    SetLifebar(Math.min(localdata.statsplayer.health + (75 - 5 * localdata.difficolta), 100),true);
+    SetLifebar(Math.min(localdata.statsplayer.health + (50 - 5 * localdata.difficolta), 100),true);
     removeItem('kitmedico','item')
 }
 
@@ -536,7 +536,7 @@ window.AiEntity = async function (entitaElem,dino){
         if(Math.abs(dx) + Math.abs(dy) < 10){
             if(now - dino.lastattacktime >= 1000){
                 entitaElem.style.backgroundImage = `url(../img/animations/velociraptor/attack.gif)`
-                SetLifebar(localdata.statsplayer.health - (dino.damage + (difficolta*5)),true)
+                SetLifebar(health - (dino.damage + (difficolta*5)),true)
                 audio('creature',`${dino.nome}/attack.mp3`,'attack',0,entitaElem)
                 if(health <= 0){
                    isChangeScena = true
