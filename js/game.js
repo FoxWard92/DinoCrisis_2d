@@ -296,6 +296,13 @@ window.loadscena = async function(scena,isreload){
     isChangeScena = false;
 }
 
+window.removeItem = function(item){
+    if (--localdata.inventario.item[item].quantity <= 0) {
+        delete localdata.inventario.item[item];
+    }
+    ReloadInventario();
+}
+
 window.InventarioEquipitemInanestetico = function(button){
     if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
     for(let i = 0; i < 8;i++){
@@ -303,37 +310,25 @@ window.InventarioEquipitemInanestetico = function(button){
             SetLifebar(Math.min(localdata.statsplayer.health + (20 - 5 * localdata.difficolta), 100),true);
         },3000*i)
     }
-    if (--localdata.inventario.item.anestetico.quantity <= 0) {
-        delete localdata.inventario.item.anestetico;
-    }
-    ReloadInventario();
+    removeItem('anestetico')
 }
 
 window.InventarioEquipitemInbende = function(button){
     if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
     SetLifebar(Math.min(localdata.statsplayer.health + (30 - 5 * localdata.difficolta), 100),true);
-    if (--localdata.inventario.item.bende.quantity <= 0) {
-        delete localdata.inventario.item.bende;
-    }
-    ReloadInventario();
+    removeItem('bende')
 }
 
 window.InventarioEquipitemInkitmedico = function(button){
     if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
     SetLifebar(Math.min(localdata.statsplayer.health + (50 - 5 * localdata.difficolta), 100),true);
-    if (--localdata.inventario.item.kitmedico.quantity <= 0) {
-        delete localdata.inventario.item.kitmedico;
-    }
-    ReloadInventario();
+    removeItem('kitmedico')
 }
 
 window.InventarioEquipammonInnovemm = function(button){
     if (!localdata.inventario.weapon.glock) return wrong(button.parentElement);
     localdata.inventario.weapon.glock.ammons += localdata.inventario.ammon.novemm.ammons
-    if (--localdata.inventario.ammon.novemm.quantity <= 0) {
-        delete localdata.inventario.ammon.novemm;
-    }
-    ReloadInventario();
+    removeItem('novemm')
 }
 
 window.InventarioEquipweaponInglock = function(button){ 
