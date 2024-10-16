@@ -296,9 +296,9 @@ window.loadscena = async function(scena,isreload){
     isChangeScena = false;
 }
 
-window.removeItem = function(item){
-    if (--localdata.inventario.item[item].quantity <= 0) {
-        delete localdata.inventario.item[item];
+window.removeItem = function(item,type){
+    if (--localdata.inventario[type][item].quantity <= 0) {
+        delete localdata.inventario[type][item];
     }
     ReloadInventario();
 }
@@ -306,29 +306,29 @@ window.removeItem = function(item){
 window.InventarioEquipitemInanestetico = function(button){
     if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
     for(let i = 0; i < 8;i++){
-        setTimeout(function(){sss
+        setTimeout(function(){
             SetLifebar(Math.min(localdata.statsplayer.health + (20 - 5 * localdata.difficolta), 100),true);
         },3000*i)
     }
-    removeItem('anestetico')
+    removeItem('anestetico','item')
 }
 
 window.InventarioEquipitemInbende = function(button){
     if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
     SetLifebar(Math.min(localdata.statsplayer.health + (30 - 5 * localdata.difficolta), 100),true);
-    removeItem('bende')
+    removeItem('bende','item')
 }
 
 window.InventarioEquipitemInkitmedico = function(button){
     if (localdata.statsplayer.health >= 100) return wrong(button.parentElement);
     SetLifebar(Math.min(localdata.statsplayer.health + (50 - 5 * localdata.difficolta), 100),true);
-    removeItem('kitmedico')
+    removeItem('kitmedico','item')
 }
 
 window.InventarioEquipammonInnovemm = function(button){
     if (!localdata.inventario.weapon.glock) return wrong(button.parentElement);
     localdata.inventario.weapon.glock.ammons += localdata.inventario.ammon.novemm.ammons
-    removeItem('novemm')
+    removeItem('novemm','ammon')
 }
 
 window.InventarioEquipweaponInglock = function(button){ 
@@ -549,9 +549,9 @@ window.AiEntity = async function (entitaElem,dino){
         }else{
 
             if (Math.abs(dx) > Math.abs(dy)) {
-                objectMove[dx < 0 ? 2:3](entitaElem, dino,dino.speed+(difficolta/100));
+                objectMove[dx < 0 ? 2:3](entitaElem, dino,dino.speed+(difficolta/50));
             } else {
-                objectMove[dy < 5 ? 0:1](entitaElem, dino,dino.speed+(difficolta/100));
+                objectMove[dy < 5 ? 0:1](entitaElem, dino,dino.speed+(difficolta/50));
             }
                 audio('creature',`${dino.nome}/${Math.abs(dx) + Math.abs(dy) > 50 ? 'run':'walk'}.mp3`,'walk',250,entitaElem)
             entitaElem.style.backgroundImage = `url(../img/animations/velociraptor/walk.gif)`
