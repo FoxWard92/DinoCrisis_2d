@@ -149,7 +149,7 @@ window.AudioSetLoop = function(button){
     for(let i = audioElement.length-1; i >= 0; i--){
         audioElement[i].pause()
     }
-    }else if(localsound.musica){
+    }else if(!button && localsound.musica){
         playMusic()
     }
     localStorage.setItem('gamelocalsound',JSON.stringify(localsound))

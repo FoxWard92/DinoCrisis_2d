@@ -35,14 +35,14 @@ const firebaseConfig = {
   let statoslidespreviwew = false;
    
 window.onload = async function(){
-    const gamelocalsound = localStorage.getItem('gamelocalsound');
-    const gamelocaldata = localStorage.getItem('utente');
+    const gamelocalsound = JSON.parse(localStorage.getItem('gamelocalsound'));;
+    const gamelocaldata = JSON.parse(localStorage.getItem('utente'));
 
     const elemento1 = document.getElementsByClassName('contenitore-scheda');
     await ChangeLinearGradient(elemento1[0],315,125)
 
     if(gamelocalsound != null){
-        localsound = JSON.parse(gamelocalsound);
+        localsound = gamelocalsound;
         for(let button = Object.keys(localsound).length-1;button >= 0;button--){
             if(localsound[sorgenti[button]]){
                 document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
@@ -51,9 +51,8 @@ window.onload = async function(){
     }
 
     if(gamelocaldata != null){
-        const data = JSON.parse(gamelocaldata);
         playMusic();
-        await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
+        await getDataForNodeByLogin(`utenti/${gamelocaldata.dati.nome}`,gamelocaldata.dati.password);
         await ReloadSalvataggi();
         await viewchange(2,false,true);
     }else{
@@ -104,10 +103,10 @@ window.AudioSetLoop = function(button){
     localsound[sorgenti[button]] = !localsound[sorgenti[button]]
     const audioElement = document.getElementsByClassName(sorgenti[button])
     if(!localsound[sorgenti[button]]){
-    for(let i = audioElement.length-1; i >= 0; i--){
-        audioElement[i].pause()
-    }
-    }else if(localsound.musica){
+       for(let i = audioElement.length-1; i >= 0; i--){
+           audioElement[i].pause()
+       }
+    }else if(!button && localsound.musica){
         playMusic()
     }
     localStorage.setItem('gamelocalsound',JSON.stringify(localsound))
