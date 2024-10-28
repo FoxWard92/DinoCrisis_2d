@@ -37,6 +37,10 @@ const firebaseConfig = {
 window.onload = async function(){
     const gamelocalsound = localStorage.getItem('gamelocalsound');
     const gamelocaldata = localStorage.getItem('utente');
+
+    const elemento1 = document.getElementsByClassName('contenitore-scheda');
+    await ChangeLinearGradient(elemento1[0],315,125)
+
     if(gamelocalsound != null){
         localsound = JSON.parse(gamelocalsound);
         for(let button = Object.keys(localsound).length-1;button >= 0;button--){
@@ -45,17 +49,17 @@ window.onload = async function(){
             }
         }
     }
+
     if(gamelocaldata != null){
         const data = JSON.parse(gamelocaldata);
-        const elemento1 = document.getElementsByClassName('contenitore-scheda');
         playMusic();
-        await ChangeLinearGradient(elemento1[0],315,125)
         await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
         await ReloadSalvataggi();
         await viewchange(2,false,true);
     }else{
         await viewchange(0,false,true); 
     }
+    
     loadbar.classList.remove('atload');
 }
 
