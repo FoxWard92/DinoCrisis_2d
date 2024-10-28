@@ -451,7 +451,7 @@ window.PlayerInteraction = async function(objectives){
 
         const distX = Math.abs(doorCenterX - objCenterX);
         const distY = Math.abs(doorCenterY - objCenterY);
-
+        
         if (distX < 3 && distY < 3) {
             if(!data.key || localdata.inventario.key && localdata.inventario.key[data.key]){
                 isChangeScena = true;
