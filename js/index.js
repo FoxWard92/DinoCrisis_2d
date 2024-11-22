@@ -28,6 +28,8 @@ const firebaseConfig = {
 
   let localsound = {musica:false,creature:false,effetti:false}
 
+  let localdata = null;
+
   let ScenaDefaultGame = {};
 
   let isRunninglinearAnimation = false;
@@ -35,14 +37,14 @@ const firebaseConfig = {
   let statoslidespreviwew = false;
    
 window.onload = async function(){
-    const gamelocalsound = JSON.parse(localStorage.getItem('gamelocalsound'));;
-    const gamelocaldata = JSON.parse(localStorage.getItem('utente'));
+    const gamelocalsound = localStorage.getItem('gamelocalsound');
+    const gamelocaldata = localStorage.getItem('utente');
 
     const elemento1 = document.getElementsByClassName('contenitore-scheda');
     await ChangeLinearGradient(elemento1[0],315,125)
 
     if(gamelocalsound != null){
-        localsound = gamelocalsound;
+        localsound = JSON.parse(gamelocalsound);
         for(let button = Object.keys(localsound).length-1;button >= 0;button--){
             if(localsound[sorgenti[button]]){
                 document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
@@ -51,8 +53,9 @@ window.onload = async function(){
     }
 
     if(gamelocaldata != null){
+        localdata = JSON.parse(gamelocaldata);
         playMusic();
-        await getDataForNodeByLogin(`utenti/${gamelocaldata.dati.nome}`,gamelocaldata.dati.password);
+        await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
         await ReloadSalvataggi();
         await viewchange(2,false,true);
     }else{
@@ -139,21 +142,20 @@ window.playMusic = async function (){
 }
 
 window.ReloadSalvataggi = async function(){
-        const data = JSON.parse(localStorage.getItem('utente'));
         const container = document.getElementById('saves');
         container.querySelector('h3').style.display = 'block'
         for (var i = container.childElementCount-1; i > 0; i--) {
             container.lastElementChild.remove();
         }
 
-        if(data.saves){
-            const numerosalvataggi = Object.keys(data.saves).length;
+        if(localdata.saves){
+            const numerosalvataggi = Object.keys(localdata.saves).length;
             const container = document.getElementById('saves');
             container.querySelector('h3').style.display = 'none'
             for(var i = 0; i < numerosalvataggi;i++){
                 addSavesSlot(container);
                 let idmondo = '100' + i;
-                container.lastElementChild.querySelector('h3').innerText = data.saves[idmondo].nome
+                container.lastElementChild.querySelector('h3').innerText = localdata.saves[idmondo].nome
                 container .lastElementChild.querySelector('button').setAttribute('onclick',`LoadGame(${idmondo})`);
             } 
         }
@@ -243,28 +245,27 @@ window.NewGame = async function(){
     const nome = document.getElementById('NomePartitaNuova');
     if(nome.value === ''){Wrong(nome);loadbar.classList.remove('atload'); return 0}
     const difficolta =  document.querySelector('input[name="difficoltà"]:checked');
-    const data = JSON.parse(localStorage.getItem('utente'));
     let salvataggi = 0;
-    if(data.saves){
-        salvataggi = Object.keys(data.saves).length;
+    if(localdata.saves){
+        salvataggi = Object.keys(localdata.saves).length;
         for(let i = 0; i < salvataggi;i++){
-            if(data.saves['100'+ i].nome == nome.value){
+            if(localdata.saves['100'+ i].nome == nome.value){
                     WrongNome(nome,0,0);
                     loadbar.classList.remove('atload');
                 return 0
             }
         }
     }else{
-        data.saves = {};
+        localdata.saves = {};
     }
 
     const idmondo = '100' + salvataggi;
 
-    data.saves[idmondo] = {};
-    data.saves[idmondo].scene = {};
+    localdata.saves[idmondo] = {};
+    localdata.saves[idmondo].scene = {};
 
-    data.saves[idmondo].startscena = 1;
-    data.saves[idmondo].statsplayer = {
+    localdata.saves[idmondo].startscena = 1;
+    localdata.saves[idmondo].statsplayer = {
         setgun : 'glock',
         width :  10,
         height :  20,
@@ -274,17 +275,17 @@ window.NewGame = async function(){
         posy : 50
     };
 
-    data.saves[idmondo].difficolta = difficolta.value;
-    data.saves[idmondo].nome = nome.value;
+    localdata.saves[idmondo].difficolta = difficolta.value;
+    localdata.saves[idmondo].nome = nome.value;
     const gamedata = (await getDataForNode('gamedata/scene'));
     for (let key in gamedata) {
         const { leggenda } = gamedata[key];
-        data.saves[idmondo].scene[key] = { leggenda };
+        localdata.saves[idmondo].scene[key] = { leggenda };
     }
-    data.saves[idmondo].inventario = await getDataForNode('gamedata/inventario');
-    await addElementToNode(`utenti/${data.dati.nome}/saves`,data.saves);
-    await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
-    await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
+    localdata.saves[idmondo].inventario = await getDataForNode('gamedata/inventario');
+    await addElementToNode(`utenti/${localdata.dati.nome}/saves`,localdata.saves);
+    await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
+    await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
     await ReloadSalvataggi();
     viewchange(2,false);
     loadbar.classList.remove('atload');
@@ -296,17 +297,16 @@ window.NewGame = async function(){
 window.RemoveGame = async function () {
     loadbar.classList.add('atload');
     const nome = document.getElementById('NomePartitaCancella');
-    const data = JSON.parse(localStorage.getItem('utente'));
-    if(data.saves){
-        const salvataggi = Object.keys(data.saves).length;
+    if(localdata.saves){
+        const salvataggi = Object.keys(localdata.saves).length;
         for(let i = 0; i < salvataggi;i++){
-            if(data.saves['100'+ i].nome == nome.value){
+            if(localdata.saves['100'+ i].nome == nome.value){
                 for(let x = i;x < salvataggi-1;x++){
-                    data.saves['100'+ x] = data.saves['100'+ (x+1)];
+                    localdata.saves['100'+ x] = localdata.saves['100'+ (x+1)];
                 }
                 delete data.saves['100' + (salvataggi-1)];
-                await addElementToNode(`utenti/${data.dati.nome}/saves`,data.saves);
-                await getDataForNodeByLogin(`utenti/${data.dati.nome}`,data.dati.password);
+                await addElementToNode(`utenti/${localdata.dati.nome}/saves`,localdata.saves);
+                await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
                 await ReloadSalvataggi();
                 viewchange(2,false);
                 loadbar.classList.remove('atload');
@@ -323,8 +323,8 @@ window.RemoveGame = async function () {
 window.LoadGame = async function (idmondo) {
     loadbar.classList.add('atload');
     const gamedata = (await getDataForNode('gamedata/scene'));
-    const data = (JSON.parse(localStorage.getItem('utente'))).saves[idmondo];
-    const localdata = {
+    const data = localdata.saves[idmondo];
+    const localdatagame = {
         startscena: data.startscena ? data.startscena:{},
         statsplayer: data.statsplayer ? data.statsplayer:{},
         difficolta : data.difficolta ? data.difficolta:{},
@@ -351,7 +351,7 @@ window.LoadGame = async function (idmondo) {
     data.scene[scenaKey] ||= {}; 
     const scenaData = data.scene[scenaKey]; 
     if (scenaData && scenaData.leggenda) {
-        localdata.scene[scenaKey] = {
+        localdatagame.scene[scenaKey] = {
             centerdoor: scenaGamedata.centerdoor,
             leftdoor: scenaGamedata.leftdoor,
             rightdoor: scenaGamedata.rightdoor,
@@ -360,7 +360,7 @@ window.LoadGame = async function (idmondo) {
         };
     } else {
         console.warn(`La scena ${scenaKey} non contiene leggenda.`, scenaData);
-        localdata.scene[scenaKey] = {
+        localdatagame.scene[scenaKey] = {
             background: scenaGamedata.background,
             centerdoor: scenaGamedata.centerdoor,
             leftdoor: scenaGamedata.leftdoor,
@@ -370,7 +370,7 @@ window.LoadGame = async function (idmondo) {
     }
 }
     await localStorage.removeItem('loadgame');
-    await localStorage.setItem('gamelocaldata',JSON.stringify(localdata));
+    await localStorage.setItem('gamelocaldata',JSON.stringify(localdatagame));
     await localStorage.setItem('idmondo',idmondo);
     history.replaceState(null, '','html/game.html');
     location.reload();

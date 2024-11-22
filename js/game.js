@@ -56,7 +56,7 @@ const firebaseConfig = {
 window.onload = async function(){
 
     const gamelocalsound = localStorage.getItem('gamelocalsound');
-    const gamelocaldata = localStorage.getItem('utente');
+    const gamelocaldata = localStorage.getItem('gamelocaldata');
     if(gamelocalsound != null){
         localsound = JSON.parse(gamelocalsound);
         for(const i in sorgenti){
@@ -66,8 +66,8 @@ window.onload = async function(){
         }
     }
 
-    localdata = JSON.parse(localStorage.getItem('gamelocaldata'));
-    if(localdata != null){
+    if(gamelocaldata != null){
+        localdata = JSON.parse(gamelocaldata)
         console.log(localdata)
         playMusic()
         await loadscena(localdata.startscena,true);
