@@ -120,7 +120,7 @@ window.playMusic = async function (){
         
         audioElement.classList.add('musica')
 
-        audioElement.src = `../soudtruck/musica/index/${Math.floor(Math.random() * 3 + 1)}.mp3`;
+        audioElement.src = `../soundtruck/musica/index/${Math.floor(Math.random() * 3 + 1)}.mp3`;
 
         audioElement.autoplay = true;
 

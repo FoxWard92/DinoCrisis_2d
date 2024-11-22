@@ -163,7 +163,7 @@ window.playMusic = async function (){
         
         audioElement.classList.add('musica')
 
-        audioElement.src = `../soudtruck/musica/game/${Math.floor(Math.random() * 3 + 1)}.mp3`;
+        audioElement.src = `../soundtruck/musica/game/${Math.floor(Math.random() * 3 + 1)}.mp3`;
 
         audioElement.autoplay = true;
 
@@ -193,7 +193,7 @@ window.audio = async function(type,src,classList,time,Object){
 
         document.body.appendChild(audioElement)
 
-        audioElement.src = `../soudtruck/${type}/${src}`;
+        audioElement.src = `../soundtruck/${type}/${src}`;
     
         audioElement.autoplay = true;
     
