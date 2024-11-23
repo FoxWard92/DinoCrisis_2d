@@ -194,13 +194,12 @@ audio{
     height: 10%;
     width: 10%;
     opacity: 0;
-    background-image: url('../../img/index/brand/loadbar.jpg');
-    transition: transform 0.8s ease-in-out;
+    background-image: url('../../img/index/brand/loadbar.gif');
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
     position: absolute;
-    top: 70%;
+    top: 80%;
     left: 45%;
     z-index: 20;
 }
@@ -274,10 +273,8 @@ audio{
 @keyframes atload {
     0% {
         opacity: 1;
-        transform: rotate(0deg); 
     }
     100% {
-        opacity: 1;
-        transform: rotate(360deg); 
+        opacity: 1; 
     }
 }
