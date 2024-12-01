@@ -187,6 +187,8 @@ window.WrongPassword = function (nome,password,confermapassworld){Wrong(password
 window.WrongPasswordConferma = function (nome,password,confermapassworld){Wrong(confermapassworld);}
 
 window.AccesoVerificato = async function (nome,password,confermapassworld){
+    const gamelocaldata = localStorage.getItem('utente');
+    localdata = JSON.parse(gamelocaldata);
     await ReloadSalvataggi();
     await viewchange(2,false,false);
     return 1
@@ -304,7 +306,7 @@ window.RemoveGame = async function () {
                 for(let x = i;x < salvataggi-1;x++){
                     localdata.saves['100'+ x] = localdata.saves['100'+ (x+1)];
                 }
-                delete data.saves['100' + (salvataggi-1)];
+                delete localdata.saves['100' + (salvataggi-1)];
                 await addElementToNode(`utenti/${localdata.dati.nome}/saves`,localdata.saves);
                 await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
                 await ReloadSalvataggi();
