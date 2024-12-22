@@ -819,11 +819,11 @@ function updateMovement(time) {
 
     handleKeyAction(speed);
     audio('creature', 'player/walk.mp3','walk',250,player);
+    player.style.backgroundImage = `url(../img/animations/player/walk.gif)`;
     movementInterval = requestAnimationFrame(updateMovement);
 }
 
 function startMovement() {
-    player.style.backgroundImage = `url(../img/animations/player/walk.gif)`;
     if (!movementInterval) {
         lastTime = performance.now();
         movementInterval = requestAnimationFrame(updateMovement);

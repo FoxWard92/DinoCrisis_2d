@@ -61,22 +61,25 @@ section{
     height: 100vh;
     width: 100%;
     background-size: 10%;
-    background-image: url(../../img/index/backgroud-selection.jpg);
+    background-image: url(../../img/index/background-selection.jpg);
     
 }
 
 article{
     height: 100%;
-    width: 80%;
+    width: 90%;
     display: flex;
     align-items: start;
     justify-content: center;
-    background-image: url(../../img/index/backgroud-article.jpg);
+    overflow: hidden;
+    position: relative;
+    background-image: url(../../img/index/background-article.jpg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
     border-left: solid gray 0.2vw;
     border-right: solid gray 0.2vw;
+    
 }
 
 .atload{
@@ -259,6 +262,38 @@ article{
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+#background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
 }
 
 
