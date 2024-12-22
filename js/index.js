@@ -143,18 +143,19 @@ window.playMusic = async function (){
 
 window.ReloadSalvataggi = async function(){
         const container = document.getElementById('saves');
-        container.querySelector('h3').style.display = 'block'
+        const h3 = container.firstElementChild;
+        h3.style.display = 'block'
         for (var i = container.childElementCount-1; i > 0; i--) {
             container.lastElementChild.remove();
         }
 
-        if(localdata.saves){
+        if(localdata.saves && Object.keys(localdata.saves).length > 0){
             const numerosalvataggi = Object.keys(localdata.saves).length;
             const container = document.getElementById('saves');
-            container.querySelector('h3').style.display = 'none'
+            h3.style.display = 'none'
             for(var i = 0; i < numerosalvataggi;i++){
                 addSavesSlot(container);
-                let idmondo = '100' + i;
+                let idmondo = i;
                 container.lastElementChild.querySelector('h3').innerText = localdata.saves[idmondo].nome
                 container .lastElementChild.querySelector('button').setAttribute('onclick',`LoadGame(${idmondo})`);
             } 
@@ -251,7 +252,7 @@ window.NewGame = async function(){
     if(localdata.saves){
         salvataggi = Object.keys(localdata.saves).length;
         for(let i = 0; i < salvataggi;i++){
-            if(localdata.saves['100'+ i].nome == nome.value){
+            if(localdata.saves[i].nome == nome.value){
                     WrongNome(nome,0,0);
                     loadbar.classList.remove('atload');
                 return 0
@@ -261,7 +262,7 @@ window.NewGame = async function(){
         localdata.saves = {};
     }
 
-    const idmondo = '100' + salvataggi;
+    const idmondo = salvataggi;
 
     localdata.saves[idmondo] = {};
     localdata.saves[idmondo].scene = {};
@@ -302,11 +303,11 @@ window.RemoveGame = async function () {
     if(localdata.saves){
         const salvataggi = Object.keys(localdata.saves).length;
         for(let i = 0; i < salvataggi;i++){
-            if(localdata.saves['100'+ i].nome == nome.value){
+            if(localdata.saves[i].nome == nome.value){
                 for(let x = i;x < salvataggi-1;x++){
-                    localdata.saves['100'+ x] = localdata.saves['100'+ (x+1)];
+                    localdata.saves[x] = localdata.saves[(x+1)];
                 }
-                delete localdata.saves['100' + (salvataggi-1)];
+                delete localdata.saves[(salvataggi-1)];
                 await addElementToNode(`utenti/${localdata.dati.nome}/saves`,localdata.saves);
                 await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
                 await ReloadSalvataggi();
