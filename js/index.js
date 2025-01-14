@@ -51,8 +51,8 @@ window.onload = async function(){
             }
         }
     }
-
-    if(gamelocaldata != null && gamelocaldata.dati != null && gamelocaldata.dati.nome != null && gamelocaldata.dati.nome){
+    
+    if(gamelocaldata != null){
         localdata = JSON.parse(gamelocaldata);
         playMusic();
         await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
