@@ -52,7 +52,7 @@ window.onload = async function(){
         }
     }
 
-    if(gamelocaldata != null){
+    if(gamelocaldata != null && gamelocaldata.dati != null && gamelocaldata.dati.nome != null && gamelocaldata.dati.nome){
         localdata = JSON.parse(gamelocaldata);
         playMusic();
         await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
@@ -288,7 +288,6 @@ window.NewGame = async function(){
     localdata.saves[idmondo].inventario = await getDataForNode('gamedata/inventario');
     await addElementToNode(`utenti/${localdata.dati.nome}/saves`,localdata.saves);
     await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
-    await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
     await ReloadSalvataggi();
     viewchange(2,false);
     loadbar.classList.remove('atload');
@@ -410,10 +409,12 @@ window.getDataForNodeByLogin = async function (NodeId,ValueId) {
 };
 
 window.getDataForNodeByRegister = async function (NodeId) {
-    const data =  await getDataForNode(NodeId);
-    if(data === 0){
-        return 4
-    }
+    if(NodeId.length < 30){
+        const data =  await getDataForNode(NodeId);
+        if(data === 0){
+            return 4
+        }
+        }
     return 0
 };
 
