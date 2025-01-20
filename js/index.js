@@ -25,26 +25,29 @@ const firebaseConfig = {
   const schede = document.getElementsByClassName('scheda');
 
   const sorgenti = ['musica','effetti','creature']
+  
+  const SchedaDiNavigazione = document.getElementById('contenitore-scheda');
+
+  const SchedaDiLogin = document.getElementById('Accedi')
+  
+  const SchedaDiRegister = document.getElementById('Registrati')
 
   let localsound = {musica:false,creature:false,effetti:false}
 
   let localdata = null;
-
-  let ScenaDefaultGame = {};
 
   let isRunninglinearAnimation = false;
 
   let statoslidespreviwew = false;
    
 window.onload = async function(){
-    const gamelocalsound = localStorage.getItem('gamelocalsound');
-    const gamelocaldata = localStorage.getItem('utente');
+    const gamelocalsound = JSON.parse(localStorage.getItem('gamelocalsound'));
+    const gamelocaldata = JSON.parse(localStorage.getItem('utente'));
 
-    const elemento1 = document.getElementsByClassName('contenitore-scheda');
-    await ChangeLinearGradient(elemento1[0],315,125)
+    await ChangeLinearGradient(SchedaDiNavigazione,315,125)
 
-    if(gamelocalsound != null){
-        localsound = JSON.parse(gamelocalsound);
+    if(gamelocalsound !== null){
+        localsound = gamelocalsound;
         for(let button = Object.keys(localsound).length-1;button >= 0;button--){
             if(localsound[sorgenti[button]]){
                 document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
@@ -52,14 +55,17 @@ window.onload = async function(){
         }
     }
     
-    if(gamelocaldata != null){
-        localdata = JSON.parse(gamelocaldata);
-        playMusic();
-        await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
-        await ReloadSalvataggi();
-        await viewchange(2,false,true);
+    if(gamelocaldata && gamelocaldata.dati && gamelocaldata.dati.nome && gamelocaldata.dati.password){
+        if(await LoginByAuto(gamelocaldata.dati.nome,gamelocaldata.dati.password)){
+            playMusic();
+            await ReloadSalvataggi();
+            await viewchange(2,false,false);
+            console.log(2)
+        }else{
+            await viewchange(0,false,true);
+        }
     }else{
-        await viewchange(0,false,true); 
+        await viewchange(0,false,true);
     }
     
     loadbar.classList.remove('atload');
@@ -67,7 +73,6 @@ window.onload = async function(){
 
 window.viewchange = async function(numero,statoslides,forzastato){
     if(isRunninglinearAnimation && forzastato) return 0;
-        const elemento1 = document.getElementsByClassName('contenitore-scheda');
         for( let i = 0; i < schede.length;i++){
            if(i == numero){
                 schede[i].style.transform = `translateX(${(80)*statoslides}%)`
@@ -84,7 +89,7 @@ window.viewchange = async function(numero,statoslides,forzastato){
     loadbar.style.left = `${(statoslides*-50)}%`;
     if(statoslides != statoslidespreviwew){
         statoslidespreviwew = statoslides;
-        ChangeLinearGradient(elemento1[0],(statoslides ? 125:225),(statoslides ? 225:125));
+        ChangeLinearGradient(SchedaDiNavigazione,(statoslides ? 125:225),(statoslides ? 225:125));
     }
     await new Promise(resolve => setTimeout(resolve, 1000));
     return 1
@@ -99,6 +104,18 @@ window.ChangeLinearGradient = function(background,degstart,degend){
             background.style.background = `linear-gradient(${degstart+(i*angle)}deg,transparent  0% ,rgb(20,20,20) 70%)`;
         }, i * 5);
     }
+}
+
+window.isStringContains = function(string,chars){
+    if(string == '') {return true}
+    for(var i = string.length-1;i >= 0;i--){
+        for(var x = chars.length-1;x >= 0; x--){
+            if(string.charAt(i) == chars[x]){
+                return true
+            }
+        }
+    }
+    return false
 }
 
 window.AudioSetLoop = function(button){
@@ -181,63 +198,92 @@ window.Wrong = async function(wrong){
     }
 }
 
-window.WrongNome = function (nome,password,confermapassworld){Wrong(nome);}
+window.LoginByAuto = async function (Nome,Password) {
+    isRunninglinearAnimation = true;
+    loadbar.classList.add('atload');
 
-window.WrongPassword = function (nome,password,confermapassworld){Wrong(password);}
+    const localdatatemp = await getDataForNode(`utenti/${Nome}`)
+    
+    console.log(localdatatemp)
 
-window.WrongPasswordConferma = function (nome,password,confermapassworld){Wrong(confermapassworld);}
+    if(localdatatemp && localdatatemp.dati && localdatatemp.dati.password == Password){
+        localdata = localdatatemp
+        localStorage.setItem('utente',JSON.stringify(localdatatemp));
 
-window.AccesoVerificato = async function (nome,password,confermapassworld){
-    const gamelocaldata = localStorage.getItem('utente');
-    localdata = JSON.parse(gamelocaldata);
-    await ReloadSalvataggi();
-    await viewchange(2,false,false);
-    return 1
-}
-
-window.RegistroVerificato = async function (nome,password,confermapassworld){
-    if(password.value == ''){
-        Wrong(password)
-        return 0
-    }else if(password.value != confermapassworld.value){
-        Wrong(confermapassworld)
+        isRunninglinearAnimation = false;
+        loadbar.classList.remove('atload');
         return 1
     }
-    const utenteogggeto = {
-        dati: {
-            nome : nome.value,
-            password: password.value
-        },
-        saves: 0
-    };
-    await addElementToNode(`utenti/${nome.value}`,utenteogggeto);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    await viewchange(0,false,false);
-    return 2
-}
-
-let arrayDiFunzioni = [WrongNome, WrongPassword, AccesoVerificato,WrongPasswordConferma,RegistroVerificato];
-
-window.Login = async function () {
-    isRunninglinearAnimation = true;
-    loadbar.classList.add('atload');
-    const schedaload = document.getElementsByClassName('schedaLoaded')[0];
-    const nome = schedaload.querySelector('.nome');
-    if(nome.value === ''){Wrong(nome);loadbar.classList.remove('atload');return 0;}
-    const password =  schedaload.querySelector('.password');
-    await arrayDiFunzioni[(await getDataForNodeByLogin(`utenti/${nome.value}`,password.value))](nome,password,0);
+    
     isRunninglinearAnimation = false;
     loadbar.classList.remove('atload');
+
+    return 0
 }
 
-window.Register = async function () {
+window.LoginByUser = async function () {
     isRunninglinearAnimation = true;
     loadbar.classList.add('atload');
-    const schedaload = document.getElementsByClassName('schedaLoaded')[0];
-    const nome = schedaload.querySelector('.nome');
-    const password =  schedaload.querySelector('.password');
-    const confermapassworld = schedaload.querySelector('.conferma')
-    await arrayDiFunzioni[(await getDataForNodeByRegister(`utenti/${nome.value}`))](nome,password,confermapassworld);
+
+    const Nome = SchedaDiLogin.children[0]
+
+    const Password = SchedaDiLogin.children[1]
+
+    const localdatatemp = await getDataForNode(`utenti/${Nome.value}`)
+    if(!localdatatemp){
+        Wrong(Nome)
+    }else if (localdatatemp.dati.password != Password.value){
+        Wrong(Password)
+    }else{
+        localdata = localdatatemp
+        localStorage.setItem('utente',JSON.stringify(localdatatemp));
+        playMusic();
+        await ReloadSalvataggi();
+        await viewchange(2,false,false);
+        
+    }
+
+    
+    isRunninglinearAnimation = false;
+    loadbar.classList.remove('atload');
+
+    return 0
+
+}
+
+window.RegisterByUser = async function () {
+    isRunninglinearAnimation = true;
+    loadbar.classList.add('atload');
+
+    const Nome = SchedaDiRegister.children[0]
+
+    const Password = SchedaDiRegister.children[1]
+
+    const ConfermaPassword = SchedaDiRegister.children[2]
+
+    if(Nome.value.length >20 || isStringContains(Nome.value,[' ','=','^','?']) || await getDataForNode(`utenti/${Nome.value}`)){
+        Wrong(Nome)
+    }else if(Password.value.length < 5 || isStringContains(Password.value,[' ','è','ò','à'])){
+        Wrong(Password)
+    }else if (Password.value != ConfermaPassword.value){
+        Wrong(ConfermaPassword)
+    }else{
+        const utente = {
+            dati: {
+                nome : Nome.value,
+                password: Password.value
+            },
+            saves: 0
+        };
+        await addElementToNode(`utente/${Nome.value}`,utente);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        isRunninglinearAnimation = false;
+        loadbar.classList.remove('atload');
+
+        await viewchange(0,false,false);
+    }
+
     isRunninglinearAnimation = false;
     loadbar.classList.remove('atload');
 }
@@ -287,7 +333,7 @@ window.NewGame = async function(){
     }
     localdata.saves[idmondo].inventario = await getDataForNode('gamedata/inventario');
     await addElementToNode(`utenti/${localdata.dati.nome}/saves`,localdata.saves);
-    await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
+    await LoginByAuto(localdata.dati.nome,localdata.dati.password);
     await ReloadSalvataggi();
     viewchange(2,false);
     loadbar.classList.remove('atload');
@@ -308,7 +354,7 @@ window.RemoveGame = async function () {
                 }
                 delete localdata.saves[(salvataggi-1)];
                 await addElementToNode(`utenti/${localdata.dati.nome}/saves`,localdata.saves);
-                await getDataForNodeByLogin(`utenti/${localdata.dati.nome}`,localdata.dati.password);
+                await LoginByAuto(localdata.dati.nome,localdata.dati.password);
                 await ReloadSalvataggi();
                 viewchange(2,false);
                 loadbar.classList.remove('atload');
@@ -393,29 +439,6 @@ window.getDataForNode = async function (NodeId) {
         console.error("Error getting data:", error);
         return null
     }
-};
-
-window.getDataForNodeByLogin = async function (NodeId,ValueId) {
-    const data =  await getDataForNode(NodeId);
-    if (data === 0){
-        return 0
-    }
-    if(ValueId == data.dati.password){
-        localStorage.removeItem('utente');
-        localStorage.setItem('utente',JSON.stringify(data));
-        return 2
-    }
-    return 1
-};
-
-window.getDataForNodeByRegister = async function (NodeId) {
-    if(NodeId.length < 30){
-        const data =  await getDataForNode(NodeId);
-        if(data === 0){
-            return 4
-        }
-        }
-    return 0
 };
 
 window.addElementToNode = async function (nodeId, elementData) {
