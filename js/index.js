@@ -55,10 +55,6 @@ window.onload = async function(){
             }
         }
         
-        playMusic();
-        await ReloadSalvataggi();
-        await viewchange(2,false);
-        
     }catch(error){   
         console.error('Errore durante il caricamento:',error);
     }

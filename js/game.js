@@ -55,18 +55,21 @@ const firebaseConfig = {
   
 window.onload = async function(){
 
-    const gamelocalsound = localStorage.getItem('gamelocalsound');
-    const gamelocaldata = localStorage.getItem('gamelocaldata');
-    if(gamelocalsound != null){
+    try {
+        const gamelocalsound = localStorage.getItem('gamelocalsound');
         localsound = JSON.parse(gamelocalsound);
         for(const i in sorgenti){
             if(localsound[sorgenti[i]]){
                 document.getElementById(`${i}-audio-button`).classList.add('button-audio-active')
             }
         }
+
+    } catch (error) {
+        console.log(error)    
     }
 
-    if(gamelocaldata != null){
+    try {
+        const gamelocaldata = localStorage.getItem('gamelocaldata');
         localdata = JSON.parse(gamelocaldata)
         console.log(localdata)
         playMusic()
@@ -78,13 +81,14 @@ window.onload = async function(){
         player.style.height = `${localdata.statsplayer.height}%`;
         player.style.width = `${localdata.statsplayer.width}%`;
         player.style.transform = `ScaleX(${localdata.statsplayer.rotation*-1})`;
-        loadbar.classList.remove('atload');
-        return 2
+        
+    } catch (error) {
+        console.log(error)
+        history.replaceState(null, '','../index.html');
+        location.reload()
     }
 
-    history.replaceState(null, '','../index.html');
-    location.reload()        
-    return 0;
+    loadbar.classList.remove('atload');
 }
 
 window.SetLifebar = function(value,animations){
@@ -215,6 +219,7 @@ window.exitgame = function(){
 
 window.savegame = async function(){
     loadbar.classList.add('atload');
+
     const data =  JSON.parse(localStorage.getItem('utente'));
     if(!data){
         loadbar.classList.remove('atload');
@@ -225,6 +230,7 @@ window.savegame = async function(){
         },1000)
         return 2
     }
+
     if(data.dati.password == await getDataForNode(`utenti/${data.dati.nome}/dati/password`)){
         await addElementToNode(`utenti/${data.dati.nome}/saves/${localStorage.getItem('idmondo')}/`,localdata)
         exitgame()
