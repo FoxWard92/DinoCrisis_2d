@@ -41,38 +41,48 @@ const firebaseConfig = {
   let statoslidespreviwew = false;
    
 window.onload = async function(){
-    const gamelocalsound = JSON.parse(localStorage.getItem('gamelocalsound'));
-    const gamelocaldata = JSON.parse(localStorage.getItem('utente'));
-
     await ChangeLinearGradient(SchedaDiNavigazione,315,125)
 
-    if(gamelocalsound !== null){
-        localsound = gamelocalsound;
-        for(let button = Object.keys(localsound).length-1;button >= 0;button--){
-            if(localsound[sorgenti[button]]){
-                document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
+    try{
+        const gamelocalsound = JSON.parse(localStorage.getItem('gamelocalsound'));
+    
+        if(gamelocalsound.musica && gamelocalsound.creature && gamelocalsound.effetti){
+            localsound = gamelocalsound;
+            for(let button = Object.keys(localsound).length-1;button >= 0;button--){
+                if(localsound[sorgenti[button]]){
+                    document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
+                }
             }
         }
+        
+        playMusic();
+        await ReloadSalvataggi();
+        await viewchange(2,false);
+        
+    }catch(error){   
+        console.error('Errore durante il caricamento:',error);
     }
-    
-    if(gamelocaldata && gamelocaldata.dati && gamelocaldata.dati.nome && gamelocaldata.dati.password){
-        if(await LoginByAuto(gamelocaldata.dati.nome,gamelocaldata.dati.password)){
-            playMusic();
-            await ReloadSalvataggi();
-            await viewchange(2,false,false);
-            console.log(2)
-        }else{
-            await viewchange(0,false,true);
-        }
-    }else{
-        await viewchange(0,false,true);
+
+    try{
+        const gamelocaldata = JSON.parse(localStorage.getItem('utente'));
+
+        await LoginByAuto(gamelocaldata.dati.nome,gamelocaldata.dati.password);
+
+        playMusic();
+        await ReloadSalvataggi();
+        await viewchange(2,false);
+
+    }catch(error){
+        await viewchange(0,false);
+        console.error('Errore durante il caricamento:',error);
     }
     
     loadbar.classList.remove('atload');
 }
 
-window.viewchange = async function(numero,statoslides,forzastato){
-    if(isRunninglinearAnimation && forzastato) return 0;
+window.viewchange = async function(numero,statoslides){
+    if(isRunninglinearAnimation) return 0;
+    isRunninglinearAnimation = true;
         for( let i = 0; i < schede.length;i++){
            if(i == numero){
                 schede[i].style.transform = `translateX(${(80)*statoslides}%)`
@@ -92,7 +102,9 @@ window.viewchange = async function(numero,statoslides,forzastato){
         ChangeLinearGradient(SchedaDiNavigazione,(statoslides ? 125:225),(statoslides ? 225:125));
     }
     await new Promise(resolve => setTimeout(resolve, 1000));
-    return 1
+    
+    isRunninglinearAnimation = false;
+    return 1;
 }
 
 window.ChangeLinearGradient = function(background,degstart,degend){
@@ -199,7 +211,6 @@ window.Wrong = async function(wrong){
 }
 
 window.LoginByAuto = async function (Nome,Password) {
-    isRunninglinearAnimation = true;
     loadbar.classList.add('atload');
 
     const localdatatemp = await getDataForNode(`utenti/${Nome}`)
@@ -210,19 +221,16 @@ window.LoginByAuto = async function (Nome,Password) {
         localdata = localdatatemp
         localStorage.setItem('utente',JSON.stringify(localdatatemp));
 
-        isRunninglinearAnimation = false;
         loadbar.classList.remove('atload');
         return 1
     }
     
-    isRunninglinearAnimation = false;
     loadbar.classList.remove('atload');
 
     return 0
 }
 
 window.LoginByUser = async function () {
-    isRunninglinearAnimation = true;
     loadbar.classList.add('atload');
 
     const Nome = SchedaDiLogin.children[0]
@@ -239,12 +247,10 @@ window.LoginByUser = async function () {
         localStorage.setItem('utente',JSON.stringify(localdatatemp));
         playMusic();
         await ReloadSalvataggi();
-        await viewchange(2,false,false);
+        await viewchange(2,false);
         
     }
 
-    
-    isRunninglinearAnimation = false;
     loadbar.classList.remove('atload');
 
     return 0
@@ -252,7 +258,7 @@ window.LoginByUser = async function () {
 }
 
 window.RegisterByUser = async function () {
-    isRunninglinearAnimation = true;
+    
     loadbar.classList.add('atload');
 
     const Nome = SchedaDiRegister.children[0]
@@ -275,16 +281,14 @@ window.RegisterByUser = async function () {
             },
             saves: 0
         };
-        await addElementToNode(`utente/${Nome.value}`,utente);
+        await addElementToNode(`utenti/${Nome.value}`,utente);
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        isRunninglinearAnimation = false;
         loadbar.classList.remove('atload');
 
-        await viewchange(0,false,false);
+        await viewchange(0,false);
     }
 
-    isRunninglinearAnimation = false;
     loadbar.classList.remove('atload');
 }
 
