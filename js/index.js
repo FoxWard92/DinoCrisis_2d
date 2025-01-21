@@ -417,11 +417,13 @@ window.LoadGame = async function (idmondo) {
         };
     }
 }
-    await localStorage.removeItem('loadgame');
-    await localStorage.setItem('gamelocaldata',JSON.stringify(localdatagame));
-    await localStorage.setItem('idmondo',idmondo);
+    localStorage.removeItem('loadgame');
+    localStorage.setItem('gamelocaldata',JSON.stringify(localdatagame));
+    localStorage.setItem('idmondo',idmondo);
+    
     history.replaceState(null, '','html/game.html');
     location.reload();
+    
     loadbar.classList.remove('atload');
     
 }
