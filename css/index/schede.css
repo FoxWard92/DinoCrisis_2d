@@ -1,3 +1,23 @@
+.scheda{
+    height: 100%;
+    width: 70%;
+    padding: 5%;
+    display: none;
+    transition: all 0.8s ease-in-out;
+}
+
+.schedaLoaded{
+    display: flex;
+}
+
+.contenitore-bottoni{
+    height: 10%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 #contenitore-generale{
     height: 70%;
     width: 50%;
@@ -19,10 +39,72 @@
     background: linear-gradient(315deg,transparent  0% ,rgb(20,20,20) 70%);
 }
 
-.contenitore-bottoni{
-    height: 10%;
+#saves{
+    height: 50%;
     width: 100%;
+    overflow: scroll;
+}
+
+#saves>div{
+    height: 70%;
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 10%;
+    border-radius: 1vw;
+    overflow: hidden;
     display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
     align-items: center;
+    background: linear-gradient(-45deg,transparent  10% ,rgb(44, 0, 0) 70%);
+    transition: transform 0.2s ease-in-out;
+}
+
+#saves>div>h3{
+    margin: 0%;
+    width: 100%;
+}
+
+#saves>div:hover{
+    transform: scale(1.2);
+}
+
+#loadbar{
+    height: 70%;
+    width: 70%;
+    opacity: 0;
+    background-image: url('../../img/index/brand/loadbar.gif');
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+#BottoneNuovaPatita{
+    width: 20%;
+    height: 100%;
+}
+
+#NomePartitaNuova{
+    height: 80%;
+    width: 70%;
+}
+
+#addgamediv{
+    width: 100%;
+    height: 10%;
+    display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+#background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
 }

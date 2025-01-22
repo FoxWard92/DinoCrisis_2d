@@ -126,18 +126,6 @@ article{
     width: 100%;
 }
 
-.scheda{
-    height: 100%;
-    width: 70%;
-    padding: 5%;
-    display: none;
-    transition: all 0.8s ease-in-out;
-}
-
-.schedaLoaded{
-    display: flex;
-}
-
 .cont-impostazioni{
     height: 50%;
     width: 100%;
@@ -181,6 +169,16 @@ article{
     width: 30%;
 }
 
+.button-remove{
+    width: 15%;
+    height: 20%;
+    margin-left: 10%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../../img/index/brand/cestino.jpg);
+}
+
 .button-audio{
     width: 20%;
     height: 80%;
@@ -210,93 +208,6 @@ article{
     width: 80%;
 }
 
-#loadbar{
-    height: 70%;
-    width: 70%;
-    opacity: 0;
-    background-image: url('../../img/index/brand/loadbar.gif');
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    position: relative;
-}
-
-#saves{
-    height: 50%;
-    width: 100%;
-    overflow: scroll;
-}
-
-#saves>div{
-    height: 70%;
-    width: 80%;
-    margin-left: 10%;
-    margin-top: 10%;
-    border-radius: 1vw;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(-45deg,transparent  30% ,rgb(44, 0, 0) 70%);
-    transition: transform 0.2s ease-in-out;
-}
-
-#saves>div:hover{
-    transform: scale(1.2);
-}
-
-#BottoneNuovaPatita{
-    width: 20%;
-    height: 100%;
-}
-
-#NomePartitaNuova{
-    height: 80%;
-    width: 70%;
-}
-
-#addgamediv{
-    width: 100%;
-    height: 10%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#background-video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: translate(-50%, -50%);
-}
-
-::-webkit-scrollbar {
-    width: 12px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 6px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-* {
-    scrollbar-width: thin;
-    scrollbar-color: #888 #f1f1f1;
-}
-
-
 @font-face {
     font-family: 'BAD_GRUNGE';
     src: url(../../font/BAD_GRUNGE.ttf);
@@ -319,4 +230,26 @@ article{
     100% {
         opacity: 1;
     }
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
 }

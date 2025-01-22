@@ -178,11 +178,16 @@ window.ReloadSalvataggi = async function(){
             const numerosalvataggi = Object.keys(localdata.saves).length;
             const container = document.getElementById('saves');
             h3.style.display = 'none'
-            for(var i = 0; i < numerosalvataggi;i++){
+            for(let i = 0; i < numerosalvataggi;i++){
                 addSavesSlot(container);
-                let idmondo = i;
-                container.lastElementChild.querySelector('h3').innerText = localdata.saves[idmondo].nome
-                container .lastElementChild.querySelector('button').setAttribute('onclick',`LoadGame(${idmondo})`);
+                const elementoContainer = container.lastElementChild;
+                elementoContainer.children[0].innerText = localdata.saves[i].nome
+                elementoContainer.children[1].onclick =  function(){
+                    LoadGame(i);
+                }
+                elementoContainer.children[2].onclick =  function(){
+                    RemoveGame(i);
+                } 
             } 
         }
         
@@ -193,6 +198,8 @@ window.addSavesSlot = function(container){
     const newSlot = document.createElement('div');
     newSlot.appendChild(document.createElement('h3'));
     newSlot.appendChild(Object.assign(document.createElement('button'), { innerText: 'Gioca' }));
+    newSlot.appendChild(Object.assign(document.createElement('button'), { className:'button-remove'}));
+
     container.appendChild(newSlot); 
 }
 
@@ -233,18 +240,27 @@ window.LoginByUser = async function () {
 
     const Password = SchedaDiLogin.children[1]
 
-    const localdatatemp = await getDataForNode(`utenti/${Nome.value}`)
-    if(!localdatatemp){
+    try{
+    
+        const localdatatemp = await getDataForNode(`utenti/${Nome.value}`)
+
+        if(!localdatatemp){
+            Wrong(Nome)
+        }else if (localdatatemp.dati.password != Password.value){
+            Wrong(Password)
+        }else{
+            localdata = localdatatemp
+            localStorage.setItem('utente',JSON.stringify(localdatatemp));
+            playMusic();
+            await ReloadSalvataggi();
+            await viewchange(2,false);
+            
+        }
+
+    }catch(error){
         Wrong(Nome)
-    }else if (localdatatemp.dati.password != Password.value){
         Wrong(Password)
-    }else{
-        localdata = localdatatemp
-        localStorage.setItem('utente',JSON.stringify(localdatatemp));
-        playMusic();
-        await ReloadSalvataggi();
-        await viewchange(2,false);
-        
+        console.log(error)
     }
 
     loadbar.classList.remove('atload');
@@ -299,7 +315,7 @@ window.NewGame = async function(){
         salvataggi = Object.keys(localdata.saves).length;
         for(let i = 0; i < salvataggi;i++){
             if(localdata.saves[i].nome == nome.value){
-                    WrongNome(nome,0,0);
+                    Wrong(nome);
                     loadbar.classList.remove('atload');
                 return 0
             }
@@ -342,30 +358,25 @@ window.NewGame = async function(){
 
 }
 
-window.RemoveGame = async function () {
+window.RemoveGame = async function (idmondo) {
     loadbar.classList.add('atload');
-    const nome = document.getElementById('NomePartitaCancella');
+
     if(localdata.saves){
         const salvataggi = Object.keys(localdata.saves).length;
-        for(let i = 0; i < salvataggi;i++){
-            if(localdata.saves[i].nome == nome.value){
-                for(let x = i;x < salvataggi-1;x++){
-                    localdata.saves[x] = localdata.saves[(x+1)];
-                }
-                delete localdata.saves[(salvataggi-1)];
-                await addElementToNode(`utenti/${localdata.dati.nome}/saves`,localdata.saves);
-                await LoginByAuto(localdata.dati.nome,localdata.dati.password);
-                await ReloadSalvataggi();
-                viewchange(2,false);
-                loadbar.classList.remove('atload');
-                return 1
-            }
+        
+        for(let i = idmondo; i < salvataggi;i++){
+            localdata.saves[i] = localdata.saves[(i+1)];
         }
+
+        delete localdata.saves[(salvataggi-1)];
+        await addElementToNode(`utenti/${localdata.dati.nome}/saves`,localdata.saves);
+        await LoginByAuto(localdata.dati.nome,localdata.dati.password);
+        await ReloadSalvataggi();
+        
+        viewchange(2,false);
     }
 
-    Wrong(nome);
     loadbar.classList.remove('atload');
-    return 0
 }
 
 window.LoadGame = async function (idmondo) {
