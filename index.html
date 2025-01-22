@@ -50,16 +50,16 @@
                     </div>
                     <div class="scheda space-coloum" id="Impostazioni">
                         <h2>Impostazioni Audio</h2>
-                        <div class="cont-scheda">
-                            <div class="space-row minsize">
+                        <div class="impostazioni-scheda-audio">
+                            <div class="space-row">
                                 <h4>Musica</h4>
                                 <button class="button-audio" id="0-audio-button" onclick="AudioSetLoop(0)"><div></div></button>
                             </div>
-                            <div class="space-row minsize">
+                            <div class="space-row">
                                 <h4>Effetti</h4>
                                 <button class="button-audio" id="1-audio-button" onclick="AudioSetLoop(1)"><div></div></button>
                             </div>
-                            <div class="space-row minsize">
+                            <div class="space-row">
                                 <h4>Creature</h4>
                                 <button class="button-audio" id="2-audio-button" onclick="AudioSetLoop(2)"><div></div></button>
                             </div>
@@ -71,15 +71,16 @@
                     </div>
                     <div class="scheda space-coloum" id="NuovaPartita">
                         <h2>Crea Partita</h2>
-                        <div class="cont-scheda">
-                            <div class="space-coloum fullsize">
-                                <input type="text" id="NomePartitaNuova" class="input-set" placeholder="Nome">
-                                <h4 class="subtitle">Selaziona Una Difficoltà : </h4>
-                                <div class="space-row fullsize">
-                                    <label for="livel1">Facile<input type="radio" id="livel1" name="difficoltà" value="1"></label>
-                                    <label for="livel2">Difficile<input type="radio" id="livel2" name="difficoltà" value="2"></label>
-                                    <label for="livel3">Estrema<input type="radio" id="livel3" name="difficoltà" value="3" checked></label>
-                                </div>
+                        <div class="partita-scheda-settings">
+                            <input type="text" id="NomePartitaNuova" placeholder="Nome">
+                            <h4>Difficoltà : </h4>
+                            <div class="space-row">
+                                <label for="livel1">Facile </label>
+                                <input type="radio" id="livel1" name="difficoltà" value="1">
+                                <label for="livel2">| Difficile </label>
+                                <input type="radio" id="livel2" name="difficoltà" value="2">
+                                <label for="livel3">| Estrema </label>
+                                <input type="radio" id="livel3" name="difficoltà" value="3" checked>
                             </div>
                         </div>
                         <div class="contenitore-bottoni">

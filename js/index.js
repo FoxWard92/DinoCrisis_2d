@@ -197,8 +197,8 @@ window.ReloadSalvataggi = async function(){
 window.addSavesSlot = function(container){
     const newSlot = document.createElement('div');
     newSlot.appendChild(document.createElement('h3'));
-    newSlot.appendChild(Object.assign(document.createElement('button'), { innerText: 'Gioca' }));
-    newSlot.appendChild(Object.assign(document.createElement('button'), { className:'button-remove'}));
+    newSlot.appendChild(Object.assign(document.createElement('button'), { innerText: 'Gioca' ,className:'button-loadgame'}));
+    newSlot.appendChild(Object.assign(document.createElement('button'), { className:'button-removegame'}));
 
     container.appendChild(newSlot); 
 }

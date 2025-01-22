@@ -111,34 +111,28 @@ article{
     align-items: center;
 }
 
-.fullsize{
-    height: 100%;
-    width: 100%;
-}
-
 .subtitle{
     height: 100%;
     margin-top: 10%;
 }
 
-.minsize{
-    height: 20%;
+.impostazioni-scheda-audio{
+    height: 30%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.impostazioni-scheda-audio>div{
+    height: 25%;
     width: 100%;
 }
 
-.cont-impostazioni{
+.partita-scheda-settings{
     height: 50%;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 50% 40%;
-    grid-template-rows: repeat(3,25%);
-    row-gap: 10%;
-    column-gap: 10%;
-}
-
-.cont-scheda{
-    height: 50%;
-    width: 100%;
+    width: 80%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -169,14 +163,19 @@ article{
     width: 30%;
 }
 
-.button-remove{
+.button-removegame{
     width: 15%;
-    height: 20%;
+    height: 25%;
     margin-left: 10%;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(../../img/index/brand/cestino.jpg);
+}
+
+.button-loadgame{
+    width: 40%;
+    height: 25%;
 }
 
 .button-audio{

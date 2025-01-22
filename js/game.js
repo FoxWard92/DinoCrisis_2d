@@ -542,7 +542,8 @@ window.AiEntity = async function (entitaElem,dino){
         const health = localdata.statsplayer.health
 
         if(Math.abs(dx) + Math.abs(dy) < 10){
-            if(now - dino.lastattacktime >= 1000){
+            if(!entitaElem.classList.contains('lastattacktime')){
+                entitaElem.classList.add('lastattacktime')
                 entitaElem.style.backgroundImage = `url(../img/animations/velociraptor/attack.gif)`
                 SetLifebar(health - (dino.damage + (difficolta*5)),true)
                 audio('creature',`${dino.nome}/attack.mp3`,'attack',0,entitaElem)
@@ -552,7 +553,9 @@ window.AiEntity = async function (entitaElem,dino){
                    localStorage.removeItem('gamelocaldata');
                    openMenu(3)
                 }
-                dino.lastattacktime = now
+                setTimeout(function(){
+                    entitaElem.classList.remove('lastattacktime')
+                },1000);
             }
         }else{
 
