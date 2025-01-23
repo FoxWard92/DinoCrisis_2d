@@ -22,7 +22,7 @@ const firebaseConfig = {
 
   let localdata = null;
 
-  let localsound = {musica:false,creature:false,effetti:false}
+  let localsound = null;
 
   let isChangeScena = false;
 
@@ -48,24 +48,22 @@ const firebaseConfig = {
 
   const player = document.getElementById('Player')
 
-  const sorgenti = ['musica','effetti','creature']
-
   let entita = leggenda.querySelectorAll('.entity');
 
   
 window.onload = async function(){
 
     try {
-        const gamelocalsound = localStorage.getItem('gamelocalsound');
-        localsound = JSON.parse(gamelocalsound);
-        for(const i in sorgenti){
-            if(localsound[sorgenti[i]]){
-                document.getElementById(`${i}-audio-button`).classList.add('button-audio-active')
+        const gamelocalsound = JSON.parse(localStorage.getItem('gamelocalsound'));
+        for(const button in gamelocalsound){
+            if(gamelocalsound[button]){
+                document.getElementById(`${button}-audio-button`).classList.add('button-audio-active')
             }
         }
+        localsound = gamelocalsound || {musica:false,creature:false,effetti:false};
 
     } catch (error) {
-        console.log(error)    
+        console.log(error)
     }
 
     try {
@@ -147,13 +145,13 @@ window.wrong = async function(wrong){
 
 window.AudioSetLoop = function(button){
     document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
-    localsound[sorgenti[button]] = !localsound[sorgenti[button]]
-    const audioElement = document.getElementsByClassName(sorgenti[button])
-    if(!localsound[sorgenti[button]]){
+    localsound[button] = !localsound[button]
+    const audioElement = document.getElementsByClassName(button)
+    if(!localsound[button]){
     for(let i = audioElement.length-1; i >= 0; i--){
         audioElement[i].pause()
     }
-    }else if(!button && localsound.musica){
+    }else if(button === 'musica' && localsound[button]){
         playMusic()
     }
     localStorage.setItem('gamelocalsound',JSON.stringify(localsound))
@@ -232,7 +230,9 @@ window.savegame = async function(){
     }
 
     if(data.dati.password == await getDataForNode(`utenti/${data.dati.nome}/dati/password`)){
-        await addElementToNode(`utenti/${data.dati.nome}/saves/${localStorage.getItem('idmondo')}/`,localdata)
+        const idmondo = localdata.idmondo
+        delete localdata.idmondo;
+        await addElementToNode(`utenti/${data.dati.nome}/saves/${idmondo}/`,localdata)
         exitgame()
         return 1
     }

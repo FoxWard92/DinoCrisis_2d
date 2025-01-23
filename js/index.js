@@ -23,8 +23,6 @@ const firebaseConfig = {
   const loadbar = document.getElementById('loadbar');
   
   const schede = document.getElementsByClassName('scheda');
-
-  const sorgenti = ['musica','effetti','creature']
   
   const SchedaDiNavigazione = document.getElementById('contenitore-scheda');
 
@@ -32,7 +30,7 @@ const firebaseConfig = {
   
   const SchedaDiRegister = document.getElementById('Registrati')
 
-  let localsound = {musica:false,creature:false,effetti:false}
+  let localsound = null;
 
   let localdata = null;
 
@@ -45,18 +43,16 @@ window.onload = async function(){
 
     try{
         const gamelocalsound = JSON.parse(localStorage.getItem('gamelocalsound'));
-    
-        if(gamelocalsound.musica && gamelocalsound.creature && gamelocalsound.effetti){
-            localsound = gamelocalsound;
-            for(let button = Object.keys(localsound).length-1;button >= 0;button--){
-                if(localsound[sorgenti[button]]){
-                    document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
-                }
+        for(const button in gamelocalsound){
+            if(gamelocalsound[button]){
+                document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
             }
         }
+
+        localsound = gamelocalsound || {musica:false,creature:false,effetti:false};
         
     }catch(error){   
-        console.error('Errore durante il caricamento:',error);
+        console.log(error)
     }
 
     try{
@@ -127,14 +123,14 @@ window.isStringContains = function(string,chars){
 }
 
 window.AudioSetLoop = function(button){
-    const audioenable = document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
-    localsound[sorgenti[button]] = !localsound[sorgenti[button]]
-    const audioElement = document.getElementsByClassName(sorgenti[button])
-    if(!localsound[sorgenti[button]]){
-       for(let i = audioElement.length-1; i >= 0; i--){
-           audioElement[i].pause()
-       }
-    }else if(!button && localsound.musica){
+    document.getElementById(`${button}-audio-button`).classList.toggle('button-audio-active')
+    localsound[button] = !localsound[button]
+    const audioElement = document.getElementsByClassName(button)
+    if(!localsound[button]){
+    for(let i = audioElement.length-1; i >= 0; i--){
+        audioElement[i].pause()
+    }
+    }else if(button === 'musica' && localsound[button]){
         playMusic()
     }
     localStorage.setItem('gamelocalsound',JSON.stringify(localsound))
@@ -203,7 +199,7 @@ window.addSavesSlot = function(container){
     container.appendChild(newSlot); 
 }
 
-window.Wrong = async function(wrong){
+window.wrong = async function(wrong){
     if(!wrong.classList.contains('wrong')){
         wrong.classList.add('wrong');
     
@@ -245,9 +241,9 @@ window.LoginByUser = async function () {
         const localdatatemp = await getDataForNode(`utenti/${Nome.value}`)
 
         if(!localdatatemp){
-            Wrong(Nome)
+            wrong(Nome)
         }else if (localdatatemp.dati.password != Password.value){
-            Wrong(Password)
+            wrong(Password)
         }else{
             localdata = localdatatemp
             localStorage.setItem('utente',JSON.stringify(localdatatemp));
@@ -258,8 +254,8 @@ window.LoginByUser = async function () {
         }
 
     }catch(error){
-        Wrong(Nome)
-        Wrong(Password)
+        wrong(Nome)
+        wrong(Password)
         console.log(error)
     }
 
@@ -280,11 +276,11 @@ window.RegisterByUser = async function () {
     const ConfermaPassword = SchedaDiRegister.children[2]
 
     if(Nome.value.length >20 || isStringContains(Nome.value,[' ','=','^','?']) || await getDataForNode(`utenti/${Nome.value}`)){
-        Wrong(Nome)
+        wrong(Nome)
     }else if(Password.value.length < 5 || isStringContains(Password.value,[' ','è','ò','à'])){
-        Wrong(Password)
+        wrong(Password)
     }else if (Password.value != ConfermaPassword.value){
-        Wrong(ConfermaPassword)
+        wrong(ConfermaPassword)
     }else{
         const utente = {
             dati: {
@@ -308,14 +304,14 @@ window.NewGame = async function(){
     
     loadbar.classList.add('atload');
     const nome = document.getElementById('NomePartitaNuova');
-    if(nome.value === ''){Wrong(nome);loadbar.classList.remove('atload'); return 0}
+    if(nome.value === ''){wrong(nome);loadbar.classList.remove('atload'); return 0}
     const difficolta =  document.querySelector('input[name="difficoltà"]:checked');
     let salvataggi = 0;
     if(localdata.saves){
         salvataggi = Object.keys(localdata.saves).length;
         for(let i = 0; i < salvataggi;i++){
             if(localdata.saves[i].nome == nome.value){
-                    Wrong(nome);
+                    wrong(nome);
                     loadbar.classList.remove('atload');
                 return 0
             }
@@ -384,6 +380,7 @@ window.LoadGame = async function (idmondo) {
     const gamedata = (await getDataForNode('gamedata/scene'));
     const data = localdata.saves[idmondo];
     const localdatagame = {
+        idmondo: idmondo,
         startscena: data.startscena ? data.startscena:{},
         statsplayer: data.statsplayer ? data.statsplayer:{},
         difficolta : data.difficolta ? data.difficolta:{},
@@ -430,7 +427,6 @@ window.LoadGame = async function (idmondo) {
 }
     localStorage.removeItem('loadgame');
     localStorage.setItem('gamelocaldata',JSON.stringify(localdatagame));
-    localStorage.setItem('idmondo',idmondo);
     
     history.replaceState(null, '','html/game.html');
     location.reload();
