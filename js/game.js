@@ -218,31 +218,23 @@ window.exitgame = function(){
 window.savegame = async function(){
     loadbar.classList.add('atload');
 
-    const data =  JSON.parse(localStorage.getItem('utente'));
-    if(!data){
+    try {
+        const data =  JSON.parse(localStorage.getItem('utente'));
+        if(data.dati && data.dati.password == await getDataForNode(`utenti/${data.dati.nome}/dati/password`)){
+            const idmondo = localdata.idmondo
+            delete localdata.idmondo;
+            await addElementToNode(`utenti/${data.dati.nome}/saves/${idmondo}/`,localdata)
+            exitgame()
+        }
+
+    }catch(error){
         loadbar.classList.remove('atload');
         wrong(document.getElementById('savebutton'));
         setTimeout(function(){
             openMenu(2)
             document.getElementById('cmdfeedback').innerHTML = `Errore Dati Account Non Trovati`;
         },1000)
-        return 2
     }
-
-    if(data.dati.password == await getDataForNode(`utenti/${data.dati.nome}/dati/password`)){
-        const idmondo = localdata.idmondo
-        delete localdata.idmondo;
-        await addElementToNode(`utenti/${data.dati.nome}/saves/${idmondo}/`,localdata)
-        exitgame()
-        return 1
-    }
-    loadbar.classList.remove('atload');
-    wrong(document.getElementById('savebutton'));
-    setTimeout(function(){
-        openMenu(2)
-        document.getElementById('cmdfeedback').innerHTML = `Errore Dati Account Passworld Errati`;
-    },1000)
-    return 0
 }
 
 window.loadscena = async function(scena,isreload){
@@ -280,9 +272,11 @@ window.loadscena = async function(scena,isreload){
     for(const chiave in propsload){
         if(propsload[chiave].health > 0){
             const div = document.createElement('div');
-            if(!isreload && propsload[chiave].type === 'entity'){
-                propsload[chiave].posx = Math.random()*51
-                propsload[chiave].posy = Math.random()*51+20
+            if(propsload[chiave].type === 'entity'){
+                if(!isreload){
+                    propsload[chiave].posx = Math.random()*51
+                    propsload[chiave].posy = Math.random()*51+20
+                }
             }else{
                 div.style.backgroundImage = `url(../img/props/${[propsload[chiave].type]}/${[propsload[chiave].nome]}.jpg)`  
             }
@@ -622,7 +616,7 @@ window.RaycastBullutsDamage = async function(objectives,damage,type){
     div.style.height = "0.5%";
     div.style.width = "1.5%";
     div.style.backgroundColor = "red";
-    div.backgroundImage = `url(../img/animations/bullets/${type}.jpg)`;
+    div.backgroundImage = `url(../img/props/bullets/${type}.jpg)`;
     leggenda.appendChild(div);
 
     const move = [ObjectivesMoveLeft,ObjectivesMoveRight]
