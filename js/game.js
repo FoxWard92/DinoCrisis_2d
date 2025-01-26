@@ -278,7 +278,7 @@ window.loadscena = async function(scena,isreload){
                     propsload[chiave].posy = Math.random()*51+20
                 }
             }else{
-                div.style.backgroundImage = `url(../img/props/${[propsload[chiave].type]}/${[propsload[chiave].nome]}.jpg)`  
+                div.style.backgroundImage = `url(../img/props/${[propsload[chiave].type]}/${[propsload[chiave].nome]}.jpg)`
             }
             div.className = `props ${propsload[chiave].nome} ${propsload[chiave].type}`;
             div.id = `${chiave}`;

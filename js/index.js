@@ -237,20 +237,23 @@ window.LoginByUser = async function () {
     const Password = SchedaDiLogin.children[1]
 
     try{
-    
-        const localdatatemp = await getDataForNode(`utenti/${Nome.value}`)
-
-        if(!localdatatemp){
-            wrong(Nome)
-        }else if (localdatatemp.dati.password != Password.value){
-            wrong(Password)
+        if(isStringContains(Nome.value,[' ','=','^','?','#',']','[','.','$','*'])){
+            wrong(Nome);
         }else{
-            localdata = localdatatemp
-            localStorage.setItem('utente',JSON.stringify(localdatatemp));
-            playMusic();
-            await ReloadSalvataggi();
-            await viewchange(2,false);
-            
+            const localdatatemp = await getDataForNode(`utenti/${Nome.value}`)
+
+            if(!localdatatemp){
+                wrong(Nome)
+            }else if (localdatatemp.dati.password != Password.value){
+                wrong(Password)
+            }else{
+                localdata = localdatatemp
+                localStorage.setItem('utente',JSON.stringify(localdatatemp));
+                playMusic();
+                await ReloadSalvataggi();
+                await viewchange(2,false);
+                
+            }
         }
 
     }catch(error){
@@ -275,7 +278,7 @@ window.RegisterByUser = async function () {
 
     const ConfermaPassword = SchedaDiRegister.children[2]
 
-    if(Nome.value.length >20 || isStringContains(Nome.value,[' ','=','^','?']) || await getDataForNode(`utenti/${Nome.value}`)){
+    if(Nome.value.length >20 || isStringContains(Nome.value,[' ','=','^','?','#',']','[','.','$','*']) || await getDataForNode(`utenti/${Nome.value}`)){
         wrong(Nome)
     }else if(Password.value.length < 5 || isStringContains(Password.value,[' ','è','ò','à'])){
         wrong(Password)
