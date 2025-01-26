@@ -26,13 +26,7 @@ const firebaseConfig = {
 
   let isChangeScena = false;
 
-  let isChangePause = false
-
-  let isRunningWrongAnimation = false;
-
-  let isRunningTrobleAnimation = false;
-
-  let isRunningScribeAnimation = false;
+  let isChangePause = false;
 
   let playercommand = ['w','s','a','d','e',' ','i','escape','r'];
 
@@ -47,6 +41,12 @@ const firebaseConfig = {
   const leggenda = document.getElementById('leggenda');
 
   const player = document.getElementById('Player')
+
+  const lifebar = document.getElementById('healthbar');
+
+  const msgfeedback = document.getElementById('msgfeedback');
+
+  const cmdfeedback = document.getElementById('cmdfeedback');
 
   let entita = leggenda.querySelectorAll('.entity');
 
@@ -91,12 +91,10 @@ window.onload = async function(){
 
 window.SetLifebar = function(value,animations){
     localdata.statsplayer.health = value;
-    const lifebar = document.getElementById('healthbar');
-    if(!isRunningTrobleAnimation && animations){
-        isRunningTrobleAnimation = true;
+
+    if(!lifebar.classList.contains('troble') && animations){
         lifebar.classList.add('troble')
         setTimeout(function(){
-            isRunningTrobleAnimation = false;
             lifebar.classList.remove('troble')
         },1000)
     }
@@ -118,18 +116,15 @@ window.openMenu = function(type){
 }
 
 window.AutoScribeText = async function(html,text){
-    if(!isRunningScribeAnimation){
+    if(!html.classList.contains('volker')){
+        html.innerText = '';
         html.classList.add('volker')
-        const p = html.querySelector('p')
-        isRunningScribeAnimation = true;
         for(let i = 0;i < text.length;i++){
-            p.innerHTML += text.charAt(i);
+            html.innerHTML += text.charAt(i);
             await new Promise(resolve => setTimeout(resolve, 100));
         }
         await new Promise(resolve => setTimeout(resolve, 1000));
-        p.innerText = ''
         html.classList.remove('volker')
-        isRunningScribeAnimation = false;
     }
 }
 
@@ -230,9 +225,9 @@ window.savegame = async function(){
     }catch(error){
         loadbar.classList.remove('atload');
         wrong(document.getElementById('savebutton'));
-        setTimeout(function(){
+        setTimeout(async function(){
             openMenu(2)
-            document.getElementById('cmdfeedback').innerHTML = `Errore Dati Account Non Trovati`;
+            await AutoScribeText(cmdfeedback,`Errore : ${error}`);
         },1000)
     }
 }
@@ -481,7 +476,7 @@ window.PlayerInteraction = async function(objectives){
                     }, { once: true });         
                 }, { once: true });
             }else{
-                AutoScribeText(document.getElementById('msgfeedback'),`Necessaria Chiave ${data.key} Per Aprire`)
+                AutoScribeText(msgfeedback,`Necessaria Chiave ${data.key} Per Aprire`)
             }
             return 1
         }
@@ -674,7 +669,7 @@ window.PlayerShoot = function(){
             }
             document.getElementById('equpaggimento-text').innerHTML = `${weapon.chargers} / ${weapon.ammons}`
        }else{
-           AutoScribeText(document.getElementById('msgfeedback'), weapon.ammons > 0 ? `Premi ${playercommand[8]} per Ricaricare` : `Munizioni ${localdata.statsplayer.setgun} Finite`);
+           AutoScribeText(msgfeedback, weapon.ammons > 0 ? `Premi ${playercommand[8]} per Ricaricare` : `Munizioni ${localdata.statsplayer.setgun} Finite`);
        }
     }
 }
@@ -698,10 +693,10 @@ window.PlayerShootReload = function(){
                 isplayerinreloading = false;
             },weapon.reloadtime)
         }else{
-            AutoScribeText(document.getElementById('msgfeedback'), `Munizioni ${localdata.statsplayer.setgun} Finite`);
+            AutoScribeText(msgfeedback, `Munizioni ${localdata.statsplayer.setgun} Finite`);
         }
     }else{
-        AutoScribeText(document.getElementById('msgfeedback'), `Munizioni ${localdata.statsplayer.setgun} Al Massimo`);
+        AutoScribeText(msgfeedback, `Munizioni ${localdata.statsplayer.setgun} Al Massimo`);
     }
     }
     

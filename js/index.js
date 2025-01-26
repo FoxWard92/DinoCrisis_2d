@@ -428,7 +428,6 @@ window.LoadGame = async function (idmondo) {
         };
     }
 }
-    localStorage.removeItem('loadgame');
     localStorage.setItem('gamelocaldata',JSON.stringify(localdatagame));
     
     history.replaceState(null, '','html/game.html');
