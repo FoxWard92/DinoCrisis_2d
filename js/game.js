@@ -31,8 +31,6 @@ const firebaseConfig = {
   let playercommand = ['w','s','a','d','e',' ','i','escape','r'];
 
   let memscena = 0;
-
-  
   
   const doors = ['leftdoor','centerdoor','rightdoor'];
 
